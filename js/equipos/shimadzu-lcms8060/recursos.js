@@ -1,0 +1,61 @@
+// Recursos de consulta del Shimadzu LCMS-8060 / 8060NX. Enlaces localizados en búsquedas (nov. 2026).
+export const RECURSOS = [
+  {
+    grupo: 'Documentación oficial del fabricante',
+    items: [
+      { titulo: 'LCMS-8060NX · Características', url: 'https://www.shimadzu.co.uk/products/liquid-chromatograph-mass-spectrometry/triple-quadrupole-lc-msms/lcms-8060nx/features.html',
+        tipo: 'Página', idioma: 'EN', fuente: 'Shimadzu', desc: 'IonFocus, heat-assist, UF-Qarray II y UF-Lens II, cambio de la DL bajo vacío.' },
+      { titulo: 'LCMS-8060NX · Especificaciones', url: 'https://www.shimadzu.co.uk/products/liquid-chromatograph-mass-spectrometry/triple-quadrupole-lc-msms/lcms-8060nx/spec.html',
+        tipo: 'Página', idioma: 'EN', fuente: 'Shimadzu', desc: 'Rango de masas, resolución, velocidad de barrido y transiciones MRM por segundo.' },
+      { titulo: 'LCMS-8060 · Características', url: 'https://www.shimadzu.eu/products/liquid-chromatograph-mass-spectrometry/triple-quadrupole-lc-msms/lcms-8060/features.html',
+        tipo: 'Página', idioma: 'EN', fuente: 'Shimadzu', desc: 'UF-Qarray y robustez del modelo original.' },
+      { titulo: 'Folleto LCMS-8060 (C146-E286F)', url: 'https://www.shimadzu.com/an/sites/shimadzu.com.an/files/pim/pim_document_file/brochures/10307/54_c146e286f.pdf',
+        tipo: 'PDF', idioma: 'EN', fuente: 'Shimadzu', desc: 'Folleto completo con el diagrama del trayecto de iones.' },
+      { titulo: 'Desarrollo de la guía de iones UF-Qarray', url: 'https://www.shimadzu.com/an/literature/lcms/jpo116005.html',
+        tipo: 'PDF', idioma: 'EN', fuente: 'Shimadzu', desc: 'Informe técnico sobre el diseño de la guía de iones.' },
+      { titulo: 'Folleto de consumibles LCMS (2022)', url: 'https://www.ssi.shimadzu.com/sites/ssi.shimadzu.com/files/pim/pim_document_file/ssi/brochures/15754/LCMS_Consumables_Brochure_NovDec_2022.pdf',
+        tipo: 'PDF', idioma: 'EN', fuente: 'Shimadzu', desc: 'Piezas y periodicidades de mantenimiento: DL3, IonFocus, aceite y filtros.' },
+      { titulo: 'Parada prolongada bajo vacío', url: 'https://www.ssi.shimadzu.com/sites/ssi.shimadzu.com/files/pim/pim_document_file/ssi/others/16388/Shimadzu_LCMS_Extended_Storage_Under_Vacuum.pdf',
+        tipo: 'PDF', idioma: 'EN', fuente: 'Shimadzu', desc: 'Pantalla System Control, válvula CID y tapón de la DL.' },
+    ],
+  },
+  {
+    grupo: 'Fundamentos de LC-MS',
+    items: [
+      { titulo: 'Fundamental Guide to LCMS', url: 'https://www.ssi.shimadzu.com/sites/ssi.shimadzu.com/files/pim/pim_document_file/ssi/others/15831/fundamental-guide-to-LCMS.pdf',
+        tipo: 'PDF', idioma: 'EN', fuente: 'Shimadzu', desc: 'Guía didáctica de LC-MS y MS/MS.' },
+      { titulo: 'Fundamentos de LC-MS (web educativa)', url: 'https://www.ssi.shimadzu.com/service-support/technical-support/analysis-basics/fundamental/index.html',
+        tipo: 'Página', idioma: 'EN', fuente: 'Shimadzu', desc: 'Capítulos sobre interfaces, analizadores y MS/MS.' },
+      { titulo: 'Basics of Liquid Chromatograph-Mass Spectrometry', url: 'https://www.shimadzu.com/an/service-support/technical-support/liquid-chromatograph-mass-spectrometry/index.html',
+        tipo: 'Página', idioma: 'EN', fuente: 'Shimadzu', desc: 'Introducción por capítulos a la técnica.' },
+    ],
+  },
+  {
+    grupo: 'Vídeos',
+    items: [
+      { titulo: 'LCMS-8060 · High Performance LC Triple Quadrupole MS', url: 'https://www.youtube.com/watch?v=3onkJIPtieA',
+        tipo: 'Vídeo', idioma: 'EN', fuente: 'Shimadzu', desc: 'Presentación del equipo.' },
+      { titulo: 'LCMS-8060NX · Liquid Chromatograph Mass Spectrometer', url: 'https://www.youtube.com/watch?v=NPV--D02Hv0',
+        tipo: 'Vídeo', idioma: 'EN', fuente: 'Shimadzu', desc: 'Presentación del modelo NX.' },
+      { titulo: 'LCMS-80xx · Mantenimiento (demostración)', url: 'https://www.youtube.com/watch?v=1nv5UuwbYto',
+        tipo: 'Vídeo', idioma: 'EN', fuente: 'Shimadzu', desc: 'Mantenimiento rutinario de la serie de triple cuadrupolo.' },
+      { titulo: 'Sintonización (tuning) de la serie LCMS-80xx', url: 'https://youtube.com/watch?v=wrqrzGNFRCQ',
+        tipo: 'Vídeo', idioma: 'EN', fuente: 'Shimadzu', desc: 'Procedimiento de autotune.' },
+      { titulo: 'Cambio de la línea de desolvatación', url: 'https://www.youtube.com/watch?v=vNbE0FH-jBY',
+        tipo: 'Vídeo', idioma: 'EN', fuente: 'Shimadzu', desc: 'Sustitución de la DL.' },
+      { titulo: 'The new LCMS-8060NX (SelectScience)', url: 'https://www.selectscience.net/video/the-new-lcms8060nx-liquid-chromatograph-mass-spectrometer-5246',
+        tipo: 'Vídeo', idioma: 'EN', fuente: 'SelectScience', desc: 'Presentación del lanzamiento.' },
+    ],
+  },
+  {
+    grupo: 'Guías de universidades',
+    items: [
+      { titulo: 'Especificaciones LCMS-8040 (C146-E194K)', url: 'https://chemistry.unt.edu/system/files/shimadzu_8040_lc-ms_specifications_1.pdf',
+        tipo: 'PDF', idioma: 'EN', fuente: 'Univ. of North Texas', desc: 'Misma familia: barras de molibdeno, turbo de tres entradas, gases e instalación.' },
+      { titulo: 'Manual de instrucciones LCMS-8040', url: 'https://chemistry.unt.edu/system/files/shimadzu_8040_lc-ms_instruction_manual_1-5.pdf',
+        tipo: 'Manual', idioma: 'EN', fuente: 'Univ. of North Texas', desc: 'Hardware y mantenimiento de la familia 80xx.' },
+      { titulo: 'LabSolutions LCMS · Getting Started', url: 'https://chemistry.unt.edu/system/files/labsolutions_lcms_5_97_getting_started_guide_compressed.pdf',
+        tipo: 'Manual', idioma: 'EN', fuente: 'Univ. of North Texas', desc: 'Software, tune y creación de métodos.' },
+    ],
+  },
+];
