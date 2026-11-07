@@ -46,6 +46,7 @@ export function initPelicula(app, CFG, META) {
       <div class="cine-prog"></div>
       <button class="cbtn on" data-a="cc" title="Subtítulos (C)">${icon('cc')}</button>
       <button class="cbtn on hidden" data-a="voz" title="Narración">${icon('voz')}</button>
+      <button class="cbtn on" data-a="son" title="Música y efectos">${icon('musica')}</button>
       <button class="cbtn" data-a="full" title="Pantalla completa (F)">${icon('full')}</button>
       <button class="cbtn" data-a="exit" title="Salir (Esc)">${icon('close')}</button>
     </div>`;
@@ -54,7 +55,25 @@ export function initPelicula(app, CFG, META) {
   const sub = q('.cine-sub span'), prog = q('.cine-prog'), time = q('.time'), bar = q('.cine-bar');
 
   /* ---------- estado ---------- */
-  const C = { on: false, play: false, k: 0, t: 0, dur: [], chunks: [], audio: [], cc: true, voz: true, ev: 0, prev: null, card: 0, fin: false };
+  const C = { on: false, play: false, k: 0, t: 0, dur: [], chunks: [], audio: [], cc: true, voz: true, son: true, ev: 0, prev: null, card: 0, fin: false };
+
+  /* ---------- música de fondo y efectos (niveles discretos; la música baja mientras habla la narración) ---------- */
+  const VOL = { musica: 0.13, musicaVoz: 0.055, whoosh: 0.2, subida: 0.28, tick: 0.16, ding: 0.24 };
+  let musica = null, volM = 0;
+  function sfx(nombre, delay = 0) {
+    if (!C.son) return;
+    setTimeout(() => { if (!C.on || !C.son) return; const a = new Audio(`audio/sfx/${nombre}.mp3`); a.volume = VOL[nombre]; a.play().catch(() => {}); }, delay);
+  }
+  function mezclar(dt) {
+    const hablando = C.prev && !C.prev.paused && !C.prev.ended;
+    const obj = C.on && C.son && C.play && !C.fin ? (hablando ? VOL.musicaVoz : VOL.musica) : 0;
+    if (obj > 0 && !musica) { musica = new Audio('audio/musica-fondo.mp3'); musica.loop = true; musica.volume = 0; }
+    if (!musica) return;
+    volM += (obj - volM) * Math.min(1, dt * (obj > volM ? 0.8 : 2.5));
+    if (volM < 0.003 && obj === 0) { volM = 0; if (!musica.paused) musica.pause(); }
+    else if (musica.paused && obj > 0) musica.play().catch(() => {});
+    musica.volume = Math.max(0, Math.min(1, volM));
+  }
   const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
   const total = () => C.dur.reduce((a, b) => a + b, 0);
   const startOf = (k) => C.dur.slice(0, k).reduce((a, b) => a + b, 0);
@@ -76,8 +95,12 @@ export function initPelicula(app, CFG, META) {
   }
 
   async function cargarAudio() {
-    // solo se buscan archivos de narración si el equipo los declara (CFG.peliculaAudio = true)
-    if (!CFG.peliculaAudio) { C.audio = P.map(() => null); q('[data-a="voz"]').classList.add('hidden'); return; }
+    // audio/indice.json lista los equipos con narración generada (herramientas/generar_voz.mjs); así no se piden archivos inexistentes
+    let conVoz = !!CFG.peliculaAudio;
+    if (!conVoz) {
+      try { const r = await fetch('audio/indice.json', { cache: 'no-cache' }); if (r.ok) conVoz = (await r.json()).includes(CFG.id); } catch { /* sin índice */ }
+    }
+    if (!conVoz) { C.audio = P.map(() => null); q('[data-a="voz"]').classList.add('hidden'); return; }
     const carga = P.map((_, k) => new Promise((res) => {
       const a = new Audio(); a.preload = 'auto';
       const fin = (v) => { clearTimeout(to); res(v); };
@@ -110,7 +133,10 @@ export function initPelicula(app, CFG, META) {
     if (sh.accion) sh.accion(app);
     resaltar(sh.resaltar || []);
     app.syncSlider();
-    app.frameIds(sh.foco, sh.dir || null, trans ?? sh.trans ?? 2.6, sh.pad ?? 1.1);
+    const dt = trans ?? sh.trans ?? 2.6;
+    app.frameIds(sh.foco, sh.dir || null, dt, sh.pad ?? 1.1);
+    if (k > 0 && dt > 0.5) sfx('whoosh');
+    if (sh.cap) sfx('tick', 450);
     // rótulo de capítulo
     const ch = q('.cine-chap');
     if (sh.cap) {
@@ -143,6 +169,7 @@ export function initPelicula(app, CFG, META) {
   function terminar() {
     C.fin = true; setPlay(false);
     if (C.prev) C.prev.pause();
+    sfx('ding');
     const card = q('.cine-card');
     card.querySelector('.kick').textContent = META.marca;
     card.querySelector('h2').textContent = META.modelo;
@@ -160,6 +187,7 @@ export function initPelicula(app, CFG, META) {
     el.classList.toggle('paused', !v);
   }
   const tick = (dt, volando) => {
+    mezclar(dt);
     if (!C.on) return;
     const sh = P[C.k];
     if (C.play && !C.fin) {
@@ -216,6 +244,7 @@ export function initPelicula(app, CFG, META) {
     construirBarra();
     aplicar(0, { trans: 0 });
     setPlay(true);
+    sfx('subida', 200);
     setTimeout(() => fade.classList.add('out'), 60);
     mostrarBarra();
   }
@@ -223,6 +252,7 @@ export function initPelicula(app, CFG, META) {
     if (!C.on) return;
     C.on = false; setPlay(false); app.controls.enabled = true;
     if (C.prev) C.prev.pause();
+    if (musica) { musica.pause(); musica.currentTime = 0; volM = 0; }
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
     el.classList.add('hidden'); document.body.classList.remove('cine-on');
     S.cine = false; S.labels = C.labels;
@@ -249,6 +279,7 @@ export function initPelicula(app, CFG, META) {
     else if (a === 'prev') irA(C.t > 2.5 ? C.k : C.k - 1);
     else if (a === 'next') irA(C.k + 1);
     else if (a === 'cc') { C.cc = !C.cc; b.classList.toggle('on', C.cc); }
+    else if (a === 'son') { C.son = !C.son; b.classList.toggle('on', C.son); }
     else if (a === 'voz') { C.voz = !C.voz; b.classList.toggle('on', C.voz); if (C.prev) { if (C.voz && C.play) C.prev.play().catch(() => {}); else C.prev.pause(); } }
     else if (a === 'full') { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); }
     else if (a === 'exit') salir();
