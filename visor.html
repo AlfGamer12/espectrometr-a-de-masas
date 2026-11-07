@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visor técnico 3D · Espectrometría de masas</title>
+  <script>
+    // Aplica el tema guardado antes de pintar, para evitar un parpadeo.
+    (function () {
+      var t = localStorage.getItem('ms-theme');
+      if (!t) t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <link rel="stylesheet" href="css/styles.css" />
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.js", "three/addons/": "./lib/addons/" } }
+  </script>
+</head>
+<body>
+  <div id="loading"><div class="load-bar"><i></i></div><p>Cargando modelo</p></div>
+
+  <header id="topbar">
+    <div class="brand">
+      <a class="mark" href="index.html" title="Volver al catálogo">MS</a>
+      <div class="brand-text">
+        <button id="eqSwitch" class="eq-switch" title="Cambiar de equipo">
+          <h1><span id="brandName"></span> <b id="modelName"></b></h1>
+          <svg class="dn"><use href="#i-down" /></svg>
+        </button>
+        <p id="typeLine"></p>
+      </div>
+      <div id="eqMenu" class="menu hidden"></div>
+    </div>
+    <div class="seg" id="modeTabs" role="tablist">
+      <button data-mode="equipo" class="active" role="tab"></button>
+      <button data-mode="analizador" role="tab"></button>
+    </div>
+    <nav>
+      <button id="btnFilm" class="tbtn"><svg><use href="#i-film" /></svg><span>Película</span></button>
+      <button id="btnTour" class="tbtn"><svg><use href="#i-tour" /></svg><span>Recorrido</span></button>
+      <button id="btnSim" class="tbtn"><svg><use href="#i-sim" /></svg><span>Simulación</span></button>
+      <button id="btnRes" class="tbtn"><svg><use href="#i-book" /></svg><span>Recursos</span></button>
+      <span class="sep"></span>
+      <a id="btnCat" class="tbtn icon" href="index.html" title="Catálogo de equipos"><svg><use href="#i-grid" /></svg></a>
+      <button id="btnTheme" class="tbtn icon" title="Cambiar tema claro / oscuro"><svg class="sun"><use href="#i-sun" /></svg><svg class="moon"><use href="#i-moon" /></svg></button>
+      <button id="btnAbout" class="tbtn icon" title="Información del modelo"><svg><use href="#i-info" /></svg></button>
+    </nav>
+  </header>
+
+  <aside id="sidebar" class="panel">
+    <div class="panel-head">
+      <h2>Estructura del modelo</h2>
+      <span id="partCount" class="muted"></span>
+    </div>
+    <div class="search">
+      <svg><use href="#i-search" /></svg>
+      <input type="search" id="search" placeholder="Buscar componente" autocomplete="off" />
+    </div>
+    <div id="partList"></div>
+  </aside>
+
+  <aside id="info" class="panel hidden">
+    <div class="panel-head">
+      <h2>Propiedades</h2>
+      <button class="ibtn" id="infoClose" title="Cerrar"><svg><use href="#i-close" /></svg></button>
+    </div>
+    <div id="infoBody"></div>
+  </aside>
+
+  <div id="viewbar">
+    <div class="grp">
+      <button class="vbtn" data-view="home" title="Vista inicial"><svg><use href="#i-home" /></svg></button>
+      <button class="vbtn" data-view="front" title="Vista frontal"><svg><use href="#i-front" /></svg></button>
+      <button class="vbtn" data-view="right" title="Vista lateral derecha"><svg><use href="#i-side" /></svg></button>
+      <button class="vbtn" data-view="top" title="Vista superior"><svg><use href="#i-top" /></svg></button>
+      <button class="vbtn" data-view="iso" title="Vista isométrica"><svg><use href="#i-iso" /></svg></button>
+    </div>
+    <div class="grp explode" title="Vista explosionada">
+      <svg class="lead"><use href="#i-explode" /></svg>
+      <input type="range" id="explode" min="0" max="100" value="0" aria-label="Vista explosionada" />
+      <span id="explodeVal">0 %</span>
+    </div>
+    <div class="grp">
+      <button class="vbtn" id="tgXray" title="Transparencia de carcasas"><svg><use href="#i-xray" /></svg></button>
+      <button class="vbtn on" id="tgLabels" title="Etiquetas"><svg><use href="#i-tag" /></svg></button>
+      <button class="vbtn on" id="tgAO" title="Sombreado de contacto (oclusión ambiental)"><svg><use href="#i-ao" /></svg></button>
+      <button class="vbtn" id="tgRotate" title="Rotación automática"><svg><use href="#i-rotate" /></svg></button>
+    </div>
+  </div>
+
+  <div id="labels"></div>
+  <div id="tooltip" class="hidden"></div>
+
+  <section id="tour" class="panel hidden">
+    <div class="tour-head">
+      <span id="tourCount"></span>
+      <button class="ibtn" id="tourClose" title="Salir del recorrido"><svg><use href="#i-close" /></svg></button>
+    </div>
+    <div class="tour-progress"><i id="tourBar"></i></div>
+    <h3 id="tourTitle"></h3>
+    <p id="tourText"></p>
+    <div class="tour-nav">
+      <div id="tourDots"></div>
+      <div class="tour-btns">
+        <button class="btn" id="tourPrev"><svg><use href="#i-prev" /></svg>Anterior</button>
+        <button class="btn primary" id="tourNext">Siguiente<svg><use href="#i-next" /></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="simpanel" class="panel hidden">
+    <div class="sim-controls">
+      <div class="panel-head flat"><h2 id="simTitle">Simulación</h2>
+        <button class="ibtn" id="simClose" title="Detener simulación"><svg><use href="#i-close" /></svg></button></div>
+      <div id="simCtrls"></div>
+      <div class="readouts" id="simRead"></div>
+      <p class="fine" id="simNote"></p>
+      <p class="fine legend" id="simLegend"></p>
+    </div>
+    <div class="sim-chart">
+      <div class="chart-title" id="chartT1"></div>
+      <canvas id="cv1"></canvas>
+    </div>
+    <div class="sim-chart narrow">
+      <div class="chart-title" id="chartT2"></div>
+      <canvas id="cv2"></canvas>
+    </div>
+  </section>
+
+  <footer id="statusbar">
+    <span id="stSel">Sin selección</span>
+    <span class="hint">Botón izquierdo: orbitar · Botón derecho: desplazar · Rueda: zoom · Doble clic: enfocar pieza</span>
+    <span id="stMode"></span>
+  </footer>
+
+  <div id="about" class="modal hidden">
+    <div class="modal-box">
+      <div class="panel-head">
+        <h2>Información del modelo</h2>
+        <button class="ibtn" id="aboutClose" title="Cerrar"><svg><use href="#i-close" /></svg></button>
+      </div>
+      <div class="modal-body">
+        <div id="aboutBody"></div>
+        <h4>Navegación</h4>
+        <table class="specs">
+          <tr><td>Orbitar / desplazar / zoom</td><td>Botón izquierdo / botón derecho / rueda</td></tr>
+          <tr><td>Seleccionar</td><td>Clic sobre la pieza, su etiqueta o su nombre en la estructura</td></tr>
+          <tr><td>Enfocar</td><td>Doble clic sobre la pieza</td></tr>
+          <tr><td>Teclado</td><td>Esc: cerrar · ← →: pasos del recorrido</td></tr>
+        </table>
+        <p class="fine">Material educativo sin fines comerciales y sin afiliación con los fabricantes. Las marcas y nombres de modelo
+          pertenecen a sus respectivos propietarios.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="recursos" class="modal hidden">
+    <div class="modal-box wide">
+      <div class="panel-head">
+        <h2>Recursos de consulta</h2>
+        <button class="ibtn" id="resClose" title="Cerrar"><svg><use href="#i-close" /></svg></button>
+      </div>
+      <div class="modal-body" id="resBody"></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

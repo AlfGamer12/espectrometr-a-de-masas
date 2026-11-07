@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Espectrometría de masas · Catálogo de equipos</title>
+  <script>
+    (function () {
+      var t = localStorage.getItem('ms-theme');
+      if (!t) t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/portada.css" />
+</head>
+<body class="portada">
+  <header id="topbar">
+    <div class="brand">
+      <div class="mark">MS</div>
+      <div class="brand-text">
+        <h1>Espectrometría de masas</h1>
+        <p>Catálogo de equipos · Visor técnico 3D</p>
+      </div>
+    </div>
+    <div></div>
+    <nav>
+      <a class="tbtn" href="#comparativa"><svg><use href="#i-table" /></svg><span>Comparativa</span></a>
+      <a class="tbtn" href="#clases"><svg><use href="#i-grid" /></svg><span>Analizadores</span></a>
+      <a class="tbtn" href="#modos"><svg><use href="#i-sim" /></svg><span>Modos</span></a>
+      <a class="tbtn" href="#tecnicas"><svg><use href="#i-book" /></svg><span>Técnicas</span></a>
+      <span class="sep"></span>
+      <button id="btnTheme" class="tbtn icon" title="Cambiar tema claro / oscuro"><svg class="sun"><use href="#i-sun" /></svg><svg class="moon"><use href="#i-moon" /></svg></button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <div class="eyebrow">Material didáctico · Análisis instrumental</div>
+      <h2>Catálogo de espectrómetros de masas</h2>
+      <p>Modelos 3D interactivos de espectrómetros comerciales de Agilent, Shimadzu y Bruker, junto con un sector magnético didáctico, ordenados por fabricante, técnica y tipo de analizador. Cada visor incluye vista explosionada,
+        ficha técnica de cada componente, recorrido guiado, simulación del funcionamiento y una selección de documentación y vídeos.</p>
+    </section>
+
+    <section class="toolbar">
+      <div class="filt">
+        <span class="flabel">Agrupar por</span>
+        <div class="seg" id="fGroup">
+          <button data-v="clase" class="active">Analizador</button>
+          <button data-v="marca">Marca</button>
+          <button data-v="tipo">Técnica</button>
+        </div>
+      </div>
+      <div class="filt">
+        <span class="flabel">Marca</span>
+        <div class="seg" id="fMarca"></div>
+      </div>
+      <div class="filt">
+        <span class="flabel">Técnica</span>
+        <div class="seg" id="fTipo"></div>
+      </div>
+    </section>
+
+    <section id="cards"></section>
+
+    <section id="comparativa" class="block-sec">
+      <div class="sec-head"><h3>Comparativa técnica</h3><span class="muted">Valores típicos según documentación pública del fabricante</span></div>
+      <div class="table-wrap"><table class="cmp" id="cmpTable"></table></div>
+    </section>
+
+    <section id="clases" class="block-sec">
+      <div class="sec-head"><h3>Clasificación por analizador</h3><span class="muted">Tradicionales, cuadrupolares y modernos de alta resolución</span></div>
+      <div class="tech-grid" id="claseGrid"></div>
+    </section>
+
+    <section id="modos" class="block-sec">
+      <div class="sec-head"><h3>Modos de adquisición</h3><span class="muted">Qué puede medir cada equipo y cómo lo hace</span></div>
+      <div class="table-wrap"><table class="cmp modos" id="modosTable"></table></div>
+      <div class="tech-grid modos-grid" id="modosGrid"></div>
+    </section>
+
+    <section id="tecnicas" class="block-sec">
+      <div class="sec-head"><h3>Clasificación por técnica</h3><span class="muted">Fuente de iones, analizador y tipo de muestra</span></div>
+      <div class="tech-grid" id="techGrid"></div>
+    </section>
+
+    <footer class="foot">
+      <p>Material educativo sin fines comerciales y sin afiliación con los fabricantes. Las marcas y nombres de modelo pertenecen a sus respectivos
+        propietarios. Los modelos 3D son reconstrucciones a partir de documentación pública: los componentes y su función corresponden al equipo real,
+        mientras que las dimensiones y la disposición interna son aproximadas.</p>
+    </footer>
+  </main>
+
+  <script type="module" src="js/portada.js"></script>
+</body>
+</html>
