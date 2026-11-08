@@ -186,14 +186,14 @@ export const INFO = {
   /* ============ ESTRUCTURA ============ */
   carcasa: {
     nombre: 'Carcasa de la consola', en: 'Console covers', cat: 'Estructura y carcasa',
-    funcion: 'Cuerpo compacto en gris claro, con esquinas y aristas de gran radio, que cubre la consola (fuente, banco de óptica iónica, bombas y electrónica) y el imán. Una banda azul con línea de luz baja por el extremo frontal y cruza la tapa, estrechándose, hasta la caja del criorrefrigerador.',
+    funcion: 'Cuerpo blanco que cubre la consola (fuente, banco de óptica iónica, bombas y electrónica) y el imán: arriba, carcasas de aristas muy redondeadas; abajo, puertas planas, separadas por una junta oscura a media altura. El extremo derecho y el 45 % derecho de la tapa son azul Bruker, con rejillas y una línea de luz.',
     detalles: ['Bruker indica una huella reducida que cabe en un laboratorio estándar; las dimensiones no están publicadas.'],
-    specs: [['Dimensiones', 'No publicadas (modelo: ≈ 2,5 × 1,05 × 1,7 m; 2,3 m con la caja del criorrefrigerador)']],
+    specs: [['Dimensiones', 'No publicadas (modelo: ≈ 2,7 × 1,45 × 1,72 m; 2,4 m con la caja del criorrefrigerador)']],
     une: ['chasis', 'panel_frontal'],
   },
   panel_frontal: {
     nombre: 'Panel frontal', en: 'Front panel', cat: 'Estructura y carcasa',
-    funcion: 'Cabeza frontal azul con línea de luz; a su izquierda, el hueco abierto de la fuente ESI sobre una bandeja de acero, y a su derecha, el hombro con la puerta de carga de la diana MALDI.',
+    funcion: 'Extremo azul de suelo a techo con línea de luz y, junto a él, el gran hueco de la fuente ESI: fondo azul oscuro con conexiones y bandeja de acero que sobresale. El hombro gris del extremo lleva la puerta de carga de la diana MALDI.',
     detalles: [], specs: [],
     une: ['carcasa'],
   },

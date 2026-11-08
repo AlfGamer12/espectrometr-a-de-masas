@@ -18,5 +18,6 @@ export const AX = {
   UHV_END: 221,                       // extremo del tubo UHV, fuera del imán (turbo UHV y preamplificador)
 };
 // el analizador se monta girado 180° (equipo.js): la fuente queda en el extremo +X (frente real del equipo) y el imán hacia −X
-export const ORIGEN = new THREE.Vector3(120, 120, 0);
+// eje desplazado hacia el lateral rotulado (+Z): la fuente queda tras el fondo del hueco de la fuente
+export const ORIGEN = new THREE.Vector3(99, 120, 25);
 export const FIS = { B: 7.0 };
