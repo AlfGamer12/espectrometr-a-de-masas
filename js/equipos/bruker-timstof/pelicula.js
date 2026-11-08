@@ -4,7 +4,7 @@ const EXT = ['panel_frontal', 'torre_tof', 'nanolc', 'chasis'];
 
 export const PELICULA = [
   {
-    intro: true, tarjeta: 6, dur: 19, modo: 'equipo', e1: 0, xray: false, foco: EXT, dir: [0.75, 0.4, 1], pad: 1.05, trans: 0, orbita: -2.2, acercar: 0.06,
+    intro: true, tarjeta: 6, dur: 19, modo: 'equipo', e1: 0, xray: false, foco: EXT, dir: [-0.75, 0.38, 0.85], pad: 1.05, trans: 0, orbita: -2.2, acercar: 0.06,
     texto: 'El timsTOF Pro de Bruker es un espectrómetro de masas para proteómica. Combina una separación por movilidad iónica atrapada, el TIMS, con un cuadrupolo y un tiempo de vuelo. Cada ion queda descrito por cuatro magnitudes: tiempo de retención, movilidad, masa e intensidad.',
   },
   {
@@ -56,7 +56,7 @@ export const PELICULA = [
     texto: 'Los embudos y el TIMS trabajan a dos o tres milibares, y el resto del analizador en alto vacío. La electrónica sincroniza en tiempo real la rampa del TIMS, el cuadrupolo y el acelerador ortogonal.',
   },
   {
-    dur: 9, modo: 'equipo', e1: 0, foco: EXT, dir: [0.75, 0.4, 1], pad: 1.05, trans: 3.0, orbita: -2, resaltar: [],
+    dur: 9, modo: 'equipo', e1: 0, foco: EXT, dir: [-0.75, 0.38, 0.85], pad: 1.05, trans: 3.0, orbita: -2, resaltar: [],
     texto: 'Movilidad, masa y fragmentos en una sola rampa: así describe el timsTOF cada péptido de una muestra compleja.',
   },
 ];

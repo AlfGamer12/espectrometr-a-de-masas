@@ -15,7 +15,11 @@ const L1 = (offset, extra = {}) => ({ level: 1, offset, mode: 'equipo', ...extra
 const XL = -41, XR = 41, ZF = 70, ZB = -70, H = 158, NX0 = -29, NX1 = 27, RT = 25;
 /** Banda gris del frontal (sostiene la fuente). */
 const BY0 = 68, BY1 = 106, BZ0 = 70.1, BZ1 = 77;
-/** Torre del TOF. */
+/** Arista superior frontal de gran radio (centro en z = ZF − RF, y = YF). */
+const RF = 20, YF = H - RF;
+/** Rebaje de la esquina frontal inferior del lateral izquierdo (bajo la banda): z ∈ [RZ0, ZF], y ∈ [RY0, BY0], fondo en RX. */
+const RZ0 = 2, RY0 = 32, RX = -35;
+/** Torre del TOF (la cara frontal se inclina hacia atrás: arriba conserva el 65 % del fondo). */
 const TX0 = -23, TX1 = 21, TZ0 = -44, TZ1 = 18, TH = 257;
 /** Punto local del analizador → mundo (rotación de 90° en Y: x local → −z, z local → +x). */
 const W = (x, y, z = 0) => new THREE.Vector3(ORIGEN.x + z, ORIGEN.y + y, ORIGEN.z - x);
@@ -52,10 +56,12 @@ function bandaRedondeada(w, h, t, r, b, huecos, mat, pos) {
   return mesh(g, mat, pos);
 }
 /** Lateral (plano zy) con la arista trasera superior redondeada (radio RT) y agujeros [[z, y, r]]. */
-function lateral(x, mat, huecos = []) {
+function lateral(x, mat, huecos = [], rebaje = false) {
   const z0 = ZB + 0.2, z1 = ZF - 0.2, y0 = 4, y1 = H;
   const s = new THREE.Shape();
-  s.moveTo(z1, y0); s.lineTo(z1, y1); s.lineTo(z0 + RT, y1); s.absarc(z0 + RT, y1 - RT, RT, Math.PI / 2, Math.PI, false); s.lineTo(z0, y0); s.lineTo(z1, y0);
+  s.moveTo(z1, y0);
+  if (rebaje) { s.lineTo(z1, RY0); s.lineTo(RZ0, RY0); s.lineTo(RZ0, BY0); s.lineTo(z1, BY0); }
+  s.lineTo(z1, YF); s.absarc(z1 - RF, YF, RF, 0, Math.PI / 2, false); s.lineTo(z0 + RT, y1); s.absarc(z0 + RT, y1 - RT, RT, Math.PI / 2, Math.PI, false); s.lineTo(z0, y0); s.lineTo(z1, y0);
   for (const [u, v, r] of huecos) { const p = new THREE.Path(); p.absarc(u, v, r, 0, Math.PI * 2, true); s.holes.push(p); }
   return placa(s, 1.2, mat, [x, 0, 0], 'zy');
 }
@@ -99,7 +105,7 @@ export function buildEquipo(root) {
     // zócalo oscuro retranqueado bajo los paneles
     g.add(mesh(rbox(78, 3.5, 136, 0.5), oscuro, [0, 2.75, 0]));
     for (const x of [XL + 6, XR - 6]) for (const z of [ZB + 8, ZF - 8]) g.add(mesh(cylY(2.2, 1.0, 24), M.goma, [x, 0.5, z]));
-    for (const x of [-37, 37]) for (const z of [-66, 66]) g.add(mesh(box(3, 133.5, 3), M.aluminio, [x, 4.5 + 133.5 / 2, z]));
+    for (const [x, z] of [[-37, -66], [37, -66], [-32, 66], [37, 66]]) g.add(mesh(box(3, 133.5, 3), M.aluminio, [x, 4.5 + 133.5 / 2, z]));
     // bandeja de las turbos con pasos para las mangueras de vacío previo y el cable del detector
     g.add(placaPasos(70, 126, 2, PASOS, M.aluminio, [0, TRAY, 0], 'xz', 0.3));
     for (const [x, z, r] of PASOS) g.add(pasamuros(r, M.goma, [x, TRAY + 1, z], 'y', r < 0.8 ? 0.3 : 0.5));
@@ -115,14 +121,16 @@ export function buildEquipo(root) {
     const g = makePart(root, 'panel_frontal', L1([0, 0, 60], { shell: true, label: 'equipo' }));
     const nc = (NX0 + NX1) / 2, nw = NX1 - NX0;
     g.add(mesh(rbox(nw, BY0 - 4, 1.2, 0.3), navy, [nc, (4 + BY0) / 2, ZF - 0.6]));
-    const up = rect(-nw / 2, -20, nw / 2, 20);
-    up.holes.push(rect(-16 - nc, 114 - 126, 20 - nc, 130 - 126, THREE.Path));
-    g.add(placa(up, 1.2, navy, [nc, 126, ZF - 0.6]));
+    const yu = (BY1 + YF + 0.4) / 2, hu = (YF + 0.4 - BY1) / 2;
+    const up = rect(-nw / 2, -hu, nw / 2, hu);
+    up.holes.push(rect(-16 - nc, 114 - yu, 20 - nc, 130 - yu, THREE.Path));
+    g.add(placa(up, 1.2, navy, [nc, yu, ZF - 0.6]));
     {
       // remate superior: cuarto de cilindro que dobla hacia atrás y franja azul sobre la tapa hasta la torre
-      const s = new THREE.Shape(), zc = 57.6, yc = 146;
-      s.moveTo(ZF, yc); s.absarc(zc, yc, 12.4, 0, Math.PI / 2, false); s.lineTo(TZ1, yc + 12.4); s.lineTo(TZ1, yc + 11.2); s.lineTo(zc, yc + 11.2);
-      s.absarc(zc, yc, 11.2, Math.PI / 2, 0, true); s.lineTo(ZF, yc);
+      // arista frontal superior de gran radio (RF), 4 mm por encima de la tapa gris para no coincidir con ella
+      const s = new THREE.Shape(), zc = ZF - RF, yc = YF + 0.4;
+      s.moveTo(ZF, yc); s.absarc(zc, yc, RF, 0, Math.PI / 2, false); s.lineTo(TZ1, yc + RF); s.lineTo(TZ1, yc + RF - 1.2); s.lineTo(zc, yc + RF - 1.2);
+      s.absarc(zc, yc, RF - 1.2, Math.PI / 2, 0, true); s.lineTo(ZF, yc);
       g.add(placa(s, nw, navy, [nc, 0, 0], 'zy'));
     }
     // ventana iluminada con la bomba de jeringa integrada
@@ -149,13 +157,28 @@ export function buildEquipo(root) {
   for (const [id, s] of [['panel_izq', -1], ['panel_der', 1]]) {
     const g = makePart(root, id, L1([s * 70, 0, 0], { info: 'carcasa', shell: true }));
     const x = s > 0 ? XR - 0.6 : XL + 0.6;
-    g.add(lateral(x, gris, s > 0 ? [[COL.z, COL.y, 2.4]] : []));
-    // marco gris del frontal a cada lado de la columna azul
+    g.add(lateral(x, gris, s > 0 ? [[COL.z, COL.y, 2.4]] : [], s < 0));
+    // marco gris del frontal a cada lado de la columna azul, con la arista superior de radio RF
     const fx0 = s > 0 ? NX1 + 0.2 : XL + 1.3, fx1 = s > 0 ? XR - 1.3 : NX0 - 0.2;
-    g.add(mesh(box(fx1 - fx0, H - 1.3 - 4, 1.2), gris, [(fx0 + fx1) / 2, (4 + H - 1.3) / 2, ZF - 0.6]));
-    // canal vertical con el rótulo del modelo y logotipo
-    const xs = x + s * 0.62, rot = [0, s * Math.PI / 2, 0];
-    g.add(mesh(new THREE.PlaneGeometry(15, 76), grisCanal, [xs, 111, -12], rot));
+    const marco = (a, b, y0, y1) => g.add(mesh(box(b - a, y1 - y0, 1.2), gris, [(a + b) / 2, (y0 + y1) / 2, ZF - 0.6]));
+    if (s > 0) marco(fx0, fx1, 4, YF);
+    else { marco(fx0, fx1, 4, RY0); marco(RX + 0.2, fx1, RY0, BY0); marco(fx0, fx1, BY0, YF); }
+    {
+      const a = new THREE.Shape(), zc = ZF - RF;
+      a.moveTo(ZF, YF); a.absarc(zc, YF, RF, 0, Math.PI / 2, false); a.lineTo(zc, YF + RF - 1.2); a.absarc(zc, YF, RF - 1.2, Math.PI / 2, 0, true); a.lineTo(ZF, YF);
+      g.add(placa(a, fx1 - fx0, gris, [(fx0 + fx1) / 2, 0, 0], 'zy'));
+    }
+    if (s < 0) {
+      // rebaje de la esquina frontal inferior: fondo, pared trasera, techo bajo la banda y repisa inferior
+      const grisR = gris.clone(); grisR.color.setHex(0xc9cdd2);
+      g.add(mesh(box(1.2, BY0 - RY0 - 2, ZF - RZ0), grisR, [RX - 0.6, (RY0 + 2 + BY0) / 2, (RZ0 + ZF) / 2]));
+      g.add(mesh(box(RX - 1.2 - XL - 0.2, BY0 - RY0 - 2, 1.2), grisR, [(XL + 0.2 + RX - 1.2) / 2, (RY0 + 2 + BY0) / 2, RZ0 + 0.6]));
+      g.add(mesh(box(RX - 1.2 - XL - 0.2, 1.2, ZF - RZ0 - 1.2), grisR, [(XL + 0.2 + RX - 1.2) / 2, BY0 - 0.7, (RZ0 + 1.2 + ZF) / 2]));
+      g.add(mesh(rbox(RX - 0.2 - XL + 1, 2, ZF - RZ0 - 0.4, 0.5), gris, [(XL - 1 + RX - 0.2) / 2, RY0 + 1, (RZ0 + ZF - 0.4) / 2]));
+    }
+    // franja vertical en relieve con el rótulo del modelo y logotipo
+    const xs = x + s * 1.22, rot = [0, s * Math.PI / 2, 0];
+    g.add(mesh(rbox(0.6, 76, 15, 0.25), grisCanal, [x + s * 0.9, 111, -12]));
     const lab = mesh(new THREE.PlaneGeometry(12.5, 62), rotulo(rotuloTims()), [xs + s * 0.08, 108, -12], rot);
     lab.userData.decal = true; g.add(lab);
     g.add(mesh(new THREE.PlaneGeometry(10, 5), logo, [xs + s * 0.08, 144, -12], rot));
@@ -164,7 +187,7 @@ export function buildEquipo(root) {
   {
     // tapa gris: deja libres la franja azul del frontal y la torre del TOF (que la atraviesan al explosionar)
     const g = makePart(root, 'tapa_superior', L1([0, 40, 0], { info: 'carcasa', shell: true }));
-    const a = XL + 1.2, b = XR - 1.2, zr = ZB + 0.2 + RT, zf = ZF - 0.2;
+    const a = XL + 1.2, b = XR - 1.2, zr = ZB + 0.2 + RT, zf = ZF - RF - 0.2;
     const s = new THREE.Shape();
     [[a, zr], [b, zr], [b, zf], [NX1 + 0.2, zf], [NX1 + 0.2, TZ1 + 0.2], [TX1 + 0.2, TZ1 + 0.2], [TX1 + 0.2, TZ0 - 0.2], [TX0 - 0.2, TZ0 - 0.2],
       [TX0 - 0.2, TZ1 + 0.2], [NX0 - 0.2, TZ1 + 0.2], [NX0 - 0.2, zf], [a, zf]].forEach(([x, z], i) => (i ? s.lineTo(x, -z) : s.moveTo(x, -z)));
@@ -199,10 +222,17 @@ export function buildEquipo(root) {
     const rr = (P, hw, hd, rad) => { P.moveTo(-hw + rad, -hd); P.lineTo(hw - rad, -hd); P.quadraticCurveTo(hw, -hd, hw, -hd + rad); P.lineTo(hw, hd - rad);
       P.quadraticCurveTo(hw, hd, hw - rad, hd); P.lineTo(-hw + rad, hd); P.quadraticCurveTo(-hw, hd, -hw, hd - rad); P.lineTo(-hw, -hd + rad); P.quadraticCurveTo(-hw, -hd, -hw + rad, -hd); };
     rr(s, w / 2, d / 2, r); const hole = new THREE.Path(); rr(hole, w / 2 - 1.2, d / 2 - 1.2, r - 1.2); s.holes.push(hole);
-    g.add(placa(s, h, navy, [cx, H + h / 2, cz], 'xz'));
-    g.add(mesh(rbox(w, 2.4, d, 1.1), navy, [cx, TH - 1.2, cz]));
-    g.add(mesh(rbox(0.9, 78, 0.3, 0.12), led, [cx, 210, TZ1 + 0.15]));
-    g.add(mesh(rbox(0.3, 78, 0.9, 0.12), led, [TX0 - 0.15, 210, TZ1 - 10]));
+    // tubo vertical que se estrecha hacia arriba por delante: la cara frontal queda inclinada hacia atrás
+    const tubo = placa(s, h, navy, [cx, H + h / 2, cz], 'xz'), fr = (y) => 1 - 0.35 * (y - H) / h, zf = (y) => TZ0 + d * fr(y);
+    tubo.updateMatrix(); const gt = tubo.geometry.clone(); gt.applyMatrix4(tubo.matrix);
+    const p = gt.attributes.position; for (let i = 0; i < p.count; i++) p.setZ(i, TZ0 + (p.getZ(i) - TZ0) * fr(p.getY(i)));
+    p.needsUpdate = true; gt.computeVertexNormals(); gt.computeBoundingBox(); gt.computeBoundingSphere();
+    tubo.geometry = gt; tubo.position.set(0, 0, 0); tubo.rotation.set(0, 0, 0); g.add(tubo);
+    const dt = d * fr(H + h);
+    g.add(mesh(rbox(w, 2.4, dt, 1.1), navy, [cx, TH - 1.2, TZ0 + dt / 2]));
+    const inc = -Math.atan(d * 0.35 / h);
+    g.add(mesh(rbox(0.9, 78, 0.3, 0.12), led, [cx, 210, zf(210) + 0.15], [inc, 0, 0]));
+    g.add(mesh(rbox(0.3, 78, 0.9, 0.12), led, [TX0 - 0.15, 210, zf(210) - 10], [inc, 0, 0]));
   }
 
   /* ---------------- VACÍO ---------------- */
@@ -301,7 +331,7 @@ export function buildEquipo(root) {
     // nanoElute sobre su carro, a la izquierda del equipo, y horno de columna junto a la fuente.
     // Al explosionar se aleja a la izquierda y hacia delante, siempre por delante de la banda y fuera del panel izquierdo.
     const g = makePart(root, 'nanolc', L1([-95, 0, 70], { label: 'equipo' }));
-    const cx = -92, cz = 46;
+    const cx = -100, cz = 0;
     // carro: ruedas, base, columna telescópica y bandeja
     for (const x of [cx - 18, cx + 18]) for (const z of [cz - 23, cz + 23]) {
       g.add(mesh(cylX(2.6, 1.8, 24), M.goma, [x, 2.6, z]));

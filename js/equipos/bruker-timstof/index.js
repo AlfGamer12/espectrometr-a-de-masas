@@ -17,7 +17,7 @@ export default {
     equipo: ['panel_frontal', 'torre_tof', 'nanolc', 'chasis'],
     analizador: ['captivespray', 'tims_analisis', 'cuadrupolo', 'tubo_tof', 'reflectron', 'detector_mcp'],
   },
-  DIRS: { equipo: [0.75, 0.4, 1], analizador: [0.9, 0.45, 0.75] },
+  DIRS: { equipo: [-0.75, 0.38, 0.85], analizador: [0.9, 0.45, 0.75] },
   EXTERIOR: ['panel_frontal', 'carcasa', 'chasis', 'torre_tof', 'nanolc', 'captivespray'],
   MAIN_TAGS: ['captivespray', 'tims', 'cuadrupolo', 'celda_colision', 'pusher', 'reflectron', 'detector_mcp'],
   ao: {
