@@ -27,6 +27,25 @@ const XU = -136, ZU = 72, RU = 20, ZC1 = ZU - RU, HH = 172, YA = HH - RU, XF = 1
 const XSEAM = -62, XA0 = 14.5, XA1 = 108, ZFONDO = 42;
 /** Tramo azul: aristas de radio RN (borde delgado sobre el hueco), centros en ±ZN y YN; esquina frontal en XN. */
 const RN = 12, ZN = ZU - RN, YN = HH - RN, XN = XF - RN;
+/** El tramo azul baja hacia el extremo derecho: pendiente K desde XA0 (en el extremo, ≈ 82 % de la altura de las carcasas blancas). */
+const K = 0.255;
+const yTop = (x) => HH - Math.max(0, x - XA0) * K;      // cara superior del tramo azul
+const yE = (x) => yTop(x) - RN;                        // arranque de su arista redondeada (remate de las paredes)
+/** Recorta en pendiente la cara superior de una pieza vertical: los vértices más altos pasan a yE(x). */
+function aPendiente(m, dy = 0) {
+  m.updateMatrix(); const g = m.geometry.clone(); g.applyMatrix4(m.matrix);
+  const p = g.attributes.position; let ymax = -Infinity;
+  for (let i = 0; i < p.count; i++) ymax = Math.max(ymax, p.getY(i));
+  for (let i = 0; i < p.count; i++) if (p.getY(i) > ymax - 0.01) p.setY(i, yE(p.getX(i)) - dy);
+  p.needsUpdate = true; g.computeBoundingBox(); g.computeBoundingSphere();
+  m.geometry = g; m.position.set(0, 0, 0); m.rotation.set(0, 0, 0); return m;
+}
+/** Grupo con cizalla vertical: lo que se construye a la altura HH queda sobre la pendiente (las verticales siguen verticales). */
+function cuna(parent) {
+  const s = new THREE.Group(); s.matrixAutoUpdate = false;
+  s.matrix.set(1, 0, 0, 0, -K, 1, 0, K * XA0, 0, 0, 1, 0, 0, 0, 0, 1); s.matrixWorldNeedsUpdate = true;
+  parent.add(s); return s;
+}
 const ZA = ORIGEN.z;
 /** Analizador girado 180°: x local → −x mundo, z local → −z. */
 const wx = (x) => ORIGEN.x - x;
@@ -116,7 +135,7 @@ export function buildEquipo(root) {
     const g = makePart(root, 'chasis', L1([0, 0, 0]));
     // patas negras pequeñas (sin zócalo visible)
     for (const x of [XB + RL, 0, XF - RU]) for (const z of [-ZL + RL, ZL - RL]) g.add(mesh(cylY(3, 4, 24), M.plasticoNegro, [x, 2, z]));
-    for (const [x, z] of [[-118, -50], [-118, 50], [120, -60]]) g.add(mesh(box(3, 146, 3), M.aluminio, [x, 4.1 + 73, z]));
+    for (const [x, z, h] of [[-118, -50, 146], [-118, 50, 146], [120, -60, 118]]) g.add(mesh(box(3, h, 3), M.aluminio, [x, 4.1 + h / 2, z]));
     // fondo oscuro de la junta horizontal (se ve entre las puertas y las carcasas altas)
     g.add(mesh(box(XA0 - XB - RL, YJ1 - YJ0 + 2, T), oscuro, [(XB + RL + XA0) / 2, (YJ0 + YJ1) / 2, ZL - 2.8]));
     g.add(mesh(box(XA1 - XB - RL, YJ1 - YJ0 + 2, T), oscuro, [(XB + RL + XA1) / 2, (YJ0 + YJ1) / 2, -ZL + 2.8]));
@@ -143,11 +162,14 @@ export function buildEquipo(root) {
     // extremo derecho azul (de suelo a techo, esquina de gran radio) y hueco de la fuente: fondo, costado, techo y bandeja de acero
     const g = makePart(root, 'panel_frontal', L1([40, 0, 70], { shell: true, label: 'equipo' }));
     // franja: frente (+x) desde z = −19.8 hasta la esquina y lateral (+z) hasta el hueco de la fuente; en plano xz v = −z
-    g.add(placa(franja([XF, 19.8], [XN, -ZN], RN, 0, -Math.PI / 2, [XA1, -ZU]), YN - 4, navy, [0, (4 + YN) / 2, 0], 'xz'));
-    const xc = (XA0 + XA1) / 2, yc = (YJ1 + YN) / 2;
-    g.add(mesh(box(XA1 - XA0, YN - YJ1, T), navyHueco, [xc, yc, ZFONDO - T / 2]));
-    g.add(mesh(box(T, YN - YJ1 - 0.2, ZU - T - ZFONDO - 0.2), navyHueco, [XA1 + 0.7, yc - 0.1, (ZFONDO + ZU - T - 0.2) / 2]));
-    g.add(mesh(box(XA1 - XA0 - 0.2, T, ZU - T - ZFONDO - 0.2), navyHueco, [xc, YN - T / 2 - 0.1, (ZFONDO + ZU - T - 0.2) / 2]));
+    g.add(aPendiente(placa(franja([XF, 19.8], [XN, -ZN], RN, 0, -Math.PI / 2, [XA1, -ZU]), YN - 4, navy, [0, (4 + YN) / 2, 0], 'xz')));
+    // hueco: fondo, costado y techo siguen la pendiente del borde azul
+    const xc = (XA0 + XA1) / 2, zh = (ZFONDO + ZU - T - 0.2) / 2, dz = ZU - T - ZFONDO - 0.2, xr = XA1 + 0.7;
+    const fondo = new THREE.Shape(); [[XA0, YJ1], [XA1, YJ1], [XA1, yE(XA1) - 1.3], [XA0, yE(XA0) - 1.3]].forEach(([u, v], i) => (i ? fondo.lineTo(u, v) : fondo.moveTo(u, v)));
+    g.add(placa(fondo, T, navyHueco, [0, 0, ZFONDO - T / 2]));
+    g.add(mesh(box(T, yE(xr) - 1.3 - YJ1, dz), navyHueco, [xr, (YJ1 + yE(xr) - 1.3) / 2, zh]));
+    const ang = Math.atan(K), lt = (XA1 - XA0 - 0.2) / Math.cos(ang);
+    g.add(mesh(box(lt, T, dz), navyHueco, [xc, yE(xc) - T / 2 - 0.1, zh], [0, 0, -ang]));
     // panel de conexiones del fondo
     const pl = lienzo(512, 256, (c) => { c.fillStyle = '#e9edf1'; c.fillRect(0, 0, 512, 256); c.fillStyle = '#22385a'; c.font = '600 34px Segoe UI'; c.fillText('Dual ESI / MALDI', 24, 52);
       c.font = '24px Segoe UI'; ['HV', 'Gas', 'Nebulizer', 'Dry gas'].forEach((s, i) => { c.fillText(s, 24 + i * 120, 220); }); });
@@ -160,28 +182,30 @@ export function buildEquipo(root) {
     g.add(mesh(rbox(XA1 - XA0 - 1, 3.2, 1, 0.4), M.aceroPulido, [xc, YJ1 + 0.6, zt1 - 0.6]));
     for (const x of [XA0 + 1.2, XA1 - 1.2]) g.add(mesh(rbox(1, 3.2, zt1 - zt0 - 1, 0.4), M.aceroPulido, [x, YJ1 + 0.6, (zt0 + zt1 - 1) / 2]));
     // línea de luz que baja por la arista frontal y logotipo
-    g.add(mesh(rbox(0.3, YN - 24, 1.0, 0.12), led, [XF + 0.15, (24 + YN) / 2, ZN - 2]));
+    g.add(mesh(rbox(0.3, yE(XF) - 24, 1.0, 0.12), led, [XF + 0.15, (24 + yE(XF)) / 2, ZN - 2]));
     g.add(mesh(new THREE.PlaneGeometry(10, 5), logoBlanco, [XF + 0.03, 26, 16], [0, Math.PI / 2, 0]));
   }
   {
     // tapa: carcasas altas (arista de gran radio a cada lado) en blanco a la izquierda y en azul en el 45 % derecho
     const g = makePart(root, 'tapa_superior', L1([0, 40, 0], { info: 'carcasa', shell: true }));
+    const cu = cuna(g);
     const tramos = [[XC0, XA0 - 0.3, gris, ZC1, YA, RU], [XA0 + 0.3, XN, navy, ZN, YN, RN]];
     tramos.forEach(([a, b, mt, zc, yc, r], i) => {
       const s = new THREE.Shape(); s.moveTo(a, zc); s.lineTo(b, zc); s.lineTo(b, -zc); s.lineTo(a, -zc); s.lineTo(a, zc);
       if (i === 0) { const h = new THREE.Path(); h.absarc(XC, -ZC, 7.5, 0, Math.PI * 2, true); s.holes.push(h); }
-      g.add(placa(s, T, mt, [0, HH - T / 2, 0], 'xz'));
-      g.add(placa(arco(zc, yc, r, 0, Math.PI / 2), b - a, mt, [(a + b) / 2, 0, 0], 'zy'));
-      g.add(placa(arco(-zc, yc, r, Math.PI / 2, Math.PI), b - a, mt, [(a + b) / 2, 0, 0], 'zy'));
+      const q = i ? cu : g;                      // el tramo azul se construye a nivel y se inclina con la cizalla
+      q.add(placa(s, T, mt, [0, HH - T / 2, 0], 'xz'));
+      q.add(placa(arco(zc, yc, r, 0, Math.PI / 2), b - a, mt, [(a + b) / 2, 0, 0], 'zy'));
+      q.add(placa(arco(-zc, yc, r, Math.PI / 2, Math.PI), b - a, mt, [(a + b) / 2, 0, 0], 'zy'));
     });
     // remate frontal del tramo azul y esquinas (borde delgado, radio RN)
-    g.add(placa(arco(XN, YN, RN, 0, Math.PI / 2), 2 * ZN, navy, [0, 0, 0]));
-    g.add(octante(navyD, [XN, YN, ZN], 1, 1, RN));
-    g.add(octante(navyD, [XN, YN, -ZN], 1, -1, RN));
-    // rejillas oscuras y línea de luz a lo largo de la arista, que dobla por la esquina frontal
-    for (const x of [35, 72]) for (const z of [-20, 20]) g.add(mesh(new THREE.PlaneGeometry(26, 9), rejilla, [x, HH + 0.02, z], [-Math.PI / 2, 0, 0]));
-    g.add(mesh(rbox(XN - XA0 - 2, 0.3, 1.0, 0.12), led, [(XA0 + XN) / 2 + 1, HH + 0.15, ZN - 2]));
-    g.add(mesh(new THREE.TorusGeometry(RN + 0.15, 0.4, 8, 32, Math.PI / 2), led, [XN, YN, ZN - 2]));
+    cu.add(placa(arco(XN, YN, RN, 0, Math.PI / 2), 2 * ZN, navy, [0, 0, 0]));
+    cu.add(octante(navyD, [XN, YN, ZN], 1, 1, RN));
+    cu.add(octante(navyD, [XN, YN, -ZN], 1, -1, RN));
+    // rejillas oscuras y línea de luz a lo largo de la arista inclinada, que dobla por la esquina frontal
+    for (const x of [35, 72]) for (const z of [-20, 20]) cu.add(mesh(new THREE.PlaneGeometry(26, 9), rejilla, [x, HH + 0.02, z], [-Math.PI / 2, 0, 0]));
+    cu.add(mesh(rbox(XN - XA0 - 2, 0.3, 1.0, 0.12), led, [(XA0 + XN) / 2 + 1, HH + 0.15, ZN - 2]));
+    cu.add(mesh(new THREE.TorusGeometry(RN + 0.15, 0.4, 8, 32, Math.PI / 2), led, [XN, YN, ZN - 2]));
   }
   {
     // lateral izquierdo (+z): puertas bajas separadas por juntas, paredes de las dos carcasas altas (vuelan 2 cm) y pared izquierda del hueco
@@ -215,11 +239,11 @@ export function buildEquipo(root) {
     const g = makePart(root, 'panel_der', L1([0, 0, -70], { info: 'carcasa', shell: true }));
     g.add(mesh(rbox(XA1 - 0.2 - XB - RL, YJ0 - 4, T, 0.4), grisPuerta, [(XB + RL + XA1 - 0.2) / 2, (4 + YJ0) / 2, -bajo]));
     g.add(mesh(box(XA0 - 0.3 - XC0, YA - YJ1, T), gris, [(XC0 + XA0 - 0.3) / 2, (YJ1 + YA) / 2, -vuelo]));
-    g.add(mesh(box(XA1 - XA0 - 0.6, YN - YJ1, T), navy, [(XA0 + XA1) / 2, (YJ1 + YN) / 2, -vuelo]));
-    g.add(placa(franja([XA1, ZU], [XN, ZN], RN, Math.PI / 2, 0, [XF, 20.2]), YN - 4, gris, [0, (4 + YN) / 2, 0], 'xz'));
-    g.add(mesh(rbox(0.8, 28, 22, 0.4), gris, [XF + 0.4, 118, -36]));
-    g.add(mesh(rbox(1.4, 6, 1.6, 0.6), M.aceroPulido, [XF + 1.5, 118, -27]));
-    g.add(mesh(cylX(0.6, 0.5, 16), M.ledVerde, [XF + 0.25, 138, -44]));
+    { const s = new THREE.Shape(), a = XA0 + 0.3, b = XA1 - 0.3; [[a, YJ1], [b, YJ1], [b, yE(b)], [a, yE(a)]].forEach(([u, v], i) => (i ? s.lineTo(u, v) : s.moveTo(u, v))); g.add(placa(s, T, navy, [0, 0, -vuelo])); }
+    g.add(aPendiente(placa(franja([XA1, ZU], [XN, ZN], RN, Math.PI / 2, 0, [XF, 20.2]), YN - 4, gris, [0, (4 + YN) / 2, 0], 'xz')));
+    g.add(mesh(rbox(0.8, 24, 22, 0.4), gris, [XF + 0.4, 106, -36]));
+    g.add(mesh(rbox(1.4, 6, 1.6, 0.6), M.aceroPulido, [XF + 1.5, 106, -27]));
+    g.add(mesh(cylX(0.6, 0.5, 16), M.ledVerde, [XF + 0.25, 123, -44]));
   }
   {
     // extremo izquierdo: parte baja con esquinas de radio RL y parte alta con esquinas y arista de radio RU
@@ -256,12 +280,12 @@ export function buildEquipo(root) {
     const w = new THREE.MeshStandardMaterial({ map: warningTexture('ALTA TENSIÓN'), roughness: 0.45, side: THREE.DoubleSide });
     g.add(mesh(new THREE.PlaneGeometry(5.6, 2.1), w, [c.x + 3.5, c.y + 8, c.z + 9.05], [-0.75, 0.25, 0]));
     // soporte de la jeringa
-    g.add(mesh(rbox(2.6, 30, 2.6, 0.4), M.plasticoNegro, [XA1 - 2, 124, ZFONDO + 1.3]));
-    g.add(mesh(cylY(0.8, 12, 20), M.vidrio, [XA1 - 2, 128, ZFONDO + 3.4]));
+    g.add(mesh(rbox(2.6, 24, 2.6, 0.4), M.plasticoNegro, [XA1 - 2, 120, ZFONDO + 1.3]));
+    g.add(mesh(cylY(0.8, 12, 20), M.vidrio, [XA1 - 2, 124, ZFONDO + 3.4]));
     // líneas PEEK rojas: nebulizador → conexiones del fondo
     const [x1, y1, z1] = refs.conectores[2], [x2, y2, z2] = refs.conectores[3];
     cableFlex(g, [[neb[0] - 1.2, neb[1] + 0.6, neb[2] + 1.6], [neb[0] - 6, neb[1] + 6, neb[2] + 4], [x1 + 2, y1 - 2, z1 + 8], [x1, y1, z1 + 0.65, 'panel_frontal']], 0.18, M.peekRojo);
-    cableFlex(g, [[XA1 - 2, 138.4, ZFONDO + 1.3], [XA1 - 5, 142, ZFONDO + 6], [x2 + 2, y2 + 1, z2 + 6], [x2, y2, z2 + 0.65, 'panel_frontal']], 0.18, M.peekRojo);
+    cableFlex(g, [[XA1 - 2, 132.4, ZFONDO + 1.3], [XA1 - 5, 134, ZFONDO + 6], [x2 + 2, y2 + 1, z2 + 6], [x2, y2, z2 + 0.65, 'panel_frontal']], 0.18, M.peekRojo);
   }
   {
     const g = makePart(root, 'laser_maldi', L1([0, -40, 0], { label: 'equipo' }));
