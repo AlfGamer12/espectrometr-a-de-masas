@@ -55,7 +55,7 @@ export const RECORRIDO = [
   {
     titulo: 'Vacío y servicios',
     texto: 'Cinco etapas de vacío, mantenidas por dos bombas turbomoleculares y una bomba primaria, llevan la presión hasta unos 10⁻⁷ Torr en el TOF. El equipo necesita nitrógeno para la fuente y para la celda de colisión.',
-    modo: 'equipo', e1: 1, xray: false, sim: false, foco: ['camara_vacio', 'bombas_turbo', 'bomba_primaria', 'electronica'],
+    modo: 'equipo', e1: 1, xray: false, sim: false, foco: ['camara_vacio', 'bombas_turbo', 'bomba_primaria', 'electronica'], dir: [0.7, 0.9, 0.5],
     resaltar: ['camara_vacio', 'bombas_turbo', 'bomba_primaria', 'linea_vacio', 'linea_gases'],
   },
 ];

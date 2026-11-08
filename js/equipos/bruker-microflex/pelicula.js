@@ -1,7 +1,7 @@
 // Guion del modo película del Bruker microflex LRF (≈ 2,5 min). El texto de cada plano es a la vez subtítulo y guion de narración.
 // El haz láser del analizador lo gobierna la simulación; aquí se enciende en el plano de la desorción y cineReset lo apaga.
 const haz = (on) => (app) => { const b = app.eq.analyzer && app.eq.analyzer.laser; if (b && !app.S.simOn) b.material.opacity = on ? 0.85 : 0; };
-const EXT = ['panel_frontal', 'tapa_superior', 'tapa_carga', 'chasis', 'pc'];
+const EXT = ['cubierta_tubo', 'panel_frontal', 'tapa_superior', 'tapa_carga', 'chasis', 'pc'];
 const SIMF = ['diana', 'tubo_vuelo', 'reflector', 'detector_lineal', 'detector_reflector'];
 
 export const PELICULA = [
@@ -11,14 +11,14 @@ export const PELICULA = [
     texto: 'El Bruker microflex LRF es un espectrómetro MALDI de tiempo de vuelo de sobremesa. Una sola torre reúne la fuente, un tubo de vuelo vertical, el reflector y dos detectores. Un PC controla la adquisición.',
   },
   {
-    cap: 'Muestra', titulo: 'Matriz y diana', dur: 17, modo: 'analizador', e2: 0.3, xray: false, foco: ['diana', 'mesa_xy'], dir: [0.6, -0.4, 1], pad: 1.5,
+    cap: 'Muestra', titulo: 'Matriz y diana', dur: 17, modo: 'analizador', e2: 0.3, xray: false, foco: ['diana', 'mesa_xy'], dir: [0.6, 0.75, 1], pad: 1.5,
     trans: 3.0, orbita: 3, acercar: 0.06, accion: haz(false), resaltar: ['diana'],
     texto: 'La muestra se mezcla con una matriz que absorbe en el ultravioleta, como el ácido sinapínico para proteínas, y se deposita en una diana de acero de noventa y seis posiciones. Al secarse, matriz y analito cocristalizan.',
   },
   {
     cap: 'Introducción de muestra', titulo: 'La esclusa de vacío', dur: 16, modo: 'equipo', e1: 0.6, xray: true, foco: ['tapa_carga', 'esclusa', 'camara_fuente'],
-    dir: [0.7, 0.5, 1], pad: 1.3, trans: 3.0, orbita: -3, acercar: 0.05, accion: haz(false), resaltar: ['tapa_carga', 'esclusa', 'camara_fuente'],
-    texto: 'La diana entra bajo la tapa superior. Al pulsar TARGET IN solo se bombea la esclusa, y la diana pasa a la fuente sin romper el alto vacío del tubo de vuelo. En unos dos minutos y medio el equipo está listo.',
+    dir: [0.55, 0.5, 1], pad: 1.7, trans: 3.0, orbita: -3, acercar: 0.05, accion: haz(false), resaltar: ['tapa_carga', 'esclusa', 'camara_fuente'],
+    texto: 'La diana entra por el puerto de carga del zócalo. Al pulsar TARGET IN solo se bombea la esclusa, y la diana pasa a la fuente sin romper el alto vacío del tubo de vuelo. En unos dos minutos y medio el equipo está listo.',
   },
   {
     cap: 'Láser', titulo: 'Láser de nitrógeno y fibra óptica', dur: 13, modo: 'equipo', e1: 1, xray: true, foco: ['laser', 'fibra_optica', 'camara_fuente'],

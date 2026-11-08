@@ -45,7 +45,7 @@ export const INFO = {
   },
   tapa_carga: {
     nombre: 'Tapa del puerto de carga', en: 'Load port lid', cat: 'Preparación e introducción de muestra',
-    funcion: 'Tapa abatible de la parte superior frontal bajo la que se encuentra la plataforma de la diana.',
+    funcion: 'Tapa giratoria del puerto de carga, en el zócalo frontal, bajo la que se encuentra la plataforma de la diana.',
     detalles: ['Con las tapas cerradas el equipo es un producto láser de clase 1. Abierto, el láser interno es de clase 3B.'],
     specs: [['Seguridad', 'Enclavada con el láser']],
     une: ['esclusa'],
@@ -242,6 +242,13 @@ export const INFO = {
     funcion: 'Paneles que cierran la torre, protegen de la alta tensión y la radiación láser, y canalizan la ventilación (el aire caliente sale por la parte superior).',
     detalles: [], specs: [['Dimensiones', '≈ 52 × 69 × 135 cm (versión con reflector; el LT lineal mide 111 cm de alto)']],
     une: ['chasis', 'panel_frontal'],
+  },
+  cubierta_tubo: {
+    nombre: 'Cubierta de la torre del analizador', en: 'Flight-tube tower cover', cat: 'Estructura y carcasa',
+    funcion: 'Cubierta azul marino de frente curvo y remate redondeado que cierra la torre del analizador: encierra el tubo de vuelo vertical, la bomba turbomolecular y, en lo alto, el reflector. Su escotadura inferior deja libre el puerto de carga de la diana.',
+    detalles: ['En la versión LRF la torre sobresale por encima del cuerpo blanco porque aloja el reflector; el modelo lineal (LT) es más bajo.'],
+    specs: [['Altura total', '≈ 135 cm (LRF)']],
+    une: ['carcasa', 'tubo_vuelo', 'reflector'],
   },
   panel_frontal: {
     nombre: 'Panel frontal', en: 'Front panel', cat: 'Estructura y carcasa',

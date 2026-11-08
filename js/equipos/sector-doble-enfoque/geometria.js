@@ -36,8 +36,9 @@ export const AX = {
   EM: SLIT.clone().addScaledVector(H2, 4).add(new THREE.Vector3(0, -3.0, 0)),
   dirAt, left,
 };
-// Origen local en el mundo (la fuente queda junto al GC, a la izquierda)
+// Origen local en el mundo: como en el DFS, la fuente queda dentro de la columna oscura de la izquierda, junto al GC,
+// y el imán y el sector eléctrico dentro de la consola blanca.
 // El grupo del analizador se gira 180° alrededor de X: la trayectoria avanza desde el frente (fuente) hacia el fondo (detector).
-export const ORIGEN = new THREE.Vector3(-40, 108, 50);
+export const ORIGEN = new THREE.Vector3(-44, 108, 22);
 // Valores físicos de referencia para las lecturas: 5 kV de aceleración y r = 0,35 m
 export const FIS = { V: 5000, R_M: 0.35 };

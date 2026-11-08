@@ -3,7 +3,7 @@ export const RECORRIDO = [
   {
     titulo: 'Configuración del sistema LC-MS/MS',
     texto: 'A la izquierda, la torre del cromatógrafo de líquidos separa los componentes de la muestra. A la derecha, la unidad MS de triple cuadrupolo los ioniza a presión atmosférica, selecciona un ion precursor, lo fragmenta y detecta un ion producto característico. Esta combinación permite cuantificar trazas en matrices complejas.',
-    modo: 'equipo', e1: 0, xray: false, foco: ['lc', 'torre_fuente', 'carcasa_superior', 'panel_frontal'], resaltar: [],
+    modo: 'equipo', e1: 0, xray: false, foco: ['lc', 'lc_inyector', 'lc_horno', 'lc_botellas', 'torre_fuente', 'carcasa_superior', 'panel_frontal'], resaltar: [],
   },
   {
     titulo: 'Del cromatógrafo a la sonda',

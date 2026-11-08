@@ -55,7 +55,7 @@ export const PELICULA = [
   },
   {
     cap: 'Servicios', titulo: 'Cinco etapas de vacío', dur: 15, modo: 'equipo', e1: 1, sim: false, xray: false,
-    foco: ['camara_vacio', 'bombas_turbo', 'bomba_primaria', 'electronica'], dir: [0.6, 0.75, -0.8], pad: 1.3, trans: 3.2, orbita: -3,
+    foco: ['camara_vacio', 'bombas_turbo', 'bomba_primaria', 'electronica'], dir: [0.7, 0.9, 0.5], pad: 1.3, trans: 3.2, orbita: -3,
     resaltar: ['camara_vacio', 'bombas_turbo', 'bomba_primaria', 'linea_vacio', 'linea_gases'],
     texto: 'Dos bombas turbomoleculares y una primaria mantienen cinco etapas de vacío, hasta una diezmillonésima de torr en el tiempo de vuelo. El nitrógeno alimenta la fuente y la celda de colisión.',
   },

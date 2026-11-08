@@ -54,7 +54,7 @@ export const RECORRIDO = [
   {
     titulo: 'Vacío y control térmico',
     texto: 'Una bomba turbomolecular de tres entradas, una turbo para el TOF y una bomba rotatoria mantienen el vacío. El control de temperatura del tubo de vuelo debe permanecer conectado incluso con el equipo venteado.',
-    modo: 'equipo', e1: 1, xray: false, sim: false, foco: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'control_termico'],
+    modo: 'equipo', e1: 1, xray: false, sim: false, foco: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'control_termico'], dir: [0.55, 1.4, 0.7],
     resaltar: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'linea_vacio', 'control_termico'],
   },
 ];

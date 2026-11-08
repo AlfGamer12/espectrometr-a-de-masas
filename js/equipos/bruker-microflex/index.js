@@ -16,11 +16,11 @@ export default {
   tuneTitulo: 'Parámetros del método de adquisición',
   modos: { equipo: 'Equipo completo', analizador: 'Analizador' },
   FOCO: {
-    equipo: ['panel_frontal', 'tapa_superior', 'chasis', 'pc'],
+    equipo: ['cubierta_tubo', 'panel_frontal', 'tapa_superior', 'chasis', 'pc'],
     analizador: ['diana', 'electrodos_fuente', 'tubo_vuelo', 'reflector', 'detector_lineal'],
   },
   DIRS: { equipo: [0.7, 0.35, 1], analizador: [1, 0.25, 0.6] },
-  EXTERIOR: ['panel_frontal', 'carcasa', 'chasis', 'tapa_carga', 'pc', 'panel_trasero', 'filtro_aire'],
+  EXTERIOR: ['cubierta_tubo', 'panel_frontal', 'carcasa', 'chasis', 'tapa_carga', 'pc', 'panel_trasero', 'filtro_aire'],
   MAIN_TAGS: ['diana', 'electrodos_fuente', 'tubo_vuelo', 'reflector', 'detector_lineal', 'detector_reflector', 'optica_laser'],
   ao: {
     equipo: { radius: 5.0, thickness: 5.0, distanceExponent: 1.5, distanceFallOff: 1, scale: 1.5, samples: 16, screenSpaceRadius: false },

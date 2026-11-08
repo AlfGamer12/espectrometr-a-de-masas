@@ -14,10 +14,10 @@ export default {
   tuneTitulo: 'Parámetros en LabSolutions',
   modos: { equipo: 'Equipo completo', analizador: 'Analizador' },
   FOCO: {
-    equipo: ['lc', 'torre_fuente', 'carcasa_superior', 'chasis', 'bomba_rotatoria', 'panel_frontal'],
+    equipo: ['lc', 'lc_inyector', 'lc_horno', 'lc_botellas', 'torre_fuente', 'carcasa_superior', 'chasis', 'bomba_rotatoria', 'panel_frontal'],
     analizador: ['sonda_esi', 'bloque_calefactor', 'q1', 'celda_multipolo', 'q3', 'multiplicador', 'dinodo_conversion'],
   },
-  DIRS: { equipo: [0.55, 0.42, 0.9], analizador: [0.35, 0.5, 1] },
+  DIRS: { equipo: [-0.42, 0.36, 0.9], analizador: [0.35, 0.5, 1] },
   EXTERIOR: ['lc', 'lc_botellas', 'lc_bomba', 'lc_inyector', 'lc_horno', 'tubo_peek', 'panel_frontal', 'carcasa', 'chasis', 'torre_fuente',
     'ventana_fuente', 'valvula_desvio', 'bomba_rotatoria', 'linea_vacio_previo', 'sonda_esi'],
   MAIN_TAGS: ['sonda_esi', 'linea_desolvatacion', 'uf_qarray', 'q1', 'celda_colision', 'q3', 'multiplicador'],

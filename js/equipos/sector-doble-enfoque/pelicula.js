@@ -10,7 +10,7 @@ export const PELICULA = [
   },
   {
     cap: 'Introducción de muestra', titulo: 'Cromatógrafo y línea de transferencia', dur: 18, modo: 'equipo', e1: 0, xray: false,
-    foco: ['gc', 'linea_transferencia'], dir: [-1, 0.45, 0.7], pad: 1.3, orbita: 1.8, acercar: 0.05, resaltar: ['gc', 'linea_transferencia'],
+    foco: ['gc', 'linea_transferencia'], dir: [0.3, 0.42, 1], pad: 1.3, orbita: 1.8, acercar: 0.05, resaltar: ['gc', 'linea_transferencia'],
     texto: 'El cromatógrafo separa los componentes de la muestra en una columna capilar, y una línea calefactada la lleva hasta la fuente. Una entrada de referencia añade perfluoroqueroseno, cuyos iones de masa exacta calibran la escala.',
   },
   {

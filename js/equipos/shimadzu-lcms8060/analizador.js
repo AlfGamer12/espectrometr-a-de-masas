@@ -63,8 +63,8 @@ export function buildAnalizador(parent) {
   {
     const g = makePart(A, 'sonda_esi', L2([-14, 12, 0]));
     const x = AX.SPRAY.x, y = AX.SPRAY.y;
-    // la sonda atraviesa el paso superior de la torre: brida apoyada en él y cabezal por fuera (y mundo ≈ 73–77)
-    const YB = 29.95;
+    // la sonda atraviesa el paso superior de la unidad de ionización: brida apoyada en él y cabezal por fuera (y mundo ≈ 53–57)
+    const YB = 18.95;
     g.add(mesh(cylY(0.9, YB - 4.3, 36), M.acero, [x, y + (YB + 4.3) / 2, 0]));   // cuerpo de la sonda
     g.add(mesh(cylY(1.35, 2.2, 36), M.aceroPulido, [x, y + 3.2, 0]));          // boquilla del gas de calentamiento
     g.add(mesh(cylY(0.55, 1.6, 24, 0.9), M.acero, [x, y + 1.3, 0]));           // cono del nebulizador

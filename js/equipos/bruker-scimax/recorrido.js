@@ -47,7 +47,7 @@ export const RECORRIDO = [
   {
     titulo: 'Imán sin criógenos líquidos',
     texto: 'La bobina superconductora se enfría por conducción mediante un criorrefrigerador de circuito cerrado de helio, alimentado por un compresor. Así se evitan los llenados periódicos de helio líquido y la línea de quench de los FT-ICR convencionales.',
-    modo: 'equipo', e1: 1, xray: false, sim: false, foco: ['iman', 'criorrefrigerador', 'compresor_helio'],
+    modo: 'equipo', e1: 1, xray: false, sim: false, foco: ['iman', 'criorrefrigerador', 'compresor_helio'], dir: [0.45, 0.5, -0.9],
     resaltar: ['iman', 'criorrefrigerador', 'compresor_helio', 'lineas_helio'],
   },
   {

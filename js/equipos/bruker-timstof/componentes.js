@@ -12,7 +12,7 @@ export const INFO = {
   nanolc: {
     nombre: 'Cromatógrafo nano-LC', en: 'nanoElute', cat: 'Cromatografía (contexto)',
     funcion: 'Separa los péptidos a caudales de nanolitros por minuto en columnas capilares de fase reversa, acoplado directamente al emisor CaptiveSpray.',
-    detalles: ['Caudales de 50–2000 nL/min y presiones del orden de 1000 bar. También se acopla a sistemas como Evosep One.', 'Representación simplificada.'],
+    detalles: ['Caudales de 50–2000 nL/min y presiones del orden de 1000 bar. También se acopla a sistemas como Evosep One.', 'Se representa sobre su carro, a la izquierda del espectrómetro, con el horno de columna junto a la fuente. Representación simplificada.'],
     specs: [['Caudal', '50–2000 nL/min'], ['Presión', '≈ 1000 bar']],
     une: ['captivespray'],
   },
@@ -162,7 +162,7 @@ export const INFO = {
   },
   bomba_rotatoria: {
     nombre: 'Bomba de vacío previo', en: 'Backing pump', cat: 'Sistema de vacío',
-    funcion: 'Evacúa la región de los embudos y del TIMS y recoge el escape de las turbomoleculares.',
+    funcion: 'Evacúa la región de los embudos y del TIMS y recoge el escape de las turbomoleculares. Es una unidad externa, en el suelo junto al equipo, unida por una manguera corrugada.',
     detalles: [], specs: [],
     une: ['camara_vacio', 'bombas_turbo'],
   },
@@ -191,13 +191,13 @@ export const INFO = {
   /* ============ ESTRUCTURA ============ */
   carcasa: {
     nombre: 'Carcasa', en: 'Covers', cat: 'Estructura y carcasa',
-    funcion: 'Paneles laterales y cubierta superior en azul oscuro; frontal en gris claro.',
-    detalles: [], specs: [['Dimensiones', 'Mueble de suelo (aprox. 98 × 141 cm de planta)'], ['Peso', '≈ 350 kg (aprox.)']],
+    funcion: 'Laterales, tapa y trasera en gris claro, con la arista trasera superior muy redondeada; la columna frontal, su remate y la torre del TOF son azul Bruker. El rótulo vertical del modelo va en los laterales.',
+    detalles: [], specs: [['Dimensiones', '98 × 140 × 257 cm según distribuidores (alto con la torre); el cuerpo modelado mide ≈ 82 × 140 × 158 cm'], ['Peso', '≈ 350 kg (aprox.)']],
     une: ['chasis', 'panel_frontal'],
   },
   panel_frontal: {
     nombre: 'Panel frontal', en: 'Front panel', cat: 'Estructura y carcasa',
-    funcion: 'Aloja la fuente de iones a media altura y una repisa a su derecha, junto al rótulo vertical del modelo.',
+    funcion: 'Columna azul con una ventana iluminada (bomba de jeringa integrada) y una banda gris horizontal, con asa y línea de luz, que sostiene la fuente de iones a media altura.',
     detalles: [], specs: [],
     une: ['captivespray', 'carcasa'],
   },

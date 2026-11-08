@@ -1,6 +1,6 @@
 // Guion del modo película del Bruker scimaX MRMS (≈ 2,5 min). El texto de cada plano es a la vez subtítulo y guion de narración
 // (audio opcional: audio/bruker-scimax/01.mp3, 02.mp3…).
-const EXT = ['panel_frontal', 'iman', 'carcasa_fuente', 'chasis', 'compresor_helio'];
+const EXT = ['panel_frontal', 'carcasa_fuente', 'chasis'];
 // La simulación ilumina los electrodos de excitación; al salir de ella se apagan.
 const apagarExc = (app) => { const e = app.eq.analyzer && app.eq.analyzer.exc; if (e && !app.S.simOn) e.material.emissiveIntensity = 0; };
 
@@ -17,7 +17,7 @@ export const PELICULA = [
   {
     cap: 'Arquitectura', titulo: 'Vista explosionada', dur: 15, modo: 'equipo', e1: 1, xray: false, foco: ['carcasa_fuente', 'camara_vacio', 'bombas_turbo', 'electronica', 'iman', 'criorrefrigerador', 'chasis'],
     dir: [0.75, 0.6, 0.8], pad: 1.0, trans: 3.0, orbita: -3, resaltar: [],
-    texto: 'La consola aloja la fuente, el banco de óptica iónica, las bombas y la electrónica. Detrás, alineado con el eje de los iones, está el imán superconductor, con el criorrefrigerador encima.',
+    texto: 'El mueble aloja delante la fuente, el banco de óptica iónica, las bombas y la electrónica. Detrás, bajo el mismo capó y alineado con el eje, está el imán, con el criorrefrigerador encima.',
   },
   {
     cap: 'Óptica iónica', titulo: 'Embudos, cuadrupolo y celda de colisión', dur: 16, modo: 'analizador', e2: 0.4, xray: true, foco: ['embudos', 'multipolo', 'cuadrupolo', 'celda_colision'],
@@ -48,12 +48,12 @@ export const PELICULA = [
   },
   {
     cap: 'Imán', titulo: 'Sin criógenos líquidos', dur: 16, modo: 'equipo', e1: 1, sim: false, xray: false, foco: ['iman', 'criorrefrigerador', 'compresor_helio'],
-    dir: [0.6, 0.5, 0.9], pad: 1.1, trans: 3.2, orbita: -3, accion: apagarExc, resaltar: ['iman', 'criorrefrigerador', 'compresor_helio', 'lineas_helio'],
+    dir: [0.45, 0.5, -0.9], pad: 1.1, trans: 3.2, orbita: -3, accion: apagarExc, resaltar: ['iman', 'criorrefrigerador', 'compresor_helio', 'lineas_helio'],
     texto: 'La bobina superconductora se enfría por conducción, con un criorrefrigerador de helio gas en circuito cerrado alimentado por un compresor. No hay llenados de helio ni de nitrógeno líquido, ni línea de quench.',
   },
   {
     cap: 'Servicios', titulo: 'Ultra alto vacío', dur: 13, modo: 'equipo', e1: 1, xray: true, foco: ['camara_vacio', 'bombas_turbo', 'bomba_previa', 'electronica'],
-    dir: [-0.6, 0.55, 0.9], pad: 1.1, orbita: 3, accion: apagarExc, resaltar: ['camara_vacio', 'bombas_turbo', 'bomba_previa'],
+    dir: [0.6, 0.55, 0.9], pad: 1.1, orbita: 3, accion: apagarExc, resaltar: ['camara_vacio', 'bombas_turbo', 'bomba_previa'],
     texto: 'Las bombas turbomoleculares hacen un bombeo diferencial hasta la celda ICR, en ultra alto vacío. Así los iones giran durante segundos sin chocar con el gas.',
   },
   {

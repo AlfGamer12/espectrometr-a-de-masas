@@ -1,6 +1,6 @@
 // Analizador del microflex LRF: diana MSP 96 en la mesa XY, electrodos de la fuente (P1/IS1, P2/IS2, tierra), lente,
 // selector PCIS, tubo de vuelo, reflector de dos etapas sin rejillas y detectores MCP lineal y de reflexión.
-// Coordenadas LOCALES (cm): eje iónico = +X (en el mundo apunta hacia abajo).
+// Coordenadas LOCALES (cm): eje iónico = +X (en el mundo apunta hacia arriba).
 import * as THREE from 'three';
 import { M } from '../../materials.js';
 import { mesh, rbox, box, washerX, cylX, cylY, cylZ, tubeX, tubePath, screws } from '../../geom.js';
@@ -40,7 +40,7 @@ export function buildAnalizador(parent) {
   const refs = {};
   const A = makePart(parent, 'analizador', { level: 1, offset: [0, 0, 0], mode: 'analizador', label: 'equipo' });
   A.position.copy(ORIGEN);
-  A.rotation.z = -Math.PI / 2; // +X local -> -Y mundo
+  A.rotation.z = Math.PI / 2; // +X local -> +Y mundo: diana abajo, tubo de vuelo hacia arriba
 
   /* ---------------- DIANA Y MESA XY ---------------- */
   {
@@ -128,8 +128,8 @@ export function buildAnalizador(parent) {
       for (let i = 0; i < 8; i++) { const a = (i / 8) * Math.PI * 2;
         g.add(mesh(cylX(0.18, 1.2, 6), M.tornillo, [x, Math.cos(a) * (AX.TUBE_R + 0.75), Math.sin(a) * (AX.TUBE_R + 0.75)])); }
     }
-    g.add(mesh(cylZ(1.4, 3.4, 40), M.acero, [30, 0, AX.TUBE_R + 1.4]));             // puerto de la turbo
-    g.add(mesh(cylZ(2.2, 0.5, 40), M.aceroPulido, [30, 0, AX.TUBE_R + 3.0]));
+    g.add(mesh(cylZ(1.4, 3.4, 40), M.acero, [30, 0, -(AX.TUBE_R + 1.4)]));          // puerto de la turbo (hacia el fondo del equipo)
+    g.add(mesh(cylZ(2.2, 0.5, 40), M.aceroPulido, [30, 0, -(AX.TUBE_R + 3.0)]));
     // brazo lateral del detector de reflexión
     g.add(mesh(cylY(1.2, 3.0, 32), M.acero, [AX.DET_R.x, AX.TUBE_R + 1.2, 0]));
   }

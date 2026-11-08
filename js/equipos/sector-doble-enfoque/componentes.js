@@ -12,7 +12,7 @@ export const INFO = {
   gc: {
     nombre: 'Cromatógrafo de gases', en: 'Gas chromatograph', cat: 'Introducción de muestra',
     funcion: 'Separa los componentes de la muestra en una columna capilar antes de su entrada en la fuente. En el análisis de dioxinas se emplean columnas de 60 m (fase 5 % fenilo) que separan la 2,3,7,8-TCDD de los demás isómeros; la 2,3,7,8-TCDF se confirma en una segunda columna más polar.',
-    detalles: ['Va adosado a un lateral de la consola; existe una configuración con dos cromatógrafos, uno a cada lado.', 'Representación simplificada.'],
+    detalles: ['Descansa en una mesa en voladizo delante de la columna de la fuente; existe una configuración con dos cromatógrafos.', 'Representación simplificada.'],
     specs: [['Columna típica', '60 m, fase 5 % fenilo'], ['Gas portador', 'Helio']],
     une: ['linea_transferencia'],
   },

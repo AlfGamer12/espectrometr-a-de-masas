@@ -51,7 +51,7 @@ export const PELICULA = [
   },
   {
     cap: 'Servicios', titulo: 'Vacío y electrónica', dur: 14, modo: 'equipo', e1: 1, sim: false, xray: true,
-    foco: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'electronica'], dir: [0.9, 0.7, 0.35], pad: 1.1, trans: 3.2, orbita: -3,
+    foco: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'electronica'], dir: [0.75, 0.5, 0.65], pad: 1.2, trans: 3.2, orbita: -3,
     resaltar: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'electronica'],
     texto: 'Los embudos y el TIMS trabajan a dos o tres milibares, y el resto del analizador en alto vacío. La electrónica sincroniza en tiempo real la rampa del TIMS, el cuadrupolo y el acelerador ortogonal.',
   },

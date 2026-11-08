@@ -18,4 +18,5 @@ export const AX = {
   TOF_X0: 67, TOF_X1: 89, TOF_Y0: -96, TOF_Y1: -5,
   R0: 0.45,
 };
-export const ORIGEN = new THREE.Vector3(-12, 116, 50);
+// ORIGEN: eje iónico a 120 cm de altura, centrado bajo la unidad de ionización (x −8,8…15,7 del frontal, según las fotos).
+export const ORIGEN = new THREE.Vector3(1.5, 120, 50);

@@ -32,7 +32,7 @@ export default {
       embudo de dos etapas, cuadrupolo, celda de colisión, óptica de transferencia, imán superconductor de 7 T refrigerado por conducción y celda ParaCell.</p>
     <h4>Contenido</h4>
     <table class="specs">
-      <tr><td>Equipo completo</td><td>Consola, fuente, imán con criorrefrigerador y compresor de helio, bombas, electrónica y PC.</td></tr>
+      <tr><td>Equipo completo</td><td>Mueble único que cubre consola e imán, cabeza frontal con la fuente ESI/MALDI, criorrefrigerador, compresor de helio, bombas, electrónica y puesto de control.</td></tr>
       <tr><td>Analizador</td><td>Trayecto iónico completo hasta la celda ICR, desmontable pieza a pieza.</td></tr>
       <tr><td>Simulación</td><td>Ciclo completo de acumulación, excitación y detección; transitorio y estructura isotópica fina en función de la duración
         del transitorio, la detección 1ω/2ω y el modo de procesado.</td></tr>
@@ -40,6 +40,6 @@ export default {
     <h4>Precisión y fuentes</h4>
     <p>Elaborado a partir de la documentación de Bruker (página de producto, folleto del trayecto de iones, patente de la ParaCell) y de artículos científicos
       con un scimaX real. Las especificaciones de resolución, exactitud, campo y vacío, y la secuencia de componentes, corresponden al equipo.
-      Bruker no publica las dimensiones del sistema ni las del imán: el tamaño de la consola, del imán y de la celda son estimaciones.
+      El aspecto exterior se ha contrastado con fotografías del equipo. Bruker no publica las dimensiones del sistema ni las del imán: el tamaño del mueble, del imán y de la celda son estimaciones.
       Las masas de los isotopólogos están calculadas; sus abundancias son aproximadas.</p>`,
 };

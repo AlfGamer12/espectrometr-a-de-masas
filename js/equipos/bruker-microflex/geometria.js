@@ -1,5 +1,6 @@
 // Geometría local del analizador MALDI-TOF (cm). Eje iónico = +X local, desde la diana hacia el final del tubo de vuelo.
-// En el mundo el eje local +X apunta hacia abajo (-Y): fuente arriba y tubo de vuelo vertical (disposición aproximada).
+// En el mundo el eje local +X apunta hacia arriba (+Y): como en el equipo real, la fuente está en la base (junto al puerto de carga)
+// y el tubo de vuelo sube por la torre azul hasta el reflector (disposición aproximada).
 import * as THREE from 'three';
 
 export const AX = {
@@ -19,6 +20,6 @@ export const AX = {
   LASER_HEAD: new THREE.Vector3(7.2, -6.2, 0),
   CAM: new THREE.Vector3(6.4, 5.4, 3.4),
 };
-export const ORIGEN = new THREE.Vector3(0, 101, 6);
+export const ORIGEN = new THREE.Vector3(-6, 22, -1);
 // Parámetros físicos usados en el cálculo del tiempo de vuelo (longitudes aproximadas).
 export const FIS = { U: 20000, L_LIN: 1.0, L_REF: 1.9 };

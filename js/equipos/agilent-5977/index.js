@@ -14,11 +14,12 @@ export default {
   INFO, CATEGORIAS, RECORRIDO, RECURSOS, PELICULA,
   modos: { equipo: 'Equipo completo', analizador: 'Analizador' },
   FOCO: {
-    equipo: ['gc', 'carcasa_superior', 'chasis', 'bomba_previa', 'panel_frontal'],
+    equipo: ['gc', 'gc_automuestreador', 'carcasa_superior', 'chasis', 'bomba_previa', 'panel_frontal'],
     analizador: ['repulsor', 'cuadrupolo', 'multiplicador', 'hed', 'filamento1', 'filamento2', 'calefactor_fuente', 'columna_extremo', 'carcasa_detector'],
   },
-  DIRS: { equipo: [0.78, 0.45, 0.62], analizador: [0.8, 0.38, 0.5] },
-  EXTERIOR: ['gc', 'gc_puerta', 'gc_inyector', 'panel_frontal', 'carcasa', 'chasis', 'bomba_previa', 'manguera_previa'],
+  // MSD a la izquierda del GC: vista de presentación desde delante a la izquierda; el interior es especular (analizador visto por su placa lateral)
+  DIRS: { equipo: [-0.62, 0.36, 0.8], analizador: [-0.8, 0.38, 0.5] },
+  EXTERIOR: ['gc', 'gc_puerta', 'gc_inyector', 'gc_automuestreador', 'panel_frontal', 'carcasa', 'chasis', 'bomba_previa', 'manguera_previa'],
   MAIN_TAGS: ['cuerpo_fuente', 'cuadrupolo', 'radiador', 'hed', 'multiplicador', 'columna'],
   ao: {
     equipo: { radius: 6.0, thickness: 6.0, distanceExponent: 1.5, distanceFallOff: 1, scale: 1.5, samples: 16, screenSpaceRadius: false },

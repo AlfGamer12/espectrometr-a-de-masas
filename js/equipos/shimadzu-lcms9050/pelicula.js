@@ -14,7 +14,7 @@ export const PELICULA = [
   },
   {
     cap: 'Arquitectura', titulo: 'Vista explosionada', dur: 13, modo: 'equipo', e1: 1, foco: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'control_termico', 'electronica', 'chasis'],
-    dir: [0.8, 0.55, 0.9], pad: 1.1, trans: 3.0, orbita: -3, resaltar: [],
+    dir: [0.55, 1.4, 0.7], pad: 1.1, trans: 3.0, orbita: -3, resaltar: [],
     texto: 'Sin carcasa aparecen la cámara de vacío, las bombas turbomoleculares, la electrónica de alta tensión y el control térmico, que regula la temperatura del analizador.',
   },
   {
@@ -56,7 +56,7 @@ export const PELICULA = [
   },
   {
     cap: 'Servicios', titulo: 'Vacío y control térmico', dur: 15, modo: 'equipo', e1: 1, sim: false, xray: false,
-    foco: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'control_termico'], dir: [0.75, 0.5, 1], pad: 1.2, trans: 3.2, orbita: -3,
+    foco: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'control_termico'], dir: [0.55, 1.4, 0.7], pad: 1.2, trans: 3.2, orbita: -3,
     resaltar: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'control_termico'],
     texto: 'Dos bombas turbomoleculares y una rotatoria mantienen el vacío. El control térmico sigue encendido aunque se ventee el equipo: el tubo tarda hasta tres días en recuperar el equilibrio.',
   },

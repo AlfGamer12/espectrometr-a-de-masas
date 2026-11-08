@@ -3,11 +3,11 @@
 // El grupo del analizador no está girado: local = mundo − ORIGEN.
 import * as THREE from 'three';
 
-/** Posición del origen del analizador en el mundo (eje a 34 cm de altura, 6 cm hacia el frontal). */
-export const ORIGEN = new THREE.Vector3(-6, 34, 6);
+/** Posición del origen del analizador en el mundo (eje a 48 cm de altura, tras la puerta negra; 6 cm hacia el frontal). */
+export const ORIGEN = new THREE.Vector3(-6, 48, 6);
 
 /** Mueble principal: 730 × 600 × 595 mm (sin bomba peristáltica ni chimenea). */
-export const CAB = { X0: -36.5, X1: 36.5, ZB: -30, ZF: 30, H: 59.5, DECK: 22 };
+export const CAB = { X0: -36.5, X1: 36.5, ZB: -30, ZF: 30, H: 59.5, DECK: 36 };
 
 export const AX = {
   // introducción de muestra (cámara de Scott orientada de delante a atrás, a la izquierda de la antorcha)

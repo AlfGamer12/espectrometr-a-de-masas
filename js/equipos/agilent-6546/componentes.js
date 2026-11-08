@@ -172,8 +172,8 @@ export const INFO = {
   },
   carcasa: {
     nombre: 'Carcasa', en: 'Covers', cat: 'Estructura y carcasa',
-    funcion: 'Paneles blancos del cuerpo horizontal del equipo.',
-    detalles: [], specs: [['Dimensiones', '121,9 × 76,2 × 193 cm'], ['Peso', '170 kg']],
+    funcion: 'Paneles blancos del cuerpo horizontal del equipo, que se instala sobre una mesa de laboratorio.',
+    detalles: [], specs: [['Dimensiones (an × fo × al, con la torre)', '121,9 × 76,2 × 193 cm'], ['Peso', '170 kg']],
     une: ['panel_frontal', 'torre_tof'],
   },
   panel_frontal: {

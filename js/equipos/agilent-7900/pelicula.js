@@ -16,7 +16,7 @@ export const PELICULA = [
   },
   {
     cap: 'Arquitectura', titulo: 'Vista explosionada', dur: 14, modo: 'equipo', e1: 1, foco: ['caja_antorcha', 'camara_vacio', 'bomba_turbo', 'generador_rf', 'control_gases', 'electronica', 'chasis'],
-    dir: [0.8, 0.7, 0.75], pad: 1.1, trans: 3.0, orbita: -3, resaltar: [],
+    dir: [0.8, 0.5, 0.8], pad: 1.1, trans: 3.0, orbita: -3, resaltar: [],
     texto: 'Sin los paneles se ve la arquitectura interna: a la izquierda, la muestra y la antorcha; en el centro, la cámara de vacío; debajo, los gases, el generador de radiofrecuencia y la electrónica.',
   },
   {

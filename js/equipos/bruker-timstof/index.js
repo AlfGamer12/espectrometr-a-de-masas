@@ -30,13 +30,13 @@ export default {
       de doble sección, cuadrupolo, celda de colisión y analizador de tiempo de vuelo ortogonal con reflectrón.</p>
     <h4>Contenido</h4>
     <table class="specs">
-      <tr><td>Equipo completo</td><td>Mueble con torre del TOF, fuente en el frontal, nano-LC, cámaras de vacío, bombas y electrónica.</td></tr>
+      <tr><td>Equipo completo</td><td>Cuerpo gris con columna frontal y torre del TOF azules, fuente sobre la banda frontal, nanoElute en su carro, bomba de vacío previo externa, cámaras de vacío, bombas y electrónica.</td></tr>
       <tr><td>Analizador</td><td>Trayecto iónico completo desde el emisor hasta el detector de microcanales.</td></tr>
       <tr><td>Simulación</td><td>Rampa del TIMS, mapa m/z–movilidad, selección PASEF y espectros MS/MS.</td></tr>
     </table>
     <h4>Precisión y fuentes</h4>
     <p>Elaborado a partir de las páginas de producto de Bruker y de los artículos que describen el instrumento (Meier et al. 2015, 2018 y 2021; Fernandez-Lima et al.
       2011). Los parámetros del TIMS (longitud, diámetro, rampa, RF, presión), del cuadrupolo, del TOF y del digitalizador corresponden a la documentación.
-      Las dimensiones del mueble, la longitud de vuelo, la configuración de las bombas y la disposición interna son aproximadas. Los valores de 1/K₀ de los
+      El aspecto exterior se ha contrastado con fotografías del equipo; sus dimensiones (≈ 2,57 m de alto con la torre) son aproximadas, igual que la longitud de vuelo, la configuración de las bombas y la disposición interna. Los valores de 1/K₀ de los
       calibrantes son publicados; la nube de péptidos es ilustrativa.</p>`,
 };

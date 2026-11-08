@@ -2,8 +2,8 @@
 export const RECORRIDO = [
   {
     titulo: 'Configuración del sistema GC/MSD',
-    texto: 'A la izquierda, el cromatógrafo de gases separa los componentes de la muestra. A la derecha, el detector selectivo de masas (MSD) los ioniza, filtra los iones por su relación m/z y los detecta. Cada compuesto queda caracterizado por su tiempo de retención y su espectro de masas.',
-    modo: 'equipo', e1: 0, xray: false, foco: ['gc', 'panel_frontal', 'carcasa_superior'], resaltar: [],
+    texto: 'A la derecha, el cromatógrafo de gases separa los componentes de la muestra. A la izquierda, el detector selectivo de masas (MSD) los ioniza, filtra los iones por su relación m/z y los detecta. Cada compuesto queda caracterizado por su tiempo de retención y su espectro de masas.',
+    modo: 'equipo', e1: 0, xray: false, foco: ['gc', 'gc_automuestreador', 'panel_frontal', 'carcasa_superior'], resaltar: [],
   },
   {
     titulo: 'Interfaz GC/MSD',

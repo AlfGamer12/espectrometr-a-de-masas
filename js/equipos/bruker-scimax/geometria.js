@@ -13,8 +13,9 @@ export const AX = {
   TR_0: 73, TR_1: 206,                // óptica de transferencia ("time of flight")
   CELL_0: 207.5, CELL_1: 222.5,       // ParaCell (≈ 15 cm de longitud; radio 2,8 cm)
   CELL_R: 2.8,
-  MAG_C: 215, MAG_L: 116, MAG_R: 46, BORE_R: 7.5,   // imán superconductor: centro, longitud, radio exterior, bore
+  MAG_C: 215, MAG_L: 116, MAG_R: 40, BORE_R: 7.5,   // imán superconductor: centro, longitud, radio exterior del criostato, bore
   UHV_END: 291,                       // extremo del tubo UHV, fuera del imán (turbo UHV y preamplificador)
 };
-export const ORIGEN = new THREE.Vector3(-140, 104, 0);
+// el analizador se monta girado 180° (equipo.js): la fuente queda en el extremo +X (frente real del equipo) y el imán hacia −X
+export const ORIGEN = new THREE.Vector3(136, 104, 0);
 export const FIS = { B: 7.0 };

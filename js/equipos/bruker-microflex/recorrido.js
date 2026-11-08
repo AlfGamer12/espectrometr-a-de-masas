@@ -3,7 +3,7 @@ export const RECORRIDO = [
   {
     titulo: 'Un MALDI-TOF de sobremesa',
     texto: 'El microflex es una torre de sobremesa que contiene, en un único volumen de alto vacío, la fuente MALDI, un tubo de vuelo vertical, el reflector y dos detectores. A la izquierda, el PC de adquisición controla el equipo y registra los espectros.',
-    modo: 'equipo', e1: 0, xray: false, foco: ['panel_frontal', 'tapa_superior', 'pc', 'chasis'], resaltar: [],
+    modo: 'equipo', e1: 0, xray: false, foco: ['cubierta_tubo', 'panel_frontal', 'tapa_superior', 'pc', 'chasis'], resaltar: [],
   },
   {
     titulo: 'Preparación de la muestra',
@@ -13,8 +13,8 @@ export const RECORRIDO = [
   },
   {
     titulo: 'Carga de la diana por la esclusa',
-    texto: 'La diana se coloca bajo la tapa superior. Al pulsar TARGET IN, la esclusa se bombea y la diana pasa a la fuente sin romper el alto vacío del tubo de vuelo. El equipo vuelve a estar listo en unos 2,5 minutos.',
-    modo: 'equipo', e1: 0.6, xray: true, foco: ['tapa_carga', 'esclusa', 'camara_fuente'],
+    texto: 'La diana se coloca en el puerto de carga del zócalo. Al pulsar TARGET IN, la esclusa se bombea y la diana pasa a la fuente sin romper el alto vacío del tubo de vuelo. El equipo vuelve a estar listo en unos 2,5 minutos.',
+    modo: 'equipo', e1: 0.6, xray: true, foco: ['tapa_carga', 'esclusa', 'camara_fuente'], dir: [0.55, 0.5, 1], pad: 1.7,
     resaltar: ['tapa_carga', 'esclusa', 'camara_fuente'],
   },
   {

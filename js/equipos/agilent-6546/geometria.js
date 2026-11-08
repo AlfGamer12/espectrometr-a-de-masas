@@ -1,5 +1,6 @@
 // Geometría local del Agilent 6546 (cm). Eje iónico = +X local = +X mundo (de la fuente, a la izquierda, hacia la torre del TOF);
-// el TOF ortogonal sube por +Y dentro de la torre. Proporciones aproximadas dentro de 122 × 76 × 193 cm.
+// el TOF ortogonal sube por +Y dentro de la torre cilíndrica. Cuerpo de sobremesa de 122 × 76 × 51 cm y torre hasta 193 cm.
+// ORIGEN: el eje iónico atraviesa el lateral izquierdo (x = −61) a media altura del cuerpo; el pulsador queda bajo la torre.
 import * as THREE from 'three';
 
 export const AX = {
@@ -19,4 +20,4 @@ export const AX = {
   TOF_X0: 88, TOF_X1: 110, TOF_Y0: 4, TOF_Y1: 122,
   R0: 0.445,
 };
-export const ORIGEN = new THREE.Vector3(-52, 66, 14);
+export const ORIGEN = new THREE.Vector3(-64, 36, 14);

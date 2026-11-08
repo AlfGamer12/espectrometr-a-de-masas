@@ -35,5 +35,6 @@ export default {
     <h4>Precisión y fuentes</h4>
     <p>Elaborado a partir del folleto y las especificaciones típicas del 7900, la lista de preparación del sitio, documentación técnica de Agilent sobre el modo
       helio y los conos, y bibliografía de ICP-MS. Las dimensiones del mueble, la secuencia de componentes y sus funciones corresponden al equipo real.
-      La <b>disposición interna y las dimensiones de las piezas son aproximadas</b> (no se dispone de planos CAD). Las señales de la simulación son orientativas.</p>`,
+      El exterior (puerta negra superior izquierda, tapa blanca, bomba peristáltica en el lateral izquierdo, chimenea y SPS 4) sigue las
+      fotografías del fabricante. La <b>disposición interna y las dimensiones de las piezas son aproximadas</b> (no se dispone de planos CAD). Las señales de la simulación son orientativas.</p>`,
 };

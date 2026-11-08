@@ -11,14 +11,14 @@ export const CATEGORIAS = [
 export const INFO = {
   automuestreador: {
     nombre: 'Automuestreador SPS 4', en: 'SPS 4 autosampler', cat: 'Introducción de muestra',
-    funcion: 'Lleva la sonda a cada tubo de muestra, de patrón o de lavado y la sumerge; la bomba peristáltica aspira la disolución por el capilar.',
+    funcion: 'Se coloca a la izquierda del equipo. Lleva la sonda a cada tubo de muestra, de patrón o de lavado y la sumerge; la bomba peristáltica aspira la disolución por el capilar.',
     detalles: ['Entre muestras la sonda pasa por la estación de lavado para evitar el arrastre de una muestra a la siguiente.'],
     specs: [], une: ['bomba_peristaltica'],
   },
   bomba_peristaltica: {
     nombre: 'Bomba peristáltica', en: 'Peristaltic pump', cat: 'Introducción de muestra',
     funcion: 'Impulsa la muestra hacia el nebulizador y extrae el drenaje de la cámara de pulverización con caudal constante, independiente de la viscosidad de la muestra.',
-    detalles: ['Diez rodillos y tres canales: muestra, patrón interno (opcional) y drenaje.', 'Los tubos de bomba se desgastan y se sustituyen periódicamente.'],
+    detalles: ['Va montada en el lateral izquierdo, delante, con una bandeja de goteo debajo.', 'Diez rodillos y tres canales: muestra, patrón interno (opcional) y drenaje.', 'Los tubos de bomba se desgastan y se sustituyen periódicamente.'],
     specs: [['Rodillos', '10'], ['Canales', '3'], ['Caudal de muestra', '≈ 0,1–0,4 mL/min (aprox.)']],
     une: ['automuestreador', 'nebulizador', 'camara_nebulizacion'],
   },
@@ -174,12 +174,12 @@ export const INFO = {
   },
   puerta_muestras: {
     nombre: 'Puerta del compartimento de muestra', en: 'Sample introduction door', cat: 'Estructura y carcasa',
-    funcion: 'Da acceso al nebulizador, la cámara de pulverización y la antorcha para su montaje y limpieza.',
+    funcion: 'Puerta negra de la parte superior izquierda del frontal, que envuelve la esquina: da acceso al nebulizador, la cámara de pulverización y la antorcha para su montaje y limpieza.',
     detalles: [], specs: [], une: ['panel_frontal'],
   },
   panel_frontal: {
     nombre: 'Panel frontal', en: 'Front panel', cat: 'Estructura y carcasa',
-    funcion: 'Lleva los indicadores de estado (plasma, vacío, listo) y los pasos de los tubos de muestra y de drenaje.',
+    funcion: 'Panel delantero inferior y franja gris bajo la tapa, con el indicador de estado a la derecha. Los tubos de muestra y de drenaje entran por el lateral izquierdo, junto a la bomba peristáltica.',
     detalles: [], specs: [], une: ['carcasa', 'bomba_peristaltica'],
   },
   carcasa: {

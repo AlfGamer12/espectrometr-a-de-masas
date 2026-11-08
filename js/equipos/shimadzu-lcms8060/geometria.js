@@ -17,5 +17,6 @@ export const AX = {
   EM: new THREE.Vector3(90.0, -3.4, 0),      // multiplicador de electrones secundarios
   R0: 0.45,
 };
-// Posición del origen local en el mundo (entrada de la DL)
-export const ORIGEN = new THREE.Vector3(-44, 40, 2);
+// Posición del origen local en el mundo (entrada de la DL). Unidad MS de 1180 × 540 × 610 mm (an × al × fondo): el eje
+// iónico queda a 31 cm del suelo, a la altura de la ventana de la unidad de ionización.
+export const ORIGEN = new THREE.Vector3(-44, 31, 2);

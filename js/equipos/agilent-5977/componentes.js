@@ -367,7 +367,7 @@ export const INFO = {
   },
   panel_frontal: {
     nombre: 'Panel frontal', en: 'Front panel · status display', cat: 'Estructura y carcasa',
-    funcion: 'Muestra el estado del equipo mediante pantalla e indicadores LED: alimentación, vacío, estado listo, secuencia en curso y errores.',
+    funcion: 'Lleva el interruptor de encendido y el indicador LED de estado. El equipo se controla y supervisa desde el software MassHunter y la pantalla táctil del cromatógrafo.',
     detalles: ['Un indicador ámbar o rojo señala vacío insuficiente, temperaturas fuera de consigna o un fallo que requiere atención.'],
     specs: [['Indicadores', 'Vacío, temperaturas, actividad']],
     une: ['carcasa', 'placa_principal'],
@@ -404,5 +404,15 @@ export const INFO = {
     detalles: ['Temperatura habitual del inyector: 250–280 °C.'],
     specs: [['Volumen de inyección', '1 µL'], ['Temperatura', '250–280 °C']],
     une: ['gc', 'columna'],
+  },
+  gc_automuestreador: {
+    nombre: 'Inyector automático', en: 'Automatic liquid sampler tower', cat: 'Cromatógrafo (contexto)',
+    funcion: 'Torre de inyección montada sobre el inyector del cromatógrafo: toma la muestra de un vial con una microjeringa, la lava con disolvente y la inyecta a través del septum.',
+    detalles: [
+      'El carrusel (torreta) que rodea la torre aloja los viales de muestra y los de disolvente de lavado; puede añadirse una bandeja para más viales.',
+      'La inyección automática hace reproducibles el volumen y el instante de inyección, de los que dependen las áreas de pico y los tiempos de retención.',
+    ],
+    specs: [['Volumen de inyección', '0,1–5 µL (jeringa de 10 µL)'], ['Viales de la torreta', '16']],
+    une: ['gc_inyector', 'gc'],
   },
 };

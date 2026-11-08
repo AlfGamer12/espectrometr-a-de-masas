@@ -186,14 +186,14 @@ export const INFO = {
   /* ============ ESTRUCTURA ============ */
   carcasa: {
     nombre: 'Carcasa de la consola', en: 'Console covers', cat: 'Estructura y carcasa',
-    funcion: 'Cubiertas de la consola que aloja la fuente, el banco de óptica iónica, las bombas y la electrónica.',
+    funcion: 'Mueble único en gris claro, con capó de aristas muy redondeadas, que cubre la consola (fuente, banco de óptica iónica, bombas y electrónica) y el imán. El lomo azul con línea de luz recorre la tapa hasta la caja del criorrefrigerador.',
     detalles: ['Bruker indica una huella reducida que cabe en un laboratorio estándar; las dimensiones no están publicadas.'],
-    specs: [['Dimensiones', 'No publicadas (≈ 3 m de largo, aprox.)']],
+    specs: [['Dimensiones', 'No publicadas (modelo: ≈ 3,2 × 1,1 × 1,5 m; 2 m con la caja del criorrefrigerador)']],
     une: ['chasis', 'panel_frontal'],
   },
   panel_frontal: {
     nombre: 'Panel frontal', en: 'Front panel', cat: 'Estructura y carcasa',
-    funcion: 'Panel de la consola con la identificación del equipo y los indicadores de estado.',
+    funcion: 'Cabeza frontal azul con línea de luz; a su izquierda, el hueco abierto de la fuente ESI sobre una bandeja de acero, y a su derecha, el hombro con la puerta de carga de la diana MALDI.',
     detalles: [], specs: [],
     une: ['carcasa'],
   },
