@@ -12,23 +12,27 @@ import { ORIGEN, AX } from './geometria.js';
 
 const L1 = (offset, extra = {}) => ({ level: 1, offset, mode: 'equipo', ...extra });
 /** Cuerpo: x ∈ [XL, XR], z ∈ [ZB, ZF], altura H. Columna azul del frontal entre NX0 y NX1. */
-const XL = -41, XR = 41, ZF = 70, ZB = -70, H = 158, NX0 = -29, NX1 = 27, RT = 25;
+const XL = -41, XR = 41, ZF = 70, ZB = -70, H = 158, NX0 = -29, NX1 = 27, RT = 13;
+/** Zócalo azul oscuro retranqueado: los paneles arrancan a YP en el frente y bajan en curva hacia atrás. */
+const YP = 12;
 /** Banda gris del frontal (sostiene la fuente). */
-const BY0 = 68, BY1 = 106, BZ0 = 70.1, BZ1 = 77;
+const BY0 = 90, BY1 = 116, BZ0 = 70.1, BZ1 = 80;
 /** Arista superior frontal de gran radio (centro en z = ZF − RF, y = YF). */
 const RF = 20, YF = H - RF;
-/** Rebaje de la esquina frontal inferior del lateral izquierdo (bajo la banda): z ∈ [RZ0, ZF], y ∈ [RY0, BY0], fondo en RX. */
-const RZ0 = 2, RY0 = 32, RX = -35;
+/** Hueco alto del lateral izquierdo, entre el ala rotulada y el frente: z ∈ [PZ0, ZF], y ∈ [PY0, PY1], fondo en PX. */
+const PZ0 = 18, PY0 = 92, PY1 = 150, PX = -33.2;
+/** Alojamiento de la fuente: cilindro lateral (eje X) en el extremo izquierdo de la banda, centrado en z = FZ. */
+const FZ = 61, FR = 7.5;
 /** Torre del TOF (la cara frontal se inclina hacia atrás: arriba conserva el 65 % del fondo). */
-const TX0 = -23, TX1 = 21, TZ0 = -44, TZ1 = 18, TH = 257;
+const TX0 = -34, TX1 = 10, TZ0 = -60, TZ1 = 2, TH = 257;
 /** Punto local del analizador → mundo (rotación de 90° en Y: x local → −z, z local → +x). */
 const W = (x, y, z = 0) => new THREE.Vector3(ORIGEN.x + z, ORIGEN.y + y, ORIGEN.z - x);
 const SX = ORIGEN.x, SY = ORIGEN.y + AX.SPRAY.y;      // eje de la fuente
 const TRAY = ORIGEN.y - 26;                           // bandeja de las turbos (cara superior a TRAY + 1)
 /** Pasos de la bandeja [x, z, r]: manguera de la toma de la fuente, salidas de las dos turbos y cable del detector. */
-const PASOS = [[-15, 47.5, 1.0], [-9, 25.5, 1.0], [-9, -5.5, 1.0], [0, -39, 0.5]];
+const PASOS = [[-26, 32.5, 1.0], [-20, 10.5, 1.0], [-20, -20.5, 1.0], [-12, -54, 0.5]];
 /** Colector de vacío previo (sobre el zócalo) y paso de la manguera corrugada en el panel derecho. */
-const COL = { x: 24, y: 12, z: -58 };
+const COL = { x: 24, y: 18, z: -58 };
 /** Bomba de vacío previo externa (en el suelo, a la derecha). */
 const BP = { x: 67, z: -54 };
 
@@ -56,12 +60,17 @@ function bandaRedondeada(w, h, t, r, b, huecos, mat, pos) {
   return mesh(g, mat, pos);
 }
 /** Lateral (plano zy) con la arista trasera superior redondeada (radio RT) y agujeros [[z, y, r]]. */
-function lateral(x, mat, huecos = [], rebaje = false) {
+function lateral(x, mat, huecos = [], hueco = false) {
   const z0 = ZB + 0.2, z1 = ZF - 0.2, y0 = 4, y1 = H;
   const s = new THREE.Shape();
-  s.moveTo(z1, y0);
-  if (rebaje) { s.lineTo(z1, RY0); s.lineTo(RZ0, RY0); s.lineTo(RZ0, BY0); s.lineTo(z1, BY0); }
-  s.lineTo(z1, YF); s.absarc(z1 - RF, YF, RF, 0, Math.PI / 2, false); s.lineTo(z0 + RT, y1); s.absarc(z0 + RT, y1 - RT, RT, Math.PI / 2, Math.PI, false); s.lineTo(z0, y0); s.lineTo(z1, y0);
+  s.moveTo(z1, YP);
+  if (hueco) {
+    const a = Math.asin((PY1 - YF) / RF);
+    s.lineTo(z1, PY0); s.lineTo(PZ0, PY0); s.lineTo(PZ0, PY1); s.lineTo(z1 - RF + RF * Math.cos(a), PY1); s.absarc(z1 - RF, YF, RF, a, Math.PI / 2, false);
+  } else { s.lineTo(z1, YF); s.absarc(z1 - RF, YF, RF, 0, Math.PI / 2, false); }
+  s.lineTo(z0 + RT, y1); s.absarc(z0 + RT, y1 - RT, RT, Math.PI / 2, Math.PI, false); s.lineTo(z0, y0);
+  // borde inferior: sube en curva hacia el frente, dejando ver el zócalo
+  s.lineTo(-20, y0); s.quadraticCurveTo(40, y0, z1, YP);
   for (const [u, v, r] of huecos) { const p = new THREE.Path(); p.absarc(u, v, r, 0, Math.PI * 2, true); s.holes.push(p); }
   return placa(s, 1.2, mat, [x, 0, 0], 'zy');
 }
@@ -103,9 +112,10 @@ export function buildEquipo(root) {
   {
     const g = makePart(root, 'chasis', L1([0, 0, 0]));
     // zócalo oscuro retranqueado bajo los paneles
-    g.add(mesh(rbox(78, 3.5, 136, 0.5), oscuro, [0, 2.75, 0]));
+    const zocalo = navy.clone(); zocalo.color.setHex(0x16233a);
+    g.add(mesh(rbox(77, YP - 1, 128, 0.8), zocalo, [0, (1 + YP) / 2, 0]));
     for (const x of [XL + 6, XR - 6]) for (const z of [ZB + 8, ZF - 8]) g.add(mesh(cylY(2.2, 1.0, 24), M.goma, [x, 0.5, z]));
-    for (const [x, z] of [[-37, -66], [37, -66], [-32, 66], [37, 66]]) g.add(mesh(box(3, 133.5, 3), M.aluminio, [x, 4.5 + 133.5 / 2, z]));
+    for (const [x, z] of [[-32, -66], [37, -66], [37, 66]]) g.add(mesh(box(3, 125.8, 3), M.aluminio, [x, YP + 0.2 + 62.9, z]));
     // bandeja de las turbos con pasos para las mangueras de vacío previo y el cable del detector
     g.add(placaPasos(70, 126, 2, PASOS, M.aluminio, [0, TRAY, 0], 'xz', 0.3));
     for (const [x, z, r] of PASOS) g.add(pasamuros(r, M.goma, [x, TRAY + 1, z], 'y', r < 0.8 ? 0.3 : 0.5));
@@ -113,17 +123,17 @@ export function buildEquipo(root) {
     g.add(mesh(cylX(1.2, 12, 24), M.aceroPulido, [COL.x, COL.y, COL.z]));
     for (const x of [COL.x - 4, COL.x, COL.x + 4]) g.add(mesh(cylY(0.75, 2, 16), M.aceroPulido, [x, COL.y + 2.2, COL.z]));
     g.add(mesh(cylX(1.9, 3, 24), M.aceroPulido, [COL.x + 7.5, COL.y, COL.z]));
-    g.add(mesh(rbox(6, 6.3, 6, 0.4), M.anodizado, [COL.x, 7.65, COL.z]));      // soporte sobre el zócalo
+    g.add(mesh(rbox(6, COL.y - 1.2 - YP, 6, 0.4), M.anodizado, [COL.x, (YP + COL.y - 1.2) / 2, COL.z]));      // soporte sobre el zócalo
   }
   {
     // frontal: columna azul (paneles inferior y superior con ventana, remate curvo que continúa por la tapa)
     // y banda gris horizontal con la abertura de la fuente
     const g = makePart(root, 'panel_frontal', L1([0, 0, 60], { shell: true, label: 'equipo' }));
     const nc = (NX0 + NX1) / 2, nw = NX1 - NX0;
-    g.add(mesh(rbox(nw, BY0 - 4, 1.2, 0.3), navy, [nc, (4 + BY0) / 2, ZF - 0.6]));
+    g.add(mesh(rbox(nw, BY0 - YP, 1.2, 0.3), navy, [nc, (YP + BY0) / 2, ZF - 0.6]));
     const yu = (BY1 + YF + 0.4) / 2, hu = (YF + 0.4 - BY1) / 2;
     const up = rect(-nw / 2, -hu, nw / 2, hu);
-    up.holes.push(rect(-16 - nc, 114 - yu, 20 - nc, 130 - yu, THREE.Path));
+    up.holes.push(rect(-16 - nc, 121 - yu, 20 - nc, 135 - yu, THREE.Path));
     g.add(placa(up, 1.2, navy, [nc, yu, ZF - 0.6]));
     {
       // remate superior: cuarto de cilindro que dobla hacia atrás y franja azul sobre la tapa hasta la torre
@@ -135,7 +145,7 @@ export function buildEquipo(root) {
     }
     // ventana iluminada con la bomba de jeringa integrada
     {
-      const x0 = -16, x1 = 20, y0 = 114, y1 = 130, xc = (x0 + x1) / 2, yc = (y0 + y1) / 2;
+      const x0 = -16, x1 = 20, y0 = 121, y1 = 135, xc = (x0 + x1) / 2, yc = (y0 + y1) / 2;
       const int = M.plasticoNegro.clone(); int.color.setHex(0x20252c);
       g.add(mesh(box(x1 - x0, y1 - y0, 0.6), int, [xc, yc, 61.3]));
       for (const y of [y0 + 0.3, y1 - 0.3]) g.add(mesh(box(x1 - x0 - 0.2, 0.6, 7.2), int, [xc, y, 65.2]));
@@ -147,12 +157,14 @@ export function buildEquipo(root) {
       g.add(mesh(cylX(0.25, 4, 12), M.aceroPulido, [x0 + 28.3, y0 + 6.2, 64]));
       g.add(mesh(new THREE.PlaneGeometry(x1 - x0 - 0.4, y1 - y0 - 0.4), M.vidrio, [xc, yc, ZF - 0.5]));
     }
-    // banda gris (sobresale 7 cm) con la abertura de la fuente, asa rasgada y línea de luz
-    g.add(bandaRedondeada(XR - XL - 0.4, BY1 - BY0, BZ1 - BZ0, 3, 1.6, [[SX, SY - (BY0 + BY1) / 2, 8.8]], gris, [0, (BY0 + BY1) / 2, (BZ0 + BZ1) / 2]));
-    g.add(mesh(rbox(38, 3.2, 1.6, 0.7), gris, [17, 80, BZ1 + 0.8]));
-    g.add(mesh(rbox(36, 0.5, 0.5, 0.2), led, [17, 77.6, BZ1 + 0.25]));
-    // pilotos de estado junto a la fuente
-    [M.ledVerde, M.ledVerde, M.ledAmbar].forEach((mt, i) => g.add(mesh(cylZ(0.35, 0.3, 16), mt, [-2 + i * 2, 101, BZ1 + 0.15])));
+    // banda gris alta (sobresale 10 cm) con asa y línea de luz en su mitad inferior; su extremo izquierdo dobla la esquina hacia el hueco
+    const bx0 = -33;
+    g.add(bandaRedondeada(XR - 0.2 - bx0, BY1 - BY0, BZ1 - BZ0, 3, 1.6, [], gris, [(bx0 + XR - 0.2) / 2, (BY0 + BY1) / 2, (BZ0 + BZ1) / 2]));
+    g.add(mesh(new THREE.CylinderGeometry(BZ1 - ZF, BZ1 - ZF, BY1 - BY0, 24, 1, false, -Math.PI / 2, Math.PI / 2), gris, [bx0, (BY0 + BY1) / 2, ZF]));
+    g.add(mesh(rbox(52, 3.2, 1.6, 0.7), gris, [8, 96, BZ1 + 0.8]));
+    g.add(mesh(rbox(50, 0.5, 0.5, 0.2), led, [8, 93.6, BZ1 + 0.25]));
+    // pilotos de estado
+    [M.ledVerde, M.ledVerde, M.ledAmbar].forEach((mt, i) => g.add(mesh(cylZ(0.35, 0.3, 16), mt, [26 + i * 2, 110, BZ1 + 0.15])));
   }
   for (const [id, s] of [['panel_izq', -1], ['panel_der', 1]]) {
     const g = makePart(root, id, L1([s * 70, 0, 0], { info: 'carcasa', shell: true }));
@@ -161,38 +173,44 @@ export function buildEquipo(root) {
     // marco gris del frontal a cada lado de la columna azul, con la arista superior de radio RF
     const fx0 = s > 0 ? NX1 + 0.2 : XL + 1.3, fx1 = s > 0 ? XR - 1.3 : NX0 - 0.2;
     const marco = (a, b, y0, y1) => g.add(mesh(box(b - a, y1 - y0, 1.2), gris, [(a + b) / 2, (y0 + y1) / 2, ZF - 0.6]));
-    if (s > 0) marco(fx0, fx1, 4, YF);
-    else { marco(fx0, fx1, 4, RY0); marco(RX + 0.2, fx1, RY0, BY0); marco(fx0, fx1, BY0, YF); }
+    if (s > 0) marco(fx0, fx1, YP, YF);
+    else { marco(fx0, fx1, YP, BY0); marco(fx0, fx1, BY1, YF); }
     {
       const a = new THREE.Shape(), zc = ZF - RF;
       a.moveTo(ZF, YF); a.absarc(zc, YF, RF, 0, Math.PI / 2, false); a.lineTo(zc, YF + RF - 1.2); a.absarc(zc, YF, RF - 1.2, Math.PI / 2, 0, true); a.lineTo(ZF, YF);
       g.add(placa(a, fx1 - fx0, gris, [(fx0 + fx1) / 2, 0, 0], 'zy'));
     }
     if (s < 0) {
-      // rebaje de la esquina frontal inferior: fondo, pared trasera, techo bajo la banda y repisa inferior
-      const grisR = gris.clone(); grisR.color.setHex(0xc9cdd2);
-      g.add(mesh(box(1.2, BY0 - RY0 - 2, ZF - RZ0), grisR, [RX - 0.6, (RY0 + 2 + BY0) / 2, (RZ0 + ZF) / 2]));
-      g.add(mesh(box(RX - 1.2 - XL - 0.2, BY0 - RY0 - 2, 1.2), grisR, [(XL + 0.2 + RX - 1.2) / 2, (RY0 + 2 + BY0) / 2, RZ0 + 0.6]));
-      g.add(mesh(box(RX - 1.2 - XL - 0.2, 1.2, ZF - RZ0 - 1.2), grisR, [(XL + 0.2 + RX - 1.2) / 2, BY0 - 0.7, (RZ0 + 1.2 + ZF) / 2]));
-      g.add(mesh(rbox(RX - 0.2 - XL + 1, 2, ZF - RZ0 - 0.4, 0.5), gris, [(XL - 1 + RX - 0.2) / 2, RY0 + 1, (RZ0 + ZF - 0.4) / 2]));
+      // hueco alto entre el ala rotulada y el frente: fondo, pared trasera, techo y repisa inferior
+      const grisR = gris.clone(); grisR.color.setHex(0xc5cad0);
+      const xf = PX - 0.6, xa = XL + 0.2, xb = PX - 1.2;
+      g.add(placa((() => { const p = new THREE.Shape(); [[PZ0, PY0], [47.8, PY0], [47.8, BY1 + 0.2], [ZF - 1.4, BY1 + 0.2], [ZF - 1.4, YF], [ZF - RF + RF * Math.cos(Math.asin((PY1 - YF) / RF)) - 0.4, PY1], [PZ0, PY1]].forEach(([u, v], i) => (i ? p.lineTo(u, v) : p.moveTo(u, v))); return p; })(), 1.2, grisR, [xf, 0, 0], 'zy'));
+      g.add(mesh(box(xb - xa, PY1 - PY0, 1.2), grisR, [(xa + xb) / 2, (PY0 + PY1) / 2, PZ0 + 0.6]));
+      g.add(mesh(box(xb - xa, 1.2, 64.5 - PZ0 - 1.2), grisR, [(xa + xb) / 2, PY1 + 0.6, (PZ0 + 1.2 + 64.5) / 2]));
+      g.add(mesh(rbox(PX - 0.4 - XL + 1, 1.2, 30, 0.3), gris, [(XL - 1 + PX - 0.4) / 2, PY0 - 0.2, PZ0 + 15]));
+      // tramo lateral de la banda (dentro del hueco) con el paso del alojamiento de la fuente
+      const tb = new THREE.Shape(); [[48, BY0], [ZF, BY0], [ZF, BY1], [48, BY1]].forEach(([u, v], i) => (i ? tb.lineTo(u, v) : tb.moveTo(u, v)));
+      const hb = new THREE.Path(); hb.absarc(FZ, SY, FR + 0.3, 0, Math.PI * 2, true); tb.holes.push(hb);
+      g.add(placa(tb, 10, gris, [-38, 0, 0], 'zy'));
     }
     // franja vertical en relieve con el rótulo del modelo y logotipo
-    const xs = x + s * 1.22, rot = [0, s * Math.PI / 2, 0];
-    g.add(mesh(rbox(0.6, 76, 15, 0.25), grisCanal, [x + s * 0.9, 111, -12]));
-    const lab = mesh(new THREE.PlaneGeometry(12.5, 62), rotulo(rotuloTims()), [xs + s * 0.08, 108, -12], rot);
+    const xs = x + s * 1.22, rot = [0, s * Math.PI / 2, 0], zl = 5;
+    g.add(mesh(rbox(0.6, 76, 15, 0.25), grisCanal, [x + s * 0.9, 111, zl]));
+    const lab = mesh(new THREE.PlaneGeometry(12.5, 62), rotulo(rotuloTims()), [xs + s * 0.08, 108, zl], rot);
     lab.userData.decal = true; g.add(lab);
-    g.add(mesh(new THREE.PlaneGeometry(10, 5), logo, [xs + s * 0.08, 144, -12], rot));
+    g.add(mesh(new THREE.PlaneGeometry(10, 5), logo, [xs + s * 0.08, 144, zl], rot));
     if (s > 0) g.add(mesh(tubeX(2.9, 2.0, 0.8, 32), M.goma, [x + 0.2, COL.y, COL.z]));      // pasamuros de la manguera corrugada
   }
   {
     // tapa gris: deja libres la franja azul del frontal y la torre del TOF (que la atraviesan al explosionar)
     const g = makePart(root, 'tapa_superior', L1([0, 40, 0], { info: 'carcasa', shell: true }));
     const a = XL + 1.2, b = XR - 1.2, zr = ZB + 0.2 + RT, zf = ZF - RF - 0.2;
-    const s = new THREE.Shape();
-    [[a, zr], [b, zr], [b, zf], [NX1 + 0.2, zf], [NX1 + 0.2, TZ1 + 0.2], [TX1 + 0.2, TZ1 + 0.2], [TX1 + 0.2, TZ0 - 0.2], [TX0 - 0.2, TZ0 - 0.2],
-      [TX0 - 0.2, TZ1 + 0.2], [NX0 - 0.2, TZ1 + 0.2], [NX0 - 0.2, zf], [a, zf]].forEach(([x, z], i) => (i ? s.lineTo(x, -z) : s.moveTo(x, -z)));
-    s.lineTo(a, -zr);
-    g.add(placa(s, 1.2, gris, [0, H - 0.6, 0], 'xz'));
+    // dos piezas: la torre llega hasta el borde trasero de la tapa y la franja azul hasta el frente
+    for (const pts of [[[a, zr], [TX0 - 0.2, zr], [TX0 - 0.2, TZ1 + 0.2], [NX0 - 0.2, TZ1 + 0.2], [NX0 - 0.2, zf], [a, zf]],
+      [[TX1 + 0.2, zr], [b, zr], [b, zf], [NX1 + 0.2, zf], [NX1 + 0.2, TZ1 + 0.2], [TX1 + 0.2, TZ1 + 0.2]]]) {
+      const s = new THREE.Shape(); pts.forEach(([x, z], i) => (i ? s.lineTo(x, -z) : s.moveTo(x, -z))); s.lineTo(pts[0][0], -pts[0][1]);
+      g.add(placa(s, 1.2, gris, [0, H - 0.6, 0], 'xz'));
+    }
     const vg = gris.clone(); vg.map = grilleTexture(18, 4);
     g.add(mesh(new THREE.PlaneGeometry(14, 30), vg, [32, H + 0.01, -10], [-Math.PI / 2, 0, 0]));
   }
@@ -203,7 +221,7 @@ export function buildEquipo(root) {
     const s = new THREE.Shape();
     s.moveTo(zc, H); s.absarc(zc, yc, RT, Math.PI / 2, Math.PI, false); s.lineTo(ZB + 1.4, yc); s.absarc(zc, yc, RT - 1.2, Math.PI, Math.PI / 2, true); s.lineTo(zc, H);
     g.add(placa(s, b - a, gris, [0, 0, 0], 'zy'));
-    g.add(placaPasos(b - a, yc - 4, 1.2, [[-33, 100 - (yc + 4) / 2, 0.55]], gris, [0, (yc + 4) / 2, ZB + 0.8], 'xy', 0.4));
+    g.add(placaPasos(b - a, yc - 4, 1.2, [[-38, 112 - (yc + 4) / 2, 0.55]], gris, [0, (yc + 4) / 2, ZB + 0.8], 'xy', 0.4));
     const vg = gris.clone(); vg.map = grilleTexture(26, 6);
     g.add(mesh(new THREE.PlaneGeometry(56, 16), vg, [0, 24, ZB + 0.17], [0, Math.PI, 0]));
     const plate = new THREE.MeshStandardMaterial({ map: plateTexture(['timsTOF Pro', '200–240 V~ 50/60 Hz', 'Modelo didáctico', 'Explorador 3D']), metalness: 0.6, roughness: 0.4 });
@@ -211,8 +229,8 @@ export function buildEquipo(root) {
     g.add(mesh(rbox(4, 3, 1.2, 0.3), M.plasticoNegro, [-28, 16, ZB - 0.4]));
     g.add(mesh(tubePath([[-28, 16, ZB - 1], [-28, 16, ZB - 5], [-30, 10, ZB - 10], [-33, 0.7, ZB - 17], [-42, 0.7, ZB - 35]], 0.45, 40, 10), M.cable));
     // pasamuros de la entrada de nitrógeno
-    g.add(mesh(cylZ(0.5, 3.0, 16), M.aceroPulido, [-33, 100, ZB + 0.8]));
-    g.add(mesh(cylZ(0.9, 0.5, 6), M.aceroPulido, [-33, 100, ZB - 0.15]));
+    g.add(mesh(cylZ(0.5, 3.0, 16), M.aceroPulido, [-38, 112, ZB + 0.8]));
+    g.add(mesh(cylZ(0.9, 0.5, 6), M.aceroPulido, [-38, 112, ZB - 0.15]));
   }
   {
     // torre del TOF: tubo azul de sección redondeada con tapa y líneas de luz blanca (frontal y lateral)
@@ -246,11 +264,12 @@ export function buildEquipo(root) {
     refs.ports = [AX.F1_0 + 3, AX.MP_0 + 4, AX.C_0 + 6].map((x) => W(x, -12));
     const p0 = refs.ports[0];
     g.add(mesh(cylY(0.8, 3, 20), M.aceroPulido, [p0.x, p0.y - 1.5, p0.z]));            // reductor de la toma de vacío previo de la fuente
-    // alojamiento circular de la fuente: atraviesa la banda gris (fondo con pasos del capilar y del gas)
-    g.add(placaPasos(16.4, 16.4, 0.6, [[0, 0, 0.7], [-3.6, 2.4, 0.5]], M.aceroOscuro, [SX, SY, 65.7], 'xy', 0.5));
-    g.add(pasamuros(0.5, M.goma, [SX - 3.6, SY + 2.4, 66.0], 'z', 0.3));
-    g.add(mesh(tubeX(8.4, 7.9, 14, 64), M.plata, [SX, SY, 73], [0, Math.PI / 2, 0]));
-    g.add(mesh(new THREE.TorusGeometry(8.15, 0.45, 12, 64), M.aceroPulido, [SX, SY, 80]));
+    // alojamiento cromado de la fuente: cilindro lateral que sale por el tramo de la banda dentro del hueco; tapa con el paso de la línea de muestra
+    g.add(mesh(tubeX(FR, FR - 0.5, 27, 64), M.plata, [-36.5, SY, FZ]));
+    const tapa = new THREE.Shape(); tapa.absarc(FZ, SY, FR, 0, Math.PI * 2, false);
+    const ph = new THREE.Path(); ph.absarc(FZ + 4, SY + 2.5, 0.5, 0, Math.PI * 2, true); tapa.holes.push(ph);
+    g.add(placa(tapa, 0.8, M.aceroOscuro, [-49.6, 0, 0], 'zy'));
+    g.add(mesh(new THREE.TorusGeometry(FR - 0.2, 0.45, 12, 64), M.aceroPulido, [-50.1, SY, FZ], [0, Math.PI / 2, 0]));
   }
   {
     // se separan de lado (hacia abajo atravesarían la bandeja)
@@ -278,7 +297,7 @@ export function buildEquipo(root) {
     const g = makePart(root, 'lineas_vacio', L1([0, 0, 0], { info: 'bomba_rotatoria' }));
     const yt = TRAY + 1, C = 'chasis';
     // cada manguera: toma → paso de la bandeja (anclado al chasis) → colector sobre el zócalo
-    const baja = (hx, hz, sx) => [[hx, yt + 1.3, hz, C], [hx, yt - 3.3, hz, C], [hx, 48, hz - 2, C], [hx + 2, 30, -50, C], [sx, 20, COL.z, C], [sx, COL.y + 3.3, COL.z, C]];
+    const baja = (hx, hz, sx) => [[hx, yt + 1.3, hz, C], [hx, yt - 3.3, hz, C], [hx, 50, hz - 2, C], [hx + 2, 34, -50, C], [sx, COL.y + 8, COL.z, C], [sx, COL.y + 3.3, COL.z, C]];
     const p0 = refs.ports[0];
     cableFlex(g, [[p0.x, p0.y - 3, p0.z, 'camara_vacio'], [p0.x, p0.y - 5.5, p0.z - 1, 'camara_vacio'], ...baja(PASOS[0][0], PASOS[0][1], COL.x - 4)], 0.5, M.ptfe, { seg: 120 });
     refs.ports.slice(1).forEach((p, i) => {
@@ -294,18 +313,19 @@ export function buildEquipo(root) {
   /* ---------------- ELECTRÓNICA Y GASES ---------------- */
   {
     const g = makePart(root, 'electronica', L1([30, 0, 0], { label: 'equipo' }));
-    for (const [y, h] of [[17, 22], [43, 24]]) {
+    for (const [y, h] of [[24, 20], [47, 22]]) {
       g.add(mesh(rbox(30, h, 56, 0.5), M.anodizado, [23, y, -8]));
       for (let i = 0; i < 8; i++) g.add(mesh(box(0.6, 0.35, 52), M.aluminio, [7.7, y - h / 2 + 3 + i * (h - 6) / 7, -8]));
     }
-    g.add(mesh(rbox(0.3, 18, 30, 0.06), M.pcb, [38.3, 43, -8]));
+    g.add(mesh(rbox(0.3, 18, 30, 0.06), M.pcb, [38.3, 47, -8]));
     const w = new THREE.MeshStandardMaterial({ map: warningTexture('ALTA TENSIÓN'), roughness: 0.45 });
-    g.add(mesh(new THREE.PlaneGeometry(10, 3.8), w, [23, 43, 20.03]));
+    g.add(mesh(new THREE.PlaneGeometry(10, 3.8), w, [23, 47, 20.03]));
     // coaxial de señal del detector MCP: baja por su paso de la bandeja hasta el conector del módulo superior
-    g.add(mesh(cylY(0.45, 1.0, 16), M.aceroPulido, [16, 55.5, -30]));
+    g.add(mesh(cylY(0.45, 1.0, 16), M.aceroPulido, [16, 58.5, -30]));
     const d = W(AX.DET.x, AX.DET.y - 2.9), yt = TRAY + 1;
-    cableFlex(g, [[d.x, d.y, d.z, 'detector_mcp'], [d.x, d.y - 2.4, d.z - 0.3, 'detector_mcp'], [-8, 76, -40, 'chasis'], [0, yt + 1.3, -39, 'chasis'],
-      [0, yt - 3.3, -39, 'chasis'], [8, 58.4, -35], [16, 57.8, -30], [16, 56.1, -30]], 0.15, M.cable);
+    const [hx, hz] = PASOS[3];
+    cableFlex(g, [[d.x, d.y, d.z, 'detector_mcp'], [d.x, d.y - 2.4, d.z - 0.3, 'detector_mcp'], [hx - 6, yt + 9, hz + 1, 'chasis'], [hx, yt + 1.3, hz, 'chasis'],
+      [hx, yt - 3.3, hz, 'chasis'], [2, 62, -45], [16, 60.8, -30], [16, 59.1, -30]], 0.15, M.cable);
   }
   {
     // digitalizador: tarjeta vertical en la bahía izquierda, bajo la bandeja
@@ -317,13 +337,13 @@ export function buildEquipo(root) {
   }
   {
     const g = makePart(root, 'linea_gas', L1([0, 12, 0], { label: 'equipo' }));
-    g.add(mesh(rbox(10, 6, 8, 0.4), M.grisClaro, [-33, 101, 30]));
-    // gas de la fuente: entra en el alojamiento por su paso del fondo y llega al racor superior del CaptiveSpray
-    const zf = 66.0, zc = ORIGEN.z + 8.2;
-    cableFlex(g, [[-33, 97.9, 30], [-32, 95.5, 40], [-24, 94.6, 58, 'camara_vacio'], [SX - 3.6, SY + 2.4, zf - 1.6, 'camara_vacio'], [SX - 3.6, SY + 2.4, zf + 0.6, 'camara_vacio'],
-      [SX - 2.6, SY + 3.3, zc - 7, 'captivespray'], [SX - 0.8, SY + 3.6, zc - 2.4, 'captivespray'], [SX - 0.8, SY + 2.35, zc, 'captivespray']], 0.25, M.ptfe, { seg: 96 });
+    g.add(mesh(rbox(10, 6, 8, 0.4), M.grisClaro, [-10, 118, 30]));
+    // gas de la fuente: entra por el extremo interior del alojamiento lateral y llega al racor superior del CaptiveSpray
+    const zc = ORIGEN.z + 8.2;
+    cableFlex(g, [[-10, 114.9, 30], [-14, 112, 40], [-20, 108.5, 52, 'camara_vacio'], [-22, 107.5, 58.5, 'camara_vacio'],
+      [SX + 1.5, SY + 4, zc - 2.2, 'captivespray'], [SX - 0.8, SY + 3.6, zc, 'captivespray'], [SX - 0.8, SY + 2.35, zc, 'captivespray']], 0.25, M.ptfe, { seg: 96 });
     // suministro de nitrógeno desde el pasamuros del panel trasero
-    cableFlex(g, [[-33, 104.1, 30], [-33.5, 106.5, 18], [-33, 106.5, -30], [-33, 104, -60], [-33, 101.6, ZB + 4.6, 'panel_trasero'], [-33, 100, ZB + 2.4, 'panel_trasero']], 0.25, M.ptfe);
+    cableFlex(g, [[-10, 121.1, 30], [-20, 123, 15], [-38, 120, -15], [-38, 114, -55], [-38, 112.6, ZB + 4.6, 'panel_trasero'], [-38, 112, ZB + 2.4, 'panel_trasero']], 0.25, M.ptfe);
   }
 
   /* ---------------- NANOELUTE (contexto) ---------------- */
@@ -364,20 +384,18 @@ export function buildEquipo(root) {
     }
     // salida de la línea de muestra en el lateral derecho
     g.add(mesh(cylX(0.5, 1.2, 16), M.aceroPulido, [x1 + 0.6, y0 + 28, zf - 6]));
-    // horno de columna sobre la banda, a la izquierda de la fuente
-    g.add(mesh(rbox(14, 8, 6, 1), gris, [-33, 96, BZ1 + 3.05]));
-    g.add(mesh(rbox(10, 0.4, 0.3, 0.1), led, [-33, 93.4, BZ1 + 6.2]));
     refs.lc = { x1, yo: y0 + 28, zo: zf - 6, yb: y0 + h };
     // tubos de disolvente: tapones → entrada superior del cuerpo
     for (const x of [cx - 13.5, cx - 4.5]) cableFlex(g, [[x, y0 + h + 17, cz - 14], [x + 1, y0 + h + 20, cz - 8], [x + 3, y0 + h + 6, cz - 2], [x + 3, y0 + h + 0.1, cz - 1]], 0.15, M.ptfe);
   }
   {
-    // línea PEEK: nanoElute → horno de columna → tuerca del CaptiveSpray (los puntos junto a la banda la siguen al explosionar)
+    // línea PEEK: nanoElute → tapa lateral del alojamiento → tuerca del CaptiveSpray. El punto junto al tramo de la banda lo acompaña al explosionar,
+    // de modo que la línea siempre cruza ese tramo por su paso.
     const g = makePart(root, 'tubo_muestra', L1([0, 0, 0], { info: 'nanolc' }));
-    const { x1, yo, zo } = refs.lc, N = 'nanolc', F = 'panel_frontal';
-    cableFlex(g, [[x1 + 1.2, yo, zo, N], [x1 + 5, yo - 0.5, zo + 6, N], [-45, 97, BZ1 + 4, N], [-40.05, 96, BZ1 + 3.05, N]], 0.12, M.peekRojo, { seg: 60 });
+    const { x1, yo, zo } = refs.lc, N = 'nanolc', V = 'camara_vacio', yh = SY + 2.5, zh = FZ + 4;
     const zn = ORIGEN.z - (AX.SPRAY.x - 7.7) + 0.3;
-    cableFlex(g, [[-25.95, 96, BZ1 + 3.05, N], [-22, 95, BZ1 + 6.5, F], [-16.8, 92.2, zn + 2.3, F], [-15.3, 91.1, zn + 1.0], [SX, SY, zn + 0.05, 'captivespray']], 0.12, M.peekRojo, { seg: 80 });
+    cableFlex(g, [[x1 + 1.2, yo, zo, N], [x1 + 6, yo + 3, zo + 15, N], [-60, yh + 0.5, zh - 4, N], [-54, yh, zh, 'panel_izq'], [-51.5, yh, zh, V], [-47.5, yh, zh, V],
+      [-38, SY + 2, FZ + 5], [-30, SY + 1.5, FZ + 6.5], [SX - 1, SY + 0.6, FZ + 7.2], [SX, SY, zn + 0.05, 'captivespray']], 0.12, M.peekRojo, { seg: 140 });
   }
 
   refs.analyzer = buildAnalizador(root);

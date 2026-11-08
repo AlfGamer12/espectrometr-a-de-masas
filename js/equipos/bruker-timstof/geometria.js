@@ -19,5 +19,5 @@ export const AX = {
   TOF_X0: 91.0, TOF_X1: 112.0, TOF_Y0: 4.0, TOF_Y1: 84.0,
   TIMS_R: 0.4,
 };
-// eje iónico a 88 cm (fuente CaptiveSpray a ≈ 91 cm, sobre la banda gris del frontal); el TOF queda bajo la torre
-export const ORIGEN = new THREE.Vector3(-15, 88, 71);
+// eje iónico a 100 cm, junto al lateral izquierdo: la fuente queda en el alojamiento lateral del extremo de la banda; el TOF, bajo la torre
+export const ORIGEN = new THREE.Vector3(-26, 100, 56);

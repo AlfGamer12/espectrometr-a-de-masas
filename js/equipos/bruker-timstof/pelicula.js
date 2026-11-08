@@ -9,7 +9,7 @@ export const PELICULA = [
   },
   {
     cap: 'Cromatografía', titulo: 'Del nanoElute a la fuente', dur: 14, modo: 'equipo', e1: 0, foco: ['nanolc', 'panel_frontal', 'captivespray'],
-    dir: [0.25, 0.3, 1], pad: 1.2, orbita: 1.8, acercar: 0.05, resaltar: ['nanolc'],
+    dir: [-0.7, 0.3, 0.8], pad: 1.2, orbita: 1.8, acercar: 0.05, resaltar: ['nanolc'],
     texto: 'El cromatógrafo nanoElute separa los péptidos a caudales de nanolitros por minuto, con presiones de unos mil bares. La columna desemboca en la fuente, a media altura en el frontal.',
   },
   {

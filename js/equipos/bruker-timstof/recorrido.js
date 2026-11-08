@@ -54,7 +54,7 @@ export const RECORRIDO = [
   {
     titulo: 'Vacío, gases y electrónica',
     texto: 'La región de los embudos y del TIMS trabaja a unos 2–3 mbar; el resto del analizador, en alto vacío, mantenido por bombas turbomoleculares y una bomba de vacío previo. La electrónica sincroniza en tiempo real la rampa del TIMS, el cuadrupolo y el acelerador ortogonal.',
-    modo: 'equipo', e1: 1, xray: false, sim: false, foco: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'electronica'],
+    modo: 'equipo', e1: 1, xray: false, sim: false, foco: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'electronica'], dir: [0.75, 0.5, 0.65], pad: 1.15,
     resaltar: ['camara_vacio', 'bombas_turbo', 'bomba_rotatoria', 'electronica', 'digitalizador'],
   },
 ];
