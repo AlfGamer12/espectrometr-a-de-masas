@@ -40,6 +40,6 @@ export default {
     <h4>Precisión y fuentes</h4>
     <p>Elaborado a partir de la documentación de Bruker (página de producto, folleto del trayecto de iones, patente de la ParaCell) y de artículos científicos
       con un scimaX real. Las especificaciones de resolución, exactitud, campo y vacío, y la secuencia de componentes, corresponden al equipo.
-      El aspecto exterior se ha contrastado con fotografías del equipo. Bruker no publica las dimensiones del sistema ni las del imán: el tamaño del mueble, del imán y de la celda son estimaciones.
+      El aspecto exterior se ha contrastado con fotografías del equipo. Bruker no publica las dimensiones del sistema ni las del imán: el tamaño del mueble, del imán y de la celda son estimaciones, y la óptica de transferencia se ha acortado para que el analizador quepa en el mueble.
       Las masas de los isotopólogos están calculadas; sus abundancias son aproximadas.</p>`,
 };

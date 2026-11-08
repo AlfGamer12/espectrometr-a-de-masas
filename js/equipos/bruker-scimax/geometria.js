@@ -10,12 +10,13 @@ export const AX = {
   MP_0: 35, MP_1: 43,                 // multipolo de transporte
   Q_0: 44, Q_1: 62,                   // cuadrupolo analítico (CASI)
   C_0: 63, C_1: 72,                   // celda de colisión (hexapolo)
-  TR_0: 73, TR_1: 206,                // óptica de transferencia ("time of flight")
-  CELL_0: 207.5, CELL_1: 222.5,       // ParaCell (≈ 15 cm de longitud; radio 2,8 cm)
+  // óptica de transferencia ("time of flight"): acortada respecto al equipo real (≈ 1 m) para que el conjunto quepa en el mueble
+  TR_0: 73, TR_1: 136,
+  CELL_0: 137.5, CELL_1: 152.5,       // ParaCell (≈ 15 cm de longitud; radio 2,8 cm)
   CELL_R: 2.8,
-  MAG_C: 215, MAG_L: 116, MAG_R: 40, BORE_R: 7.5,   // imán superconductor: centro, longitud, radio exterior del criostato, bore
-  UHV_END: 291,                       // extremo del tubo UHV, fuera del imán (turbo UHV y preamplificador)
+  MAG_C: 145, MAG_L: 116, MAG_R: 40, BORE_R: 7.5,   // imán superconductor: centro, longitud, radio exterior del criostato, bore
+  UHV_END: 221,                       // extremo del tubo UHV, fuera del imán (turbo UHV y preamplificador)
 };
 // el analizador se monta girado 180° (equipo.js): la fuente queda en el extremo +X (frente real del equipo) y el imán hacia −X
-export const ORIGEN = new THREE.Vector3(136, 104, 0);
+export const ORIGEN = new THREE.Vector3(120, 120, 0);
 export const FIS = { B: 7.0 };

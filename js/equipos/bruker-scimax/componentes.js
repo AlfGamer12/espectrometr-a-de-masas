@@ -58,7 +58,7 @@ export const INFO = {
       'Los iones se pulsan desde la celda de colisión. El tiempo de vuelo hasta la celda (≈ 0,7–1,2 ms) actúa como filtro de m/z: los ligeros llegan antes.',
       'Recorre una distancia del orden de un metro dentro del gradiente del campo magnético.',
     ],
-    specs: [['Time of flight', '≈ 0,7–1,2 ms'], ['Longitud', '≈ 1 m o más (aprox.)']],
+    specs: [['Time of flight', '≈ 0,7–1,2 ms'], ['Longitud', '≈ 1 m o más (aprox.); acortada en el modelo para que quepa en el mueble']],
     tune: ['Time of flight'],
     une: ['celda_colision', 'paracell', 'tubo_uhv'],
   },
@@ -186,9 +186,9 @@ export const INFO = {
   /* ============ ESTRUCTURA ============ */
   carcasa: {
     nombre: 'Carcasa de la consola', en: 'Console covers', cat: 'Estructura y carcasa',
-    funcion: 'Mueble único en gris claro, con capó de aristas muy redondeadas, que cubre la consola (fuente, banco de óptica iónica, bombas y electrónica) y el imán. El lomo azul con línea de luz recorre la tapa hasta la caja del criorrefrigerador.',
+    funcion: 'Cuerpo compacto en gris claro, con esquinas y aristas de gran radio, que cubre la consola (fuente, banco de óptica iónica, bombas y electrónica) y el imán. Una banda azul con línea de luz baja por el extremo frontal y cruza la tapa, estrechándose, hasta la caja del criorrefrigerador.',
     detalles: ['Bruker indica una huella reducida que cabe en un laboratorio estándar; las dimensiones no están publicadas.'],
-    specs: [['Dimensiones', 'No publicadas (modelo: ≈ 3,2 × 1,1 × 1,5 m; 2 m con la caja del criorrefrigerador)']],
+    specs: [['Dimensiones', 'No publicadas (modelo: ≈ 2,5 × 1,05 × 1,7 m; 2,3 m con la caja del criorrefrigerador)']],
     une: ['chasis', 'panel_frontal'],
   },
   panel_frontal: {

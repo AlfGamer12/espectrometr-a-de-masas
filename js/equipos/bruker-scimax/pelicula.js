@@ -16,7 +16,7 @@ export const PELICULA = [
   },
   {
     cap: 'Arquitectura', titulo: 'Vista explosionada', dur: 15, modo: 'equipo', e1: 1, xray: false, foco: ['carcasa_fuente', 'camara_vacio', 'bombas_turbo', 'electronica', 'iman', 'criorrefrigerador', 'chasis'],
-    dir: [0.75, 0.6, 0.8], pad: 1.0, trans: 3.0, orbita: -3, resaltar: [],
+    dir: [0.3, 0.75, 0.9], pad: 1.05, trans: 3.0, orbita: -3, resaltar: [],
     texto: 'El mueble aloja delante la fuente, el banco de óptica iónica, las bombas y la electrónica. Detrás, bajo el mismo capó y alineado con el eje, está el imán, con el criorrefrigerador encima.',
   },
   {

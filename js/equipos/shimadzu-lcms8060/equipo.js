@@ -17,6 +17,7 @@ const YP = 26.5, HT = 52;                                   // zócalo izquierdo
 const KF = { x: 44, y: 9 };                                 // pasamuros KF de vacío previo en el panel trasero
 const PROBE = { x: ORIGEN.x + AX.SPRAY.x, z: ORIGEN.z };    // eje de la sonda ESI (mundo)
 const RAN = { z0: -1.8, z1: 5.8 };                          // ranura de la unidad de ionización (sonda, bloque calefactor y DL)
+const ZI = ZF - 1.5;                                        // frente de la unidad de ionización (algo retranqueado sobre el zócalo)
 
 /* ---------------- Rótulos (canvas con fondo transparente) ---------------- */
 function canvasTex(w, h, draw) {
@@ -89,7 +90,7 @@ export function buildEquipo(root) {
   const refs = {};
   const grille = grilleTexture(30, 9);
   const NEGRO = M.negroBrillante;
-  const CLARO = new THREE.MeshPhysicalMaterial({ color: 0xd9dce0, metalness: 0.35, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08 });
+  const CLARO = new THREE.MeshPhysicalMaterial({ color: 0xeceef1, metalness: 0.18, roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.08 });
   const CEPILLADO = M.acero.clone(); CEPILLADO.color.setHex(0xc9cdd2); CEPILLADO.roughness = 0.3;
   const LED = new THREE.MeshStandardMaterial({ color: 0x35d6c6, emissive: 0x35d6c6, emissiveIntensity: 1.4 });
   const LATERAL_LC = M.grisClaro.clone(); LATERAL_LC.color.setHex(0xc0c4c9);
@@ -97,7 +98,7 @@ export function buildEquipo(root) {
   /* ---------------- ESTRUCTURA Y CARCASA ---------------- */
   {
     const g = makePart(root, 'chasis', L1([0, 0, 0]));
-    g.add(mesh(rbox(X1 - X0 - 2, 1.4, ZF - ZB - 2, 0.3), M.carcasaOsc, [0, 1.9, 0]));
+    g.add(mesh(rbox(X1 - X0 - 6, 1.4, ZF - ZB - 6, 0.3), M.carcasaOsc, [0, 1.9, 0]));
     for (const x of [X0 + 23, X1 - 11]) for (const z of [ZB + 6, ZF - 6]) {
       g.add(mesh(cylY(2.0, 0.9, 32), M.goma, [x, 0.45, z]));
       g.add(mesh(cylY(0.6, 1.0, 6), M.aceroOscuro, [x, 1.3, z]));
@@ -118,13 +119,13 @@ export function buildEquipo(root) {
     g.add(mesh(rbox(xb - xa, H - 8, 1.0, 0.4), NEGRO, [(xa + xb) / 2, 2 + (H - 8) / 2, ZF - 0.5]));
     g.add(perfilFrontal(xa, xb, ZF - 3, ZF, H - 6.2, H, 3, 1.0, 1.2, NEGRO));
     // banda clara con barrido en "S", tira cepillada y línea que continúa hasta el extremo derecho
-    const xs = -8, xe = 14, ys = 20.3;
-    const sw = new THREE.ExtrudeGeometry(swooshShape(XT + 0.2, xb - 0.2, 2.4, ys, 4.0, xs, xe),
+    const xs = -15, xe = 14, ys = 21.6;
+    const sw = new THREE.ExtrudeGeometry(swooshShape(XT + 0.2, xb - 0.2, 2.4, ys, 5.8, xs, xe),
       { depth: 0.6, bevelEnabled: true, bevelThickness: 0.15, bevelSize: 0.15, bevelSegments: 3, curveSegments: 40 });
     g.add(mesh(sw, CLARO, [0, 0, ZF]));
     g.add(mesh(rbox(xs + 1 - (XT + 0.2), 2.8, 0.7, 0.2), CEPILLADO, [(xs + 1 + XT + 0.2) / 2, ys + 1.4, ZF + 0.35]));
     g.add(mesh(rbox(xb - 0.2 - xs, 0.5, 0.6, 0.15), CEPILLADO, [(xb - 0.2 + xs) / 2, ys + 2.55, ZF + 0.3]));
-    g.add(decal(logoTex(), 11, 1.38, [-30.0, 26.6, ZF + 0.03]));
+    g.add(decal(logoTex(), 10, 1.25, [-30.5, 28.6, ZF + 0.03]));
     g.add(decal(modeloTex(), 19, 1.78, [47.0, 25.2, ZF + 0.03]));
   }
   {
@@ -172,33 +173,33 @@ export function buildEquipo(root) {
     // zócalo: frente negro con banda clara, tira cepillada y pilotos de estado
     g.add(mesh(rbox(XT - X0, YP - 2.6, ZF - ZB, 0.8), NEGRO, [(X0 + XT) / 2, (YP + 2.6) / 2, 0]));
     const xl = -55, xr = XT - 0.1;
-    g.add(mesh(rbox(xr - xl, 17.4, 0.6, 0.2), CLARO, [(xl + xr) / 2, 11.6, ZF + 0.3]));
-    g.add(mesh(rbox(xr - xl, 2.8, 0.7, 0.2), CEPILLADO, [(xl + xr) / 2, 21.7, ZF + 0.35]));
-    for (let i = 0; i < 5; i++) g.add(mesh(cylZ(0.26, 0.25, 16), LED, [-51.4 + i * 2.0, 21.2, ZF + 0.8]));
-    g.add(decal(pilotosTex(), 10.4, 0.65, [-47.4, 22.55, ZF + 0.72]));
+    g.add(mesh(rbox(xr - xl, 18.7, 0.6, 0.2), CLARO, [(xl + xr) / 2, 12.25, ZF + 0.3]));
+    g.add(mesh(rbox(xr - xl, 2.8, 0.7, 0.2), CEPILLADO, [(xl + xr) / 2, 23.0, ZF + 0.35]));
+    for (let i = 0; i < 5; i++) g.add(mesh(cylZ(0.26, 0.25, 16), LED, [-51.4 + i * 2.0, 22.5, ZF + 0.8]));
+    g.add(decal(pilotosTex(), 10.4, 0.65, [-47.4, 23.85, ZF + 0.72]));
     // carcasa hueca de la cámara de pulverización: ventana frontal y ranura (techo y cara derecha) por la que salen la sonda,
     // el bloque calefactor y la DL cuando la unidad se retira hacia la izquierda
     const yw0 = YP, yw1 = HT - 1, hw = yw1 - yw0, ym = (yw0 + yw1) / 2, cxI = (XI + XT) / 2;
-    g.add(mesh(box(1.0, hw, ZF - ZB), NEGRO, [XI + 0.5, ym, 0]));                                        // pared izquierda
+    g.add(mesh(box(1.0, hw, ZI - ZB), NEGRO, [XI + 0.5, ym, (ZB + ZI) / 2]));                                        // pared izquierda
     g.add(mesh(box(XT - XI - 2.0, hw, 1.0), NEGRO, [cxI, ym, ZB + 0.5]));                                 // pared trasera
     const fr = new THREE.Shape(); fr.moveTo(XI + 1, yw0); fr.lineTo(XT - 1, yw0); fr.lineTo(XT - 1, yw1); fr.lineTo(XI + 1, yw1); fr.lineTo(XI + 1, yw0);
     const W0 = { x: cxI, y: 33, h: 3.5 };
     const hole = new THREE.Path(); hole.moveTo(W0.x - W0.h, W0.y - W0.h); hole.lineTo(W0.x - W0.h, W0.y + W0.h); hole.lineTo(W0.x + W0.h, W0.y + W0.h); hole.lineTo(W0.x + W0.h, W0.y - W0.h);
     fr.holes.push(hole);
-    g.add(mesh(new THREE.ExtrudeGeometry(fr, { depth: 1.0, bevelEnabled: false }), NEGRO, [0, 0, ZF - 1.0]));   // pared frontal con ventana
-    for (const [z0, z1] of [[ZB, RAN.z0], [RAN.z1, ZF]]) g.add(mesh(box(1.0, hw, z1 - z0), NEGRO, [XT - 0.5, ym, (z0 + z1) / 2]));   // cara derecha (ranura)
-    for (const [z0, z1] of [[ZB, RAN.z0], [RAN.z1, ZF]]) g.add(mesh(rbox(XT - XI, 1.0, z1 - z0, 0.3), NEGRO, [cxI, HT - 0.5, (z0 + z1) / 2]));   // techo
+    g.add(mesh(new THREE.ExtrudeGeometry(fr, { depth: 1.0, bevelEnabled: false }), NEGRO, [0, 0, ZI - 1.0]));   // pared frontal con ventana
+    for (const [z0, z1] of [[ZB, RAN.z0], [RAN.z1, ZI]]) g.add(mesh(box(1.0, hw, z1 - z0), NEGRO, [XT - 0.5, ym, (z0 + z1) / 2]));   // cara derecha (ranura)
+    for (const [z0, z1] of [[ZB, RAN.z0], [RAN.z1, ZI]]) g.add(mesh(rbox(XT - XI, 1.0, z1 - z0, 0.3), NEGRO, [cxI, HT - 0.5, (z0 + z1) / 2]));   // techo
     g.add(mesh(rbox(PROBE.x - 1.4 - XI, 1.0, RAN.z1 - RAN.z0, 0.3), NEGRO, [(XI + PROBE.x - 1.4) / 2, HT - 0.5, (RAN.z0 + RAN.z1) / 2]));
-    g.add(mesh(box(XT - XI - 2.0, 0.6, 0.25), M.plasticoNegro, [cxI, 45, ZF + 0.12]));                     // junta de la tapa
+    // capota superior que vuela sobre el frente (como en el equipo real), con la junta oscura debajo
+    g.add(mesh(rbox(XT - XI - 0.2, 7.0, 1.6, 0.6), NEGRO, [cxI, 47.5, ZI + 0.3]));
+    g.add(mesh(box(XT - XI - 2.0, 0.5, 0.25), M.plasticoNegro, [cxI, 43.7, ZI + 0.12]));
     g.add(mesh(box(XT - XI - 2.0, 16, 0.2), M.acero, [cxI, 36, ZB + 1.1]));                                 // fondo interior de acero
     // marco de la ventana (la ventana es una pieza aparte)
     const mf = new THREE.Shape(); mf.moveTo(-4.5, -4.5); mf.lineTo(4.5, -4.5); mf.lineTo(4.5, 4.5); mf.lineTo(-4.5, 4.5);
     const hl = new THREE.Path(); hl.moveTo(-3.5, -3.5); hl.lineTo(-3.5, 3.5); hl.lineTo(3.5, 3.5); hl.lineTo(3.5, -3.5); mf.holes.push(hl);
-    g.add(mesh(new THREE.ExtrudeGeometry(mf, { depth: 0.6, bevelEnabled: true, bevelThickness: 0.15, bevelSize: 0.15, bevelSegments: 2 }), M.aceroOscuro, [W0.x, W0.y, ZF + 0.15]));
+    g.add(mesh(new THREE.ExtrudeGeometry(mf, { depth: 0.6, bevelEnabled: true, bevelThickness: 0.15, bevelSize: 0.15, bevelSegments: 2 }), M.aceroOscuro, [W0.x, W0.y, ZI + 0.15]));
     // collar abierto del paso de la sonda (deja salir la sonda por la ranura) y conexiones de la tapa
     g.add(mesh(new THREE.TorusGeometry(2.0, 0.45, 12, 32, Math.PI), M.aceroPulido, [PROBE.x, HT + 0.45, PROBE.z], [Math.PI / 2, 0, Math.PI / 2]));
-    const warn = new THREE.MeshStandardMaterial({ map: warningTexture('ALTA TENSIÓN · CALIENTE'), roughness: 0.45 });
-    g.add(mesh(new THREE.PlaneGeometry(6.4, 2.4), warn, [cxI, 48.4, ZF + 0.02]));
     g.add(mesh(cylY(0.9, 0.4, 6), M.aceroPulido, [-50.5, HT + 0.1, -7]));
     g.add(mesh(cylY(0.5, 1.4, 6), M.aceroPulido, [-50.5, HT + 0.9, -7]));
     g.add(mesh(cylY(0.75, 1.8, 24), M.plasticoNegro, [-40.8, HT + 0.7, -5]));
@@ -214,8 +215,8 @@ export function buildEquipo(root) {
   {
     const g = makePart(root, 'ventana_fuente', L1([0, 0, 18], { label: 'equipo', shell: true }));
     const gl = M.vidrio.clone(); gl.opacity = 0.22;
-    g.add(mesh(rbox(7.4, 7.4, 0.5, 0.2), gl, [(XI + XT) / 2, 33, ZF + 0.45]));
-    g.add(mesh(rbox(1.2, 3.2, 1.0, 0.3), M.aceroPulido, [(XI + XT) / 2 + 5.3, 33, ZF + 0.75]));
+    g.add(mesh(rbox(7.4, 7.4, 0.5, 0.2), gl, [(XI + XT) / 2, 33, ZI + 0.45]));
+    g.add(mesh(rbox(1.2, 3.2, 1.0, 0.3), M.aceroPulido, [(XI + XT) / 2 + 5.3, 33, ZI + 0.75]));
   }
   {
     // válvula de desvío de 6 vías sobre el zócalo, junto al horno de columnas
@@ -276,9 +277,9 @@ export function buildEquipo(root) {
     for (const x of [xa + 6, xb - 6]) g.add(mesh(rbox(3, 8, 10, 0.3), M.aluminio, [x, 6.6, z]));
   }
   {
-    // se desplaza más que el panel derecho para no cruzarse con él al desmontar
-    const g = makePart(root, 'bomba_rotatoria', L1([44, 0, 0], { label: 'equipo' }));
-    const cx = 86, cz = -6;
+    // en la mesa, detrás de la unidad MS (fuera de la vista frontal); se aleja más deprisa que el panel trasero al desmontar
+    const g = makePart(root, 'bomba_rotatoria', L1([0, 0, -80], { label: 'equipo' }));
+    const cx = 30, cz = -48;
     g.add(mesh(rbox(16, 18, 20, 0.8), M.grisClaro, [cx + 4, 10, cz]));
     g.add(mesh(cylX(9, 20, 48), M.anodizado, [cx - 11, 11, cz]));
     for (let i = 0; i < 10; i++) g.add(mesh(washerX(9.6, 8.8, 0.35), M.anodizado, [cx - 20 + i * 2, 11, cz]));
@@ -305,8 +306,8 @@ export function buildEquipo(root) {
     const yp = ORIGEN.y - 9.2;
     cableFlex(g, [[-31, yp, -1], [-31, yp - 2.3, -1.2], [-34, yp - 5.8, -7], [-34.5, 12, -16, P], [-31, KF.y + 0.5, ZB + 3.4, P], [0, KF.y, ZB + 3.2, P],
       [KF.x - 5, KF.y, ZB + 3.2, P], [KF.x - 2.6, KF.y, ZB + 3.2, P]], 0.75, mat, { seg: 120, radial: 12 });
-    cableFlex(g, [[KF.x, KF.y, ZB + 1.2, P], [KF.x, KF.y, ZB - 2.0, P], [KF.x + 2, KF.y + 0.5, ZB - 6, P], [62, 11, ZB - 7, P],
-      [76, 17, ZB - 4, R], [86, 26.5, -11, R], [90, 26.3, -7, R], [90, 22.6, -6, R]], 0.9, mat, { seg: 120, radial: 12 });
+    cableFlex(g, [[KF.x, KF.y, ZB + 1.2, P], [KF.x, KF.y, ZB - 2.0, P], [KF.x, KF.y + 1, ZB - 6, P],
+      [40, 24, -38, R], [34, 26.5, -45, R], [34, 26.3, -47.5, R], [34, 22.6, -48, R]], 0.9, mat, { seg: 120, radial: 12 });
   }
 
   /* ---------------- ELECTRÓNICA Y GASES ---------------- */

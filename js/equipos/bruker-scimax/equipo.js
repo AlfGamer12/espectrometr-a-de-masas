@@ -1,10 +1,11 @@
-// Equipo completo scimaX, según fotografías del equipo real: un único mueble largo y bajo en gris claro, con capó de
-// aristas muy redondeadas que oculta el imán de 7 T; cabeza frontal azul Bruker con línea de luz que continúa como lomo
-// azul a lo largo de la tapa; fuente ESI (cúpula azul) en un hueco abierto de la esquina frontal izquierda, sobre una
-// bandeja de acero; puerta de la diana MALDI en el hombro derecho; caja azul del criorrefrigerador sobre el extremo
-// trasero; compresor de helio en el suelo y puesto de control en una mesa aparte.
-// Coordenadas de mundo en cm. Eje iónico = −X (el frente real del equipo mira a +X; el lateral rotulado, a +Z).
-// Bruker no publica las dimensiones: el mueble (≈ 324 × 112 × 154 cm) se ha ajustado al analizador y a las proporciones de las fotos.
+// Equipo completo scimaX, según el render oficial de Bruker y fotografías del equipo real: un cuerpo compacto y alto en
+// gris claro, con esquinas verticales y aristas superiores de gran radio, que oculta el imán de 7 T; cabeza azul Bruker en el
+// extremo frontal (de suelo a techo, con línea de luz) que continúa como banda azul sobre la tapa hasta la caja alta del
+// criorrefrigerador; la fuente ESI (cúpula azul) en un hueco azul de esquinas redondeadas del lateral, con una repisa blanca
+// debajo; puerta de la diana MALDI en el hombro derecho del frontal; compresor de helio en el suelo y puesto de control aparte.
+// Coordenadas de mundo en cm. Eje iónico = −X (el frente real mira a +X; el lateral rotulado, a +Z).
+// Bruker no publica las dimensiones: el cuerpo (≈ 249 × 104 × 171 cm; 222 cm con la caja del criorrefrigerador) sigue las
+// proporciones del render y de las fotos, con la óptica de transferencia acortada para que el analizador quepa.
 import * as THREE from 'three';
 import { M } from '../../materials.js';
 import { mesh, rbox, box, cylX, cylY, cylZ, tubeX, tubePath, placaPasos, grilleTexture, screenTexture, plateTexture, warningTexture } from '../../geom.js';
@@ -13,59 +14,58 @@ import { buildAnalizador } from './analizador.js';
 import { ORIGEN, AX } from './geometria.js';
 
 const L1 = (offset, extra = {}) => ({ level: 1, offset, mode: 'equipo', ...extra });
-/** Mueble: x ∈ [XB, XF], z ∈ [−ZW, ZW]; capó a HH con aristas de radio RC; lomo y cabeza azules (|z| < ZS) hasta HS. */
-const XB = -172, XF = 152, ZW = 56, HH = 148, RC = 14, ZS = 20, HS = 154;
-/** Cabeza azul (x > XH) con el hueco de la fuente a su izquierda (+z), sobre la bandeja a YT. */
-const XH = 112, YT = 84.2, XSEAM = -16;
+/** Cuerpo: x ∈ [XB, XF], z ∈ [−ZW, ZW], tapa a HH; esquinas y aristas de radio R (centros en XB + R, ±Z1, YE). */
+const XB = -113, XF = 136, ZW = 52, HH = 168, R = 13, X1 = XB + R, Z1 = ZW - R, YE = HH - R, T = 1.2;
+/** Cabeza azul: x ≥ XH, z ∈ [ZH, ZW], hasta HT; esquina frontal izquierda de radio RH. Hombro gris: z < ZH. */
+const XH = 90, ZH = -10, HT = 171, RH = 8, XS = XF - R;
+/** Hueco de la fuente en el costado de la cabeza y repisa blanca. */
+const HU = { x0: 96, x1: 126, y0: 104, y1: 146, zf: 17 };
+/** Banda azul sobre la tapa (z ∈ [ZH, 38]) desde la caja del criorrefrigerador hasta la cabeza. */
+const BANDA = { z0: ZH, z1: 30, x0: -50 };
 /** Analizador girado 180°: x local → −x mundo, z local → −z. */
 const wx = (x) => ORIGEN.x - x;
-const MX = wx(AX.MAG_C), MR = AX.MAG_R, ML = AX.MAG_L;   // imán
-/** Turbos de la consola (x mundo) y turbo UHV tras el imán. */
-const TURBOS = [AX.F1_0 + 4, AX.Q_0 + 6, AX.TR_0 + 20].map(wx);
+const MX = wx(AX.MAG_C), MR = AX.MAG_R, ML = AX.MAG_L;
+/** Turbos de la consola (x mundo; la tercera cuelga del tubo UHV, delante del imán) y turbo UHV tras el imán. */
+const TURBOS = [AX.F1_0 + 4, AX.Q_0 + 6, AX.TR_0 + 8].map(wx);
 const XUHV = MX - ML / 2 - 6;
 const XPRE = wx(AX.UHV_END + 1.5 + 3.6);
-/** Bancada (y = 84) y paso de la fibra del láser [x, z, r]. */
-const BANCO = { x0: 30, x1: 148, z: 18, y: 84 };
-const PASO_FIBRA = [134, -1, 0.6];
-/** Criorrefrigerador (centro de la cabeza fría) y compresor de helio. */
-const XC = -125, CRIO = { x0: -149.8, x1: -105.2 };
-const COMP = { x: -140, z: -100 };
-/** Bomba de vacío previo (bajo la consola) y su colector. */
+/** Bancada óptica y paso de la fibra del láser [x, z, r]. */
+const BANCO = { x0: 46, x1: 132, z: 18, y: ORIGEN.y - 20 };
+const PASO_FIBRA = [118, -4, 0.6];
+/** Criorrefrigerador (cabeza fría en XC, ZC) y compresor de helio. */
+const CRIO = { x0: -90, x1: -56, z0: -6, z1: 34 }, XC = -73, ZC = 14;
+const COMP = { x: -80, z: -100 };
 const BPV = { x: 60, y: 14, z: -30 };
 
 /* ---------- utilidades de forma ---------- */
 /** Extruye una forma. 'xy': espesor en z · 'zy': u = z, v = y, espesor en x · 'xz': u = x, v = −z, espesor en y. */
 function placa(shape, t, mat, pos, plano = 'xy') {
-  const g = new THREE.ExtrudeGeometry(shape, { depth: t, bevelEnabled: false, curveSegments: 18 });
+  const g = new THREE.ExtrudeGeometry(shape, { depth: t, bevelEnabled: false, curveSegments: 20 });
   g.translate(0, 0, -t / 2);
   const rot = plano === 'zy' ? [0, -Math.PI / 2, 0] : plano === 'xz' ? [-Math.PI / 2, 0, 0] : [0, 0, 0];
   return mesh(g, mat, pos, rot);
 }
 const poly = (pts, P = THREE.Shape) => { const s = new P(); pts.forEach(([u, v], i) => (i ? s.lineTo(u, v) : s.moveTo(u, v))); s.lineTo(...pts[0]); return s; };
-/** Sección (z, y) de medio capó: tapa plana desde z0 hasta la arista redondeada del lateral s·ZW. */
-function capoSeccion(s) {
-  const z0 = s * (ZS + 0.2), zc = s * (ZW - RC), yc = HH - RC, sh = new THREE.Shape();
-  sh.moveTo(z0, HH); sh.lineTo(zc, HH);
-  sh.absarc(zc, yc, RC, Math.PI / 2, s > 0 ? 0 : Math.PI, s > 0);
-  sh.lineTo(s * (ZW - 1.2), yc); sh.absarc(zc, yc, RC - 1.2, s > 0 ? 0 : Math.PI, Math.PI / 2, s < 0);
-  sh.lineTo(z0, HH - 1.2); sh.lineTo(z0, HH);
-  return sh;
+/** Cáscara de cuarto de cilindro: arco de radio r (exterior) y r − T entre los ángulos a0 y a1, centrado en (cu, cv). */
+function arco(cu, cv, r, a0, a1) {
+  const s = new THREE.Shape();
+  s.moveTo(cu + r * Math.cos(a0), cv + r * Math.sin(a0)); s.absarc(cu, cv, r, a0, a1, a1 < a0);
+  s.lineTo(cu + (r - T) * Math.cos(a1), cv + (r - T) * Math.sin(a1)); s.absarc(cu, cv, r - T, a1, a0, a1 > a0);
+  s.lineTo(cu + r * Math.cos(a0), cv + r * Math.sin(a0));
+  return s;
 }
-/** Tapa frontal de un hombro (plano zy): de z0 a z1 (|z1| < ZW), con la arista superior exterior del capó. */
-function tapaHombro(z0, z1, y0) {
-  const s = Math.sign(z1), zc = s * (ZW - RC), yc = HH - RC, dz = Math.abs(z1 - zc), a = Math.acos(dz / RC);
-  const sh = new THREE.Shape();
-  sh.moveTo(z0, y0); sh.lineTo(z1, y0); sh.lineTo(z1, yc + RC * Math.sin(a));
-  sh.absarc(zc, yc, RC, s > 0 ? a : Math.PI - a, Math.PI / 2, s < 0);
-  sh.lineTo(z0, HH); sh.lineTo(z0, y0);
-  return sh;
+/** Octante de esfera (esquina superior redondeada): sx, sz = signos de la esquina. */
+function octante(mat, c, sx, sz) {
+  const phi = sx < 0 ? (sz > 0 ? 0 : -Math.PI / 2) : (sz > 0 ? Math.PI / 2 : Math.PI);
+  const m = mesh(new THREE.SphereGeometry(R - T / 2, 32, 12, phi, Math.PI / 2, 0, Math.PI / 2), mat, c);
+  return m;
 }
-/** Lomo azul (sección en U invertida, plano zy). */
-function lomoSeccion() {
-  const sh = new THREE.Shape();
-  sh.moveTo(-ZS, HH - 1); sh.lineTo(-ZS, HS - 2.4); sh.quadraticCurveTo(-ZS, HS, -ZS + 2.4, HS); sh.lineTo(ZS - 2.4, HS); sh.quadraticCurveTo(ZS, HS, ZS, HS - 2.4);
-  sh.lineTo(ZS, HH - 1); sh.lineTo(ZS - 1.2, HH - 1); sh.lineTo(ZS - 1.2, HS - 1.2); sh.lineTo(-ZS + 1.2, HS - 1.2); sh.lineTo(-ZS + 1.2, HH - 1); sh.lineTo(-ZS, HH - 1);
-  return sh;
+/** Rectángulo de esquinas redondeadas como agujero. */
+function huecoRedondeado(x0, y0, x1, y1, r) {
+  const p = new THREE.Path();
+  p.moveTo(x0 + r, y0); p.lineTo(x1 - r, y0); p.quadraticCurveTo(x1, y0, x1, y0 + r); p.lineTo(x1, y1 - r); p.quadraticCurveTo(x1, y1, x1 - r, y1);
+  p.lineTo(x0 + r, y1); p.quadraticCurveTo(x0, y1, x0, y1 - r); p.lineTo(x0, y0 + r); p.quadraticCurveTo(x0, y0, x0 + r, y0);
+  return p;
 }
 function lienzo(w, h, draw) {
   const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h);
@@ -81,7 +81,7 @@ function logoBruker(color) {
     g.font = '800 74px Arial, Segoe UI'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('BRUKER', 256, 206);
   });
 }
-/** Rótulo "scimaX" del lateral (blanco con sombra suave, la X mayor e inclinada). */
+/** Rótulo "scimaX" del lateral (blanco con contorno y sombra suaves; la X mayor e inclinada). */
 function rotuloScimax() {
   return lienzo(1024, 320, (g) => {
     const txt = (f) => { g.font = '600 190px Segoe UI, Arial'; f('scima', 20, 230); const w = g.measureText('scima').width; g.font = 'italic 700 270px Segoe UI, Arial'; f('X', 20 + w + 6, 250); };
@@ -94,25 +94,28 @@ function rotuloScimax() {
 export function buildEquipo(root) {
   const refs = {};
   const navy = M.azulBruker.clone(); navy.color.setHex(0x253b5c); navy.roughness = 0.42; navy.clearcoat = 0.35;
-  const gris = M.grisClaro.clone(); gris.color.setHex(0xd7dadd); gris.metalness = 0.1; gris.roughness = 0.42; gris.clearcoat = 0.35;
+  const navyHueco = navy.clone(); navyHueco.color.setHex(0x1a2a44);
+  const gris = M.grisClaro.clone(); gris.color.setHex(0xdcdfe2); gris.metalness = 0.08; gris.roughness = 0.42; gris.clearcoat = 0.35;
+  const grisD = gris.clone(); grisD.side = THREE.DoubleSide;
   const oscuro = M.carcasaOsc.clone(); oscuro.color.setHex(0x1b2230);
-  const junta = new THREE.MeshStandardMaterial({ color: 0x6c737d, roughness: 0.7 });
+  const junta = new THREE.MeshStandardMaterial({ color: 0x8a919b, roughness: 0.7 });
+  const linea = new THREE.MeshStandardMaterial({ color: 0x4a5260, roughness: 0.6 });
   const led = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xdcefff, emissiveIntensity: 1.6, roughness: 0.3 });
   const rejilla = navy.clone(); rejilla.map = grilleTexture(30, 3); rejilla.color.setHex(0x8b97ab);
-  const logoBlanco = rotulo(logoBruker('#e9eef5')), logoAzul = rotulo(logoBruker('#22385a'));
+  const logoBlanco = rotulo(logoBruker('#e9eef5'));
 
   /* ---------------- BASTIDOR ---------------- */
   {
     const g = makePart(root, 'chasis', L1([0, 0, 0]));
     g.add(mesh(rbox(XF - XB - 6, 3, 2 * ZW - 6, 0.5), oscuro, [(XB + XF) / 2, 2.5, 0]));                  // zócalo retranqueado
-    for (const x of [XB + 10, XF - 10]) for (const z of [-ZW + 8, ZW - 8]) g.add(mesh(cylY(2.4, 1.0, 24), M.aceroOscuro, [x, 0.5, z]));
-    for (const x of [-168, 108]) for (const z of [-52, 52]) g.add(mesh(box(3, 124, 3), M.aluminio, [x, 4 + 62, z]));
-    // bancada óptica: aberturas para las turbos (cuelgan de la cámara) y paso de la fibra del láser; apoyada en cuatro columnas
+    for (const x of [XB + 12, XF - 12]) for (const z of [-ZW + 8, ZW - 8]) g.add(mesh(cylY(2.4, 1.0, 24), M.aceroOscuro, [x, 0.5, z]));
+    for (const [x, z] of [[-101, -47], [-101, 47], [86, -46]]) g.add(mesh(box(3, 146, 3), M.aluminio, [x, 4.1 + 73, z]));
+    // bancada óptica: aberturas para las turbos que la atraviesan y paso de la fibra del láser; cuatro columnas
     const xc = (BANCO.x0 + BANCO.x1) / 2;
-    const huecos = [...TURBOS.filter((x) => x > BANCO.x0 && x < BANCO.x1).map((x) => [x - xc, 0, 5.2]), [PASO_FIBRA[0] - xc, PASO_FIBRA[1], PASO_FIBRA[2]]];
+    const huecos = [...TURBOS.filter((x) => x > BANCO.x0 + 6 && x < BANCO.x1 - 6).map((x) => [x - xc, 0, 5.2]), [PASO_FIBRA[0] - xc, PASO_FIBRA[1], PASO_FIBRA[2]]];
     g.add(placaPasos(BANCO.x1 - BANCO.x0, 2 * BANCO.z, 2, huecos, M.aluminio, [xc, BANCO.y, 0], 'xz', 0.3));
     g.add(mesh(tubeX(0.9, 0.6, 0.6, 20), M.goma, [PASO_FIBRA[0], BANCO.y + 1.2, PASO_FIBRA[1]], [0, 0, Math.PI / 2]));
-    for (const x of [BANCO.x0 + 2, BANCO.x1 - 8]) for (const z of [-16, 16]) g.add(mesh(box(3, BANCO.y - 1 - 4, 3), M.aluminio, [x, (4 + BANCO.y - 1) / 2, z]));
+    for (const x of [58, 130]) for (const z of [-12, 12]) g.add(mesh(box(3, BANCO.y - 1 - 4.1, 3), M.aluminio, [x, (4.1 + BANCO.y - 1) / 2, z]));
   }
   {
     // cunas del imán (no se mueven: el imán tampoco, el tubo UHV pasa por su interior)
@@ -126,156 +129,160 @@ export function buildEquipo(root) {
 
   /* ---------------- CARCASA ---------------- */
   {
-    // frente: cabeza azul (frontal, remate curvo, tapa y costados), hombro derecho con la puerta MALDI y bloque bajo izquierdo con la bandeja
-    const g = makePart(root, 'panel_frontal', L1([40, 0, 0], { shell: true, label: 'equipo' }));
-    const zi = ZS - 1.2;
-    g.add(mesh(box(1.2, 140, 2 * zi), navy, [XF - 0.6, 4 + 70, 0]));
+    // cabeza azul del extremo frontal: frontal con esquina redondeada, costado con el hueco de la fuente, tapa y remates
+    const g = makePart(root, 'panel_frontal', L1([40, 0, 70], { shell: true, label: 'equipo' }));
     {
-      const s = new THREE.Shape();
-      s.moveTo(XF, 144); s.absarc(XF - 10, 144, 10, 0, Math.PI / 2, false); s.lineTo(XF - 10, HS - 1.2); s.absarc(XF - 10, 144, 8.8, Math.PI / 2, 0, true); s.lineTo(XF, 144);
-      g.add(placa(s, 2 * zi, navy, [0, 0, 0]));
+      const s = new THREE.Shape(), ci = -(ZW - RH);
+      s.moveTo(XF, -ZH); s.lineTo(XF, ci); s.absarc(XF - RH, ci, RH, 0, -Math.PI / 2, true); s.lineTo(XF - RH, -ZW + T);
+      s.absarc(XF - RH, ci, RH - T, -Math.PI / 2, 0, false); s.lineTo(XF - T, -ZH); s.lineTo(XF, -ZH);
+      g.add(placa(s, HT - T - 4, navy, [0, (4 + HT - T) / 2, 0], 'xz'));
+      const top = new THREE.Shape();
+      top.moveTo(XH, -ZH); top.lineTo(XF, -ZH); top.lineTo(XF, ci); top.absarc(XF - RH, ci, RH, 0, -Math.PI / 2, true); top.lineTo(XH, -ZW); top.lineTo(XH, -ZH);
+      g.add(placa(top, T, navy, [0, HT - T / 2, 0], 'xz'));
     }
-    g.add(mesh(box(XF - 10 - XH, 1.2, 2 * zi), navy, [(XF - 10 + XH) / 2, HS - 0.6, 0]));
-    // costados de la cabeza (el izquierdo con la abertura de la fuente)
-    for (const s of [1, -1]) {
-      const y0 = s > 0 ? YT + 1 : 4;
-      const sh = new THREE.Shape(); sh.moveTo(XH, y0); sh.lineTo(XF, y0); sh.lineTo(XF, 144); sh.absarc(XF - 10, 144, 10, 0, Math.PI / 2, false); sh.lineTo(XH, HS); sh.lineTo(XH, y0);
-      if (s > 0) sh.holes.push(poly([[119, 88], [150, 88], [150, 124], [119, 124]], THREE.Path));
-      g.add(placa(sh, 1.2, navy, [0, 0, s * (ZS - 0.6)]));
+    // costado (+z): parte azul con la abertura redondeada del hueco de la fuente
+    {
+      const s = poly([[XH, 102.8], [XF - RH, 102.8], [XF - RH, HT - T], [XH, HT - T]]);
+      s.holes.push(huecoRedondeado(HU.x0, HU.y0, HU.x1, HU.y1, 5));
+      g.add(placa(s, T, navy, [0, 0, ZW - 0.5]));
     }
-    // fondo azul del hueco de la fuente, con su placa de conexiones
-    g.add(mesh(box(31, 36, 1.2), navy, [134.5, 106, 10]));
+    // hueco: fondo, costados y techo azul oscuro; repisa blanca que sobresale del lateral
+    const xc = (HU.x0 + HU.x1) / 2, yc = (HU.y0 + HU.y1) / 2, zc = (HU.zf + ZW - T + 0.1) / 2, d = ZW - T + 0.1 - HU.zf;
+    g.add(mesh(box(HU.x1 - HU.x0, HU.y1 - HU.y0, T), navyHueco, [xc, yc, HU.zf - T / 2]));
+    for (const x of [HU.x0 - T / 2, HU.x1 + T / 2]) g.add(mesh(box(T, HU.y1 - HU.y0, d), navyHueco, [x, yc, zc]));
+    g.add(mesh(box(HU.x1 - HU.x0 + 2 * T, T, d), navyHueco, [xc, HU.y1 + T / 2, zc]));
+    g.add(mesh(rbox(36, 2.4, 41, 0.6), gris, [xc, HU.y0 + 0.1, HU.zf + 20.6]));
     const pl = lienzo(512, 256, (c) => { c.fillStyle = '#f1f3f5'; c.fillRect(0, 0, 512, 256); c.fillStyle = '#22385a'; c.font = '600 34px Segoe UI'; c.fillText('Dual ESI / MALDI', 24, 52);
       c.font = '24px Segoe UI'; ['HV', 'Gas', 'Nebulizer', 'Dry gas'].forEach((s, i) => { c.fillText(s, 24 + i * 120, 200); c.beginPath(); c.arc(50 + i * 120, 140, 18, 0, 7); c.stroke(); }); });
-    g.add(mesh(new THREE.PlaneGeometry(12, 6), new THREE.MeshStandardMaterial({ map: pl, roughness: 0.5 }), [124.5, 116, 10.62]));
-    // rejillas de ventilación y línea de luz de la cabeza
-    for (const z of [-11, 11]) g.add(mesh(new THREE.PlaneGeometry(26, 7), rejilla, [XH + 15, HS + 0.02, z], [-Math.PI / 2, 0, 0]));
-    g.add(mesh(rbox(0.3, 96, 1.0, 0.12), led, [XF + 0.15, 88, 0]));
-    g.add(mesh(rbox(28, 0.3, 1.0, 0.12), led, [XH + 15, HS + 0.15, 0]));
-    g.add(mesh(new THREE.PlaneGeometry(9, 4.5), logoBlanco, [XF + 0.03, 22, 0], [0, Math.PI / 2, 0]));
-    // hombro derecho (−z): tapa con la arista del capó y puerta de la diana MALDI
-    g.add(placa(tapaHombro(-ZS - 0.2, -ZW + 1.4, 4), 1.2, gris, [XF - 0.6, 0, 0], 'zy'));
-    g.add(mesh(rbox(0.8, 28, 24, 0.4), gris, [XF + 0.4, 108, -38]));
-    g.add(mesh(rbox(1.4, 6, 1.6, 0.6), M.aceroPulido, [XF + 1.5, 108, -28.5]));
-    g.add(mesh(cylX(0.6, 0.5, 16), M.ledVerde, [XF + 0.25, 126, -46]));
-    // bloque bajo izquierdo (+z) y bandeja de acero bajo la fuente
-    g.add(mesh(box(1.2, YT - 1.4 - 4, ZW - 1.4 - ZS - 0.2), gris, [XF - 0.6, (4 + YT - 1.4) / 2, (ZW - 1.4 + ZS + 0.2) / 2]));
-    g.add(mesh(rbox(38, 1.2, 34, 0.3), M.acero, [XH + 20, YT - 0.6, (ZS + ZW) / 2]));
-    g.add(mesh(rbox(38, 2.6, 0.8, 0.3), M.acero, [XH + 20, YT + 0.7, ZW - 1.6]));
-    g.add(mesh(rbox(0.8, 2.6, 33, 0.3), M.acero, [XF - 1.6, YT + 0.7, (ZS + ZW) / 2 - 0.4]));
+    g.add(mesh(new THREE.PlaneGeometry(9, 4.5), new THREE.MeshStandardMaterial({ map: pl, roughness: 0.5 }), [HU.x0 + 6, HU.y1 - 6, HU.zf + 0.02]));
+    // remates: trasera de la cabeza sobre el capó y franja sobre el hombro
+    g.add(placa(poly([[ZH + 0.1, HH + 0.2], [BANDA.z1, HH + 0.2], [BANDA.z1, YE - 5], [ZW - 0.1, YE - 5], [ZW - 0.1, HT - T - 0.1], [ZH + 0.1, HT - T - 0.1]]), T, navy, [XH + T / 2 + 0.1, 0, 0], 'zy'));
+    g.add(mesh(box(XF - T - XH - T - 0.2, HT - T - HH - 0.3, T), navy, [(XH + T + XF - T) / 2, (HH + 0.2 + HT - T - 0.1) / 2, ZH + T / 2 + 0.1]));
+    // línea de luz (frontal y tapa), rejillas y logotipo
+    g.add(mesh(rbox(0.3, 112, 1.0, 0.12), led, [XF + 0.15, 106, ZC]));
+    g.add(mesh(rbox(XF - XH - 2.4, 0.3, 1.0, 0.12), led, [(XF + XH) / 2 - 1, HT + 0.15, ZC]));
+    for (const z of [ZC - 13, ZC + 13]) g.add(mesh(new THREE.PlaneGeometry(30, 7), rejilla, [XH + 20, HT + 0.02, z], [-Math.PI / 2, 0, 0]));
+    g.add(mesh(new THREE.PlaneGeometry(9, 4.5), logoBlanco, [XF + 0.03, 24, ZC], [0, Math.PI / 2, 0]));
   }
   {
-    // capó: dos medias secciones a cada lado del lomo, divididas en tramo delantero (consola) y trasero (imán), y lomo azul
+    // tapa: superficie plana con aristas de gran radio a lo largo de los laterales, remate frontal del hombro y banda azul
     const g = makePart(root, 'tapa_superior', L1([0, 40, 0], { info: 'carcasa', shell: true }));
-    for (const s of [1, -1]) {
-      const xf = s > 0 ? XH - 0.2 : XF - 1.2;
-      for (const [a, b] of [[XB + 1.2, XSEAM - 0.3], [XSEAM + 0.3, xf]]) g.add(placa(capoSeccion(s), b - a, gris, [(a + b) / 2, 0, 0], 'zy'));
-    }
-    for (const [a, b] of [[XB + 1.2, CRIO.x0 - 0.2], [CRIO.x1 + 0.2, XH]]) g.add(placa(lomoSeccion(), b - a, navy, [(a + b) / 2, 0, 0], 'zy'));
-    for (const x of [40, -40]) for (const z of [-11, 11]) g.add(mesh(new THREE.PlaneGeometry(34, 7), rejilla, [x, HS + 0.02, z], [-Math.PI / 2, 0, 0]));
-    g.add(mesh(rbox(XH + 60, 0.3, 1.0, 0.12), led, [(XH - 60) / 2, HS + 0.15, 0]));            // línea de luz a lo largo del lomo
+    const s = poly([[X1, Z1], [XS, Z1], [XS, -ZH + 0.2], [XH - 0.2, -ZH + 0.2], [XH - 0.2, -Z1], [X1, -Z1]]);
+    const h = new THREE.Path(); h.absarc(XC, -ZC, 7.5, 0, Math.PI * 2, true); s.holes.push(h);
+    g.add(placa(s, T, gris, [0, HH - T / 2, 0], 'xz'));
+    g.add(placa(arco(Z1, YE, R, 0, Math.PI / 2), XH - 0.2 - X1, gris, [(X1 + XH - 0.2) / 2, 0, 0], 'zy'));
+    g.add(placa(arco(-Z1, YE, R, Math.PI / 2, Math.PI), XS - X1, gris, [(X1 + XS) / 2, 0, 0], 'zy'));
+    g.add(placa(arco(XS, YE, R, 0, Math.PI / 2), Z1 + ZH - 0.2, gris, [0, 0, (-Z1 + ZH - 0.2) / 2]));
+    g.add(octante(grisD, [XS, YE, -Z1], 1, -1));
+    // banda azul con línea de luz: se estrecha en diagonal desde la anchura de la cabeza hasta la caja del criorrefrigerador
+    g.add(placa(poly([[XH, -BANDA.z0], [XH, -(ZW - RH)], [BANDA.x0, -BANDA.z1], [BANDA.x0, -BANDA.z0]]), HT - HH, navy, [0, (HH + HT) / 2, 0], 'xz'));
+    g.add(mesh(rbox(XH - BANDA.x0 - 4, 0.3, 1.0, 0.12), led, [(XH + BANDA.x0) / 2, HT + 0.15, ZC]));
+    for (const x of [0, 50]) for (const z of [ZC - 13, ZC + 13]) g.add(mesh(new THREE.PlaneGeometry(30, 7), rejilla, [x, HT + 0.02, z], [-Math.PI / 2, 0, 0]));
   }
   {
-    // lateral izquierdo (+z), rotulado; deja libre el hueco de la fuente. Lleva también la pared del fondo del hueco.
+    // lateral izquierdo (+z), rotulado: incluye la parte blanca bajo la repisa de la fuente
     const g = makePart(root, 'panel_izq', L1([0, 0, 70], { info: 'carcasa', shell: true }));
-    g.add(placa(poly([[XB + 1.2, 4], [XF, 4], [XF, YT - 1.4], [XH + 1, YT - 1.4], [XH + 1, HH - RC], [XB + 1.2, HH - RC]]), 1.2, gris, [0, 0, ZW - 0.6]));
-    g.add(placa(tapaHombro(ZS + 0.2, ZW - 1.4, YT), 1.2, gris, [XH + 0.4, 0, 0], 'zy'));
+    g.add(placa(poly([[X1, 4], [XF - RH - 0.1, 4], [XF - RH - 0.1, 102.8], [XH, 102.8], [XH, YE], [X1, YE]]), T, gris, [0, 0, ZW - T / 2]));
     const zt = ZW + 0.02;
-    // juntas entre paneles
-    g.add(mesh(new THREE.PlaneGeometry(XH - XB - 2, 1.0), junta, [(XB + XH) / 2, 96, zt]));
-    g.add(mesh(new THREE.PlaneGeometry(XF - XH - 1, 1.0), junta, [(XH + XF) / 2, 60, zt]));
-    for (const x of [XSEAM, 40, -100]) g.add(mesh(new THREE.PlaneGeometry(0.8, x === XSEAM ? HH - RC - 5 : 90), junta, [x, x === XSEAM ? (HH - RC + 4) / 2 : 50, zt + 0.08]));
-    // rótulos, rejilla y pulsador de emergencia
-    g.add(mesh(new THREE.PlaneGeometry(44, 13.75), rotulo(rotuloScimax()), [62, 115, zt + 0.06]));
+    g.add(mesh(new THREE.PlaneGeometry(XF - RH - X1, 1.2), linea, [(X1 + XF - RH) / 2, 101, zt]));
+    for (const x of [-25, 35]) g.add(mesh(new THREE.PlaneGeometry(0.7, YE - 6), junta, [x, (YE + 4) / 2, zt + 0.07]));
+    g.add(mesh(new THREE.PlaneGeometry(60, 18.75), rotulo(rotuloScimax()), [-62, 131, zt + 0.12]));
     const sub = lienzo(1024, 96, (c) => { c.fillStyle = '#3c4656'; c.font = 'italic 500 54px Segoe UI, Arial'; c.textBaseline = 'middle'; c.fillText('maxwell  MRMS technology inside', 8, 50); });
-    g.add(mesh(new THREE.PlaneGeometry(38, 3.6), rotulo(sub), [78, 90, zt + 0.06]));
+    g.add(mesh(new THREE.PlaneGeometry(34, 3.2), rotulo(sub), [110, 94, zt + 0.12]));
     const vg = gris.clone(); vg.map = grilleTexture(16, 10);
-    g.add(mesh(new THREE.PlaneGeometry(22, 26), vg, [10, 40, zt]));
-    g.add(mesh(rbox(5, 7, 0.8, 0.3), M.peekRojo, [-150, 70, ZW + 0.4]));
+    g.add(mesh(new THREE.PlaneGeometry(20, 24), vg, [0, 40, zt]));
+    g.add(mesh(rbox(5, 7, 0.8, 0.3), M.peekRojo, [-86, 62, ZW + 0.4]));
   }
   {
+    // lateral derecho (−z) y frontal del hombro derecho, con su esquina redondeada y la puerta de la diana MALDI
     const g = makePart(root, 'panel_der', L1([0, 0, -70], { info: 'carcasa', shell: true }));
-    g.add(placa(poly([[XB + 1.2, 4], [XF, 4], [XF, HH - RC], [XB + 1.2, HH - RC]]), 1.2, gris, [0, 0, -ZW + 0.6]));
+    g.add(placa(poly([[X1, 4], [XS, 4], [XS, YE], [X1, YE]]), T, gris, [0, 0, -ZW + T / 2]));
+    g.add(placa(arco(XS, Z1, R, 0, Math.PI / 2), YE - 4, gris, [0, (4 + YE) / 2, 0], 'xz'));
+    g.add(mesh(box(T, YE - 4, Z1 + ZH - 0.2), gris, [XF - T / 2, (4 + YE) / 2, (-Z1 + ZH - 0.2) / 2]));
     const zt = -ZW - 0.02;
-    g.add(mesh(new THREE.PlaneGeometry(XF - XB - 2, 1.0), junta, [(XB + XF) / 2, 96, zt], [0, Math.PI, 0]));
-    for (const x of [XSEAM, 40, -100]) g.add(mesh(new THREE.PlaneGeometry(0.8, x === XSEAM ? HH - RC - 5 : 90), junta, [x, x === XSEAM ? (HH - RC + 4) / 2 : 50, zt - 0.08], [0, Math.PI, 0]));
-    const vg = gris.clone(); vg.map = grilleTexture(16, 10);
-    g.add(mesh(new THREE.PlaneGeometry(22, 26), vg, [10, 40, zt], [0, Math.PI, 0]));
+    g.add(mesh(new THREE.PlaneGeometry(XS - X1, 1.2), linea, [(X1 + XS) / 2, 101, zt], [0, Math.PI, 0]));
+    for (const x of [-25, 35]) g.add(mesh(new THREE.PlaneGeometry(0.7, YE - 6), junta, [x, (YE + 4) / 2, zt - 0.07], [0, Math.PI, 0]));
+    g.add(mesh(new THREE.PlaneGeometry(Z1 + ZH - 0.6, 1.2), linea, [XF + 0.02, 101, (-Z1 + ZH) / 2], [0, Math.PI / 2, 0]));
+    g.add(mesh(rbox(0.8, 28, 22, 0.4), gris, [XF + 0.4, 124, -25]));
+    g.add(mesh(rbox(1.4, 6, 1.6, 0.6), M.aceroPulido, [XF + 1.5, 124, -16]));
+    g.add(mesh(cylX(0.6, 0.5, 16), M.ledVerde, [XF + 0.25, 144, -33]));
   }
   {
-    // trasera: tapa con la silueta del capó y del lomo
+    // trasera: panel plano, esquinas verticales y arista superior redondeadas
     const g = makePart(root, 'panel_trasero', L1([-40, 0, 0], { info: 'carcasa', shell: true }));
-    const s = new THREE.Shape(), yc = HH - RC, zc = ZW - RC;
-    s.moveTo(-ZW, 4); s.lineTo(ZW, 4); s.lineTo(ZW, yc); s.absarc(zc, yc, RC, 0, Math.PI / 2, false); s.lineTo(ZS, HH); s.lineTo(ZS, HS - 2); s.lineTo(ZS - 2, HS);
-    s.lineTo(-ZS + 2, HS); s.lineTo(-ZS, HS - 2); s.lineTo(-ZS, HH); s.lineTo(-zc, HH); s.absarc(-zc, yc, RC, Math.PI / 2, Math.PI, false); s.lineTo(-ZW, 4);
-    g.add(placa(s, 1.2, gris, [XB + 0.6, 0, 0], 'zy'));
+    g.add(mesh(box(T, YE - 4, 2 * Z1), gris, [XB + T / 2, (4 + YE) / 2, 0]));
+    g.add(placa(arco(X1, -Z1, R, Math.PI, 1.5 * Math.PI), YE - 4, gris, [0, (4 + YE) / 2, 0], 'xz'));
+    g.add(placa(arco(X1, Z1, R, Math.PI / 2, Math.PI), YE - 4, gris, [0, (4 + YE) / 2, 0], 'xz'));
+    g.add(placa(arco(X1, YE, R, Math.PI / 2, Math.PI), 2 * Z1, gris, [0, 0, 0]));
+    g.add(octante(grisD, [X1, YE, Z1], -1, 1));
+    g.add(octante(grisD, [X1, YE, -Z1], -1, -1));
     const plate = new THREE.MeshStandardMaterial({ map: plateTexture(['scimaX MRMS · 7 T', '230 V~ 50/60 Hz', 'Modelo didáctico', 'Explorador 3D']), metalness: 0.6, roughness: 0.4 });
-    g.add(mesh(new THREE.PlaneGeometry(9, 4.5), plate, [XB - 0.03, 60, -30], [0, -Math.PI / 2, 0]));
+    g.add(mesh(new THREE.PlaneGeometry(9, 4.5), plate, [XB - 0.03, 60, -20], [0, -Math.PI / 2, 0]));
     const vg = gris.clone(); vg.map = grilleTexture(24, 8);
-    g.add(mesh(new THREE.PlaneGeometry(60, 20), vg, [XB - 0.03, 28, 10], [0, -Math.PI / 2, 0]));
-    g.add(mesh(rbox(1.2, 3, 4, 0.3), M.plasticoNegro, [XB - 0.6, 16, 30]));
-    g.add(mesh(tubePath([[XB - 1.2, 16, 30], [XB - 5, 16, 30], [XB - 10, 10, 32], [XB - 17, 0.7, 35], [XB - 35, 0.7, 44]], 0.45, 40, 10), M.cable));
+    g.add(mesh(new THREE.PlaneGeometry(50, 20), vg, [XB - 0.03, 28, 8], [0, -Math.PI / 2, 0]));
+    g.add(mesh(rbox(1.2, 3, 4, 0.3), M.plasticoNegro, [XB - 0.6, 16, 28]));
+    g.add(mesh(tubePath([[XB - 1.2, 16, 28], [XB - 5, 16, 28], [XB - 10, 10, 30], [XB - 17, 0.7, 33], [XB - 35, 0.7, 42]], 0.45, 40, 10), M.cable));
   }
   {
-    // cúpula azul de la fuente ESI: sobresale del costado izquierdo de la cabeza, en el hueco de la fuente
-    const g = makePart(root, 'carcasa_fuente', L1([0, 0, 45], { shell: true, label: 'equipo' }));
-    const c = new THREE.Vector3(136, ORIGEN.y, 17), r = 12.5;
+    // cúpula azul de la fuente ESI en el fondo del hueco (al explosionar acompaña a la cabeza y sale del hueco por su abertura)
+    const g = makePart(root, 'carcasa_fuente', L1([40, 0, 85], { shell: true, label: 'equipo' }));
+    const c = new THREE.Vector3(112, ORIGEN.y, HU.zf), r = 11;
     const dome = new THREE.SphereGeometry(r, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2); dome.rotateX(Math.PI / 2);
     const mt = navy.clone(); mt.side = THREE.DoubleSide;
     g.add(mesh(dome, mt, [c.x, c.y, c.z]));
     g.add(mesh(new THREE.TorusGeometry(r - 0.2, 0.5, 12, 64), M.aceroOscuro, [c.x, c.y, c.z + 0.5]));
-    g.add(mesh(cylZ(3.2, 1.0, 32), M.negroBrillante, [c.x, c.y, c.z + r - 0.2]));                  // mirilla
-    g.add(mesh(cylZ(2.2, 3.2, 24), M.acero, [c.x - 8.5, c.y - 2, c.z + 9.6], [0, -0.6, 0]));       // entrada del nebulizador
+    g.add(mesh(cylZ(2.8, 1.0, 32), M.negroBrillante, [c.x, c.y, c.z + r - 0.2]));                   // mirilla
+    g.add(mesh(cylZ(2.0, 3.0, 24), M.acero, [c.x - 7.5, c.y - 2, c.z + 8.4], [0, -0.6, 0]));        // entrada del nebulizador
     const w = new THREE.MeshStandardMaterial({ map: warningTexture('ALTA TENSIÓN'), roughness: 0.45, side: THREE.DoubleSide });
-    g.add(mesh(new THREE.PlaneGeometry(6, 2.25), w, [c.x + 3.5, c.y + 8.2, c.z + 9.05], [-0.75, 0.25, 0]));
+    g.add(mesh(new THREE.PlaneGeometry(5.4, 2.0), w, [c.x + 3, c.y + 7.2, c.z + 7.9], [-0.75, 0.25, 0]));
     // soporte de la jeringa junto a la cúpula
-    g.add(mesh(rbox(3, 26, 3, 0.4), M.plasticoNegro, [148, 106, ZS + 1.7]));
-    g.add(mesh(cylY(0.8, 12, 20), M.vidrio, [148, 108, ZS + 4]));
+    g.add(mesh(rbox(2.6, 26, 2.6, 0.4), M.plasticoNegro, [HU.x1 - 2.4, 125, HU.zf + 1.3]));
+    g.add(mesh(cylY(0.8, 12, 20), M.vidrio, [HU.x1 - 2.4, 128, HU.zf + 3.4]));
   }
   {
-    const g = makePart(root, 'laser_maldi', L1([25, 0, 0], { label: 'equipo' }));
-    g.add(mesh(rbox(18, 12, 16, 0.6), M.anodizado, [135, 66, 6]));
+    const g = makePart(root, 'laser_maldi', L1([0, -40, 0], { label: 'equipo' }));
+    g.add(mesh(rbox(18, 12, 16, 0.6), M.anodizado, [117, 88, -12]));
     const lw = new THREE.MeshStandardMaterial({ map: warningTexture('RADIACIÓN LÁSER'), roughness: 0.45 });
-    g.add(mesh(new THREE.PlaneGeometry(9, 3.4), lw, [135, 66, 14.05]));
+    g.add(mesh(new THREE.PlaneGeometry(9, 3.4), lw, [117, 88, -20.05], [0, Math.PI, 0]));
     // fibra óptica: salida superior del láser → paso de la bancada → entrada del láser en la fuente
     const [fx, fz] = PASO_FIBRA, F = 'fuente_dual', yb = BANCO.y;
-    g.add(mesh(cylY(0.6, 1.2, 16), M.aceroPulido, [135, 72.6, 6]));
-    cableFlex(g, [[135, 73.2, 6], [134.6, 77, 2], [fx, yb - 1.6, fz, 'chasis'], [fx, yb + 1.6, fz, 'chasis'], [fx - 0.2, yb + 5.5, -2.5, F], [wx(2.5), ORIGEN.y - 12.1, -3, F]], 0.25, M.cable);
+    g.add(mesh(cylY(0.6, 1.2, 16), M.aceroPulido, [117, 94.6, -12]));
+    cableFlex(g, [[117, 95.2, -12], [117.5, 97, -7], [fx, yb - 1.6, fz, 'chasis'], [fx, yb + 1.6, fz, 'chasis'], [fx - 0.2, yb + 5, -3.5, F], [wx(2.5), ORIGEN.y - 12.1, -3, F]], 0.25, M.cable);
   }
 
-  /* ---------------- IMÁN SUPERCONDUCTOR (dentro del capó trasero) ---------------- */
+  /* ---------------- IMÁN SUPERCONDUCTOR (dentro del cuerpo) ---------------- */
   {
     const g = makePart(root, 'iman', L1([0, 0, 0], { shell: true, label: 'equipo' }));
-    const L = ML, R = MR, Rb = AX.BORE_R;
-    const prof = [[Rb, -L / 2], [R - 4, -L / 2], [R, -L / 2 + 4], [R, L / 2 - 4], [R - 4, L / 2], [Rb, L / 2], [Rb, -L / 2]];
-    const geo = new THREE.LatheGeometry(prof.map(([r, x]) => new THREE.Vector2(r, x)), 96); geo.rotateZ(-Math.PI / 2);
+    const L = ML, Rm = MR, Rb = AX.BORE_R;
+    const prof = [[Rb, -L / 2], [Rm - 4, -L / 2], [Rm, -L / 2 + 4], [Rm, L / 2 - 4], [Rm - 4, L / 2], [Rb, L / 2], [Rb, -L / 2]];
+    const geo = new THREE.LatheGeometry(prof.map(([rr, x]) => new THREE.Vector2(rr, x)), 96); geo.rotateZ(-Math.PI / 2);
     g.add(mesh(geo, M.acero, [MX, ORIGEN.y, 0]));
-    for (const s of [-1, 1]) g.add(mesh(new THREE.TorusGeometry(R + 0.3, 0.9, 12, 96), M.aceroPulido, [MX + s * (L / 2 - 8), ORIGEN.y, 0], [0, Math.PI / 2, 0]));
+    for (const s of [-1, 1]) g.add(mesh(new THREE.TorusGeometry(Rm + 0.3, 0.9, 12, 96), M.aceroPulido, [MX + s * (L / 2 - 8), ORIGEN.y, 0], [0, Math.PI / 2, 0]));
     // torreta de la cabeza fría
-    g.add(mesh(cylY(9, 7.9, 48), M.acero, [XC, HH - 2.6 - 3.95, 0]));
-    g.add(mesh(cylY(10, 1.2, 48), M.aceroPulido, [XC, HH - 1.5 - 0.6, 0]));
+    g.add(mesh(cylY(8, 8.9, 48), M.acero, [XC, HH - 2.6 - 4.45, ZC]));
+    g.add(mesh(cylY(9, 1.2, 48), M.aceroPulido, [XC, HH - 2.1, ZC]));
     const lab = new THREE.MeshStandardMaterial({ map: lienzo(256, 96, (c) => { c.fillStyle = '#22385a'; c.fillRect(0, 0, 256, 96); c.fillStyle = '#fff'; c.font = '600 52px Segoe UI'; c.textBaseline = 'middle'; c.fillText('7 T · cc', 30, 50); }) });
-    g.add(mesh(new THREE.PlaneGeometry(10, 3.75), lab, [MX + 20, ORIGEN.y, R + 0.3]));
+    g.add(mesh(new THREE.PlaneGeometry(10, 3.75), lab, [MX + 20, ORIGEN.y, Rm + 0.3]));
     const w = new THREE.MeshStandardMaterial({ map: warningTexture('CAMPO MAGNÉTICO INTENSO'), roughness: 0.45 });
-    g.add(mesh(new THREE.PlaneGeometry(13, 4.8), w, [MX - 20, ORIGEN.y + 10, R - 1.0], [-0.26, 0, 0]));
+    g.add(mesh(new THREE.PlaneGeometry(13, 4.8), w, [MX - 20, ORIGEN.y + 10, Rm - 1.0], [-0.26, 0, 0]));
   }
   {
-    // cabeza fría + caja azul sobre el extremo trasero (sube al explosionar)
+    // cabeza fría + caja alta azul sobre la parte trasera de la tapa (sube al explosionar)
     const g = makePart(root, 'criorrefrigerador', L1([0, 60, 0], { label: 'equipo' }));
-    g.add(mesh(cylY(6.5, 1.0, 40), M.aceroPulido, [XC, HH - 1.5 + 0.5, 0]));
-    g.add(mesh(cylY(4.2, 11.5, 40), M.aluminio, [XC, HH - 0.5 + 5.75, 0]));
-    const cx = (CRIO.x0 + CRIO.x1) / 2, h = 53;
-    g.add(mesh(rbox(CRIO.x1 - CRIO.x0, h, 2 * ZS - 0.4, 6), navy, [cx, HH - 1 + h / 2, 0]));
-    g.add(mesh(new THREE.PlaneGeometry(12, 6), logoBlanco, [CRIO.x1 + 0.03, HH + h - 12, 0], [0, Math.PI / 2, 0]));
-    g.add(mesh(new THREE.PlaneGeometry(12, 6), logoBlanco, [cx, HH + h - 12, ZS - 0.17]));
+    g.add(mesh(cylY(6.5, 1.0, 40), M.aceroPulido, [XC, HH - 1, ZC]));
+    g.add(mesh(cylY(4.2, 11, 40), M.aluminio, [XC, HH + 5, ZC]));
+    const cx = (CRIO.x0 + CRIO.x1) / 2, cz = (CRIO.z0 + CRIO.z1) / 2, h = 64;
+    g.add(mesh(rbox(CRIO.x1 - CRIO.x0, h, CRIO.z1 - CRIO.z0, 5), navy, [cx, HH + h / 2, cz]));
+    g.add(mesh(new THREE.PlaneGeometry(13, 6.5), logoBlanco, [CRIO.x1 + 0.03, HH + h - 11, cz], [0, Math.PI / 2, 0]));
+    g.add(mesh(new THREE.PlaneGeometry(13, 6.5), logoBlanco, [cx, HH + h - 11, CRIO.z1 + 0.03]));
     refs.cryoPorts = [];
-    for (const x of [-118, -136]) {
-      g.add(mesh(cylZ(1.1, 2.5, 20), M.aceroPulido, [x, 182, -ZS + 0.2 - 1.25]));
-      refs.cryoPorts.push([x, 182, -ZS + 0.2 - 2.6]);
+    for (const x of [-63, -83]) {
+      g.add(mesh(cylZ(1.1, 2.5, 20), M.aceroPulido, [x, 205, CRIO.z0 - 1.25]));
+      refs.cryoPorts.push([x, 205, CRIO.z0 - 2.6]);
     }
   }
   {
-    // compresor de helio en el suelo, junto al extremo trasero del lateral derecho
+    // compresor de helio en el suelo, junto a la parte trasera del lateral derecho
     const g = makePart(root, 'compresor_helio', L1([0, 0, -80], { label: 'equipo' }));
     const c = M.grisClaro.clone(); c.color.setHex(0xe4e6e8);
     g.add(mesh(rbox(50, 60, 50, 1.2), c, [COMP.x, 31, COMP.z]));
@@ -288,13 +295,13 @@ export function buildEquipo(root) {
     for (const x of [COMP.x + 8, COMP.x - 8]) { g.add(mesh(cylY(1.2, 2, 20), M.aceroPulido, [x, 62, COMP.z + 10])); refs.compPorts.push([x, 63.1, COMP.z + 10]); }
   }
   {
-    // líneas flexibles de helio: salen del costado de la caja, pasan por encima del capó y bajan por fuera del lateral derecho
+    // líneas flexibles de helio: salen del costado de la caja, pasan por encima de la tapa y bajan por fuera del lateral derecho
     const g = makePart(root, 'lineas_helio', L1([0, 0, 0], { info: 'compresor_helio' }));
     const C = 'criorrefrigerador', K = 'compresor_helio';
     const trenza = M.aceroPulido.clone(); trenza.roughness = 0.45; trenza.bumpMap = grilleTexture(60, 4); trenza.bumpScale = 0.3;
     refs.cryoPorts.forEach(([x, y, z], i) => {
       const [xk, yk, zk] = refs.compPorts[i];
-      cableFlex(g, [[x, y, z, C], [x, y + 1, z - 8, C], [x - 4, 165, -66, K], [xk, 112, zk + 12, K], [xk, 80, zk, K], [xk, yk, zk, K]], 0.9, trenza, { seg: 90 });
+      cableFlex(g, [[x, y, z, C], [x, y + 1, z - 8, C], [x - 4, 182, -66, K], [xk, 120, zk + 12, K], [xk, 80, zk, K], [xk, yk, zk, K]], 0.9, trenza, { seg: 90 });
     });
   }
 
@@ -313,13 +320,13 @@ export function buildEquipo(root) {
       salidas.push([x + 5.6, y - 16, 0]);
     });
     // turbo UHV: cuelga del tubo UHV entre el imán y el preamplificador
-    const x = XUHV, yt = ORIGEN.y - AX.BORE_R + 1.6;
-    g.add(mesh(cylY(3, yt - 90, 32), M.aceroPulido, [x, (yt + 90) / 2, 0]));
-    g.add(mesh(cylY(4.6, 16, 40), M.aluminio, [x, 82, 0]));
-    g.add(mesh(cylY(4.7, 0.4, 40), M.aceroOscuro, [x, 85, 0]));
-    g.add(mesh(rbox(8, 3, 8, 0.4), M.anodizado, [x, 72.5, 0]));
-    g.add(mesh(cylX(0.6, 1.4, 16), M.aceroPulido, [x + 5.3, 78, 0]));
-    salidas.push([x + 6, 78, 0]);
+    const x = XUHV, yt = ORIGEN.y - AX.BORE_R + 1.6, y0 = ORIGEN.y - 14;
+    g.add(mesh(cylY(3, yt - y0, 32), M.aceroPulido, [x, (yt + y0) / 2, 0]));
+    g.add(mesh(cylY(4.6, 16, 40), M.aluminio, [x, y0 - 8, 0]));
+    g.add(mesh(cylY(4.7, 0.4, 40), M.aceroOscuro, [x, y0 - 5, 0]));
+    g.add(mesh(rbox(8, 3, 8, 0.4), M.anodizado, [x, y0 - 17.5, 0]));
+    g.add(mesh(cylX(0.6, 1.4, 16), M.aceroPulido, [x - 5.3, y0 - 12, 0]));          // salida hacia atrás (delante está el imán)
+    salidas.push([x - 6, y0 - 12, 0]);
   }
   {
     const g = makePart(root, 'camara_vacio', L1([0, 0, 0], { shell: true, label: 'equipo' }));
@@ -332,44 +339,43 @@ export function buildEquipo(root) {
     const g = makePart(root, 'bomba_previa', L1([0, 0, -34], { label: 'equipo' }));
     g.add(mesh(rbox(26, 20, 24, 1), M.grisClaro, [BPV.x, BPV.y, BPV.z]));
     g.add(mesh(cylY(1.2, 3, 20), M.aceroPulido, [BPV.x, BPV.y + 11.5, BPV.z]));
-    // colector de aspiración con una toma por turbo
     g.add(mesh(cylX(1.0, 16, 24), M.aceroPulido, [BPV.x, BPV.y + 14.8, BPV.z]));
     for (const x of [-6, -2, 2, 6]) g.add(mesh(cylY(0.75, 2, 16), M.aceroPulido, [BPV.x + x, BPV.y + 16.6, BPV.z]));
   }
   {
     const g = makePart(root, 'lineas_vacio', L1([0, 0, 0], { info: 'bomba_previa' }));
-    const T = 'bombas_turbo', P = 'bomba_previa', yb = BPV.y + 17.8;
+    const Tb = 'bombas_turbo', P = 'bomba_previa', yb = BPV.y + 17.8;
     const fin = (sx) => [[sx, yb + 5, BPV.z, P], [sx, yb, BPV.z, P]];
-    // turbos de la consola: bajan por el centro, bajo la bancada, hasta el colector
-    [[BPV.x + 6, [[112, 60, 4], [90, 40, -18]]], [BPV.x + 2, [[84, 48, -10]]], [BPV.x - 2, [[56, 44, -16]]]].forEach(([sx, mid], i) => {
+    // turbos de la consola: bajan bajo la bancada hasta el colector
+    [[BPV.x + 6, [[100, 70, 4], [85, 45, -18]]], [BPV.x + 2, [[70, 55, -8]]], [BPV.x - 2, [[50, 52, -16]]]].forEach(([sx, mid], i) => {
       const [x, y, z] = salidas[i];
-      cableFlex(g, [[x, y, z, T], [x + 2.4, y - 3.5, z + 1.5, T], ...mid, ...fin(sx)], 0.5, M.ptfe);
+      cableFlex(g, [[x, y, z, Tb], [x + 2.4, y - 3.5, z + 1.5, Tb], ...mid, ...fin(sx)], 0.5, M.ptfe);
     });
     // turbo UHV: baja tras el imán y corre junto al suelo por el lado derecho, por fuera de las cunas
     const [x, y, z] = salidas[3];
-    cableFlex(g, [[x, y, z, T], [x + 1.5, y - 4, z - 2, T], [x + 4, 50, -38], [x + 30, 12, -45], [20, 14, -46], [40, 30, -40], ...fin(BPV.x - 6)], 0.5, M.ptfe, { seg: 160 });
+    cableFlex(g, [[x, y, z, Tb], [x - 1.5, y - 4, z - 2, Tb], [x, 60, -44], [x + 35, 12, -46], [20, 14, -46], [40, 30, -40], ...fin(BPV.x - 6)], 0.5, M.ptfe, { seg: 160 });
   }
 
   /* ---------------- ELECTRÓNICA ---------------- */
   {
-    // tres bastidores bajo la bancada, junto al lateral izquierdo
+    // dos bastidores bajo la bancada, junto al lateral izquierdo
     const g = makePart(root, 'electronica', L1([0, 0, 30], { label: 'equipo' }));
-    for (const x of [24, 58, 92]) {
-      g.add(mesh(rbox(28, 64, 30, 0.6), M.anodizado, [x, 36, 37]));
-      for (let i = 0; i < 10; i++) g.add(mesh(box(24, 0.35, 0.6), M.aluminio, [x, 10 + i * 5.5, 21.7]));
+    for (const x of [54, 88]) {
+      g.add(mesh(rbox(28, 76, 26, 0.6), M.anodizado, [x, 42, 35]));
+      for (let i = 0; i < 12; i++) g.add(mesh(box(24, 0.35, 0.6), M.aluminio, [x, 10 + i * 5.5, 21.7]));
     }
     const w = new THREE.MeshStandardMaterial({ map: warningTexture('ALTA TENSIÓN'), roughness: 0.45 });
-    g.add(mesh(new THREE.PlaneGeometry(10, 3.8), w, [58, 62, 21.68], [0, Math.PI, 0]));
+    g.add(mesh(new THREE.PlaneGeometry(10, 3.8), w, [88, 76.5, 21.68], [0, Math.PI, 0]));
     // cable de señal al preamplificador: sube del bastidor, corre por el suelo junto al lateral izquierdo y sube al extremo del tubo UHV
-    g.add(mesh(cylY(0.5, 1.0, 16), M.aceroPulido, [100, 68.5, 30]));
-    const C = 'chasis', R = 'preamplificador', yp = ORIGEN.y - 3 - 1.1;
-    cableFlex(g, [[100, 69.1, 30], [97, 72, 32], [70, 72, 40], [8, 72, 42], [5, 40, 46, C], [-20, 12, 46, C], [-150, 12, 46, C], [-158, 30, 22, C],
-      [XPRE, 80, 2, R], [XPRE, yp - 2.4, 0, R], [XPRE, yp, 0, R]], 0.5, M.cable, { seg: 220 });
+    g.add(mesh(cylY(0.5, 1.0, 16), M.aceroPulido, [96, 80.5, 30]));
+    const C = 'chasis', Rp = 'preamplificador', yp = ORIGEN.y - 3 - 1.1;
+    cableFlex(g, [[96, 81.1, 30], [93, 84, 32], [70, 84, 40], [36, 84, 42], [30, 40, 46, C], [-20, 12, 46, C], [-90, 12, 46, C], [-100, 40, 22, C],
+      [XPRE, 96, 2, Rp], [XPRE, yp - 2.4, 0, Rp], [XPRE, yp, 0, Rp]], 0.5, M.cable, { seg: 220 });
   }
   {
     // puesto de control en una mesa aparte, delante del hombro derecho (se aparta por delante del frontal al explosionar)
     const g = makePart(root, 'pc', L1([70, 0, -30], { label: 'equipo' }));
-    const x = 215, z = -62, y = 75;
+    const x = 205, z = -62, y = 75;
     g.add(mesh(rbox(90, 3, 50, 0.6), M.grisClaro, [x, y - 1.5, z]));
     for (const dx of [-42, 42]) for (const dz of [-21, 21]) g.add(mesh(box(3, y - 3, 3), M.aluminio, [x + dx, (y - 3) / 2, z + dz]));
     g.add(mesh(rbox(20, 44, 44, 1), M.plasticoNegro, [x + 28, 23, z - 1]));                 // PC
