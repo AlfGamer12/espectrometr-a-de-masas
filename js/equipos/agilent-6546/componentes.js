@@ -86,7 +86,7 @@ export const INFO = {
     nombre: 'Celda de colisión hexapolar', en: 'Hexapole collision cell', cat: 'Cuadrupolo y celda de colisión',
     funcion: 'Fragmenta los precursores por colisión con nitrógeno. Sus varillas tienen un recubrimiento resistivo que crea un campo axial de aceleración y evita la interferencia entre espectros consecutivos.',
     detalles: ['El gas de colisión es nitrógeno de alta pureza con suministro independiente.'],
-    specs: [['Gas', 'N₂ 99,998 %, 1–2 mL/min'], ['Energía de colisión', 'Programable o en rampa']],
+    specs: [['Gas', 'N₂ 99,998 %, flujo bajo (≈ 0,5–2 mL/min, aprox.)'], ['Energía de colisión', 'Programable o en rampa']],
     tune: ['Collision Energy'],
     une: ['cuadrupolo', 'lente_enfoque', 'linea_gases'],
   },
@@ -99,7 +99,7 @@ export const INFO = {
   slicer: {
     nombre: 'Slicer', en: 'Beam-shaping slicer', cat: 'Tiempo de vuelo (TOF)',
     funcion: 'Serie de rendijas horizontales que eliminan los iones con exceso de velocidad vertical, lo que mejora la resolución y la exactitud de masa.',
-    detalles: ['Posiciones de alta sensibilidad o de alta resolución seleccionables en la sintonía.'],
+    detalles: ['En otros Q-TOF de la serie 6500 puede elegirse la posición de alta sensibilidad o de alta resolución; el 6546 trabaja siempre en la posición de alta resolución.'],
     specs: [], tune: ['Slicer Mode'],
     une: ['lente_enfoque', 'pulsador'],
   },
@@ -113,8 +113,8 @@ export const INFO = {
   tubo_vuelo: {
     nombre: 'Tubo de vuelo', en: 'Flight tube', cat: 'Tiempo de vuelo (TOF)',
     funcion: 'Región sin campo, en la torre vertical, en la que los iones se separan según t = L·√(m/2zeU).',
-    detalles: ['Aleación de muy baja dilatación (1 ppm/°C) dentro de una carcasa aislada por vacío: la deriva térmica es inferior a 1 ppm por cada 3 °C.'],
-    specs: [['Dilatación', '1 ppm/°C'], ['Recorrido', '≈ 2 m (reflejado, aprox.)']],
+    detalles: ['Aleación de muy baja dilatación (tipo Invar) dentro de una carcasa aislada por vacío: la exactitud se mantiene en torno a 1 ppm con variaciones de temperatura de hasta 3 °C respecto a la calibración (especificación del 6545).'],
+    specs: [['Dilatación', '≈ 1 ppm/°C (aprox.)'], ['Recorrido', '≈ 2 m (reflejado, aprox.)']],
     une: ['pulsador', 'espejo_iones', 'torre_tof'],
   },
   espejo_iones: {
@@ -133,7 +133,7 @@ export const INFO = {
     nombre: 'Conjunto analizador Q-TOF', en: 'Q-TOF analyzer', cat: 'Tiempo de vuelo (TOF)',
     funcion: 'Combina un cuadrupolo para seleccionar precursores con un TOF de alta resolución que registra todo el espectro con masa exacta.',
     detalles: [],
-    specs: [['Resolución', '> 30 000 a m/z 118 · > 60 000 a m/z 2722'], ['Exactitud', '< 0,8 ppm (MS)'], ['Rango TOF', 'm/z 20–10 000'], ['Velocidad', '50 espectros/s (MS)']],
+    specs: [['Resolución', '> 30 000 a m/z 118 · > 60 000 a m/z 2722'], ['Exactitud', '< 0,8 ppm RMS (MS)'], ['Rango TOF', 'm/z 20–10 000'], ['Velocidad', '50 espectros/s (MS)'], ['Cambio de polaridad', 'Ciclo de 1,5 s']],
     une: ['cuadrupolo', 'tubo_vuelo'],
   },
   camara_vacio: {
@@ -161,8 +161,8 @@ export const INFO = {
   },
   adc: {
     nombre: 'Digitalizador de doble ganancia', en: 'Dual-gain ADC', cat: 'Electrónica y gases',
-    funcion: 'Dos canales de 10 GHz, de ganancia alta y baja, que se combinan como en una fotografía HDR para obtener cinco órdenes de rango dinámico en cada espectro.',
-    detalles: [], specs: [['Canales', '2 × 10 GHz'], ['Rango dinámico', '5 órdenes']], une: ['detector', 'electronica'],
+    funcion: 'Sistema de adquisición ADC de 10 GHz con canales de ganancia alta y baja, que se combinan como en una fotografía HDR para obtener cinco órdenes de rango dinámico en cada espectro.',
+    detalles: [], specs: [['Muestreo', '10 GHz'], ['Canales', 'Ganancia alta y baja'], ['Rango dinámico', '5 órdenes']], une: ['detector', 'electronica'],
   },
   linea_gases: {
     nombre: 'Gases', en: 'Gas supply', cat: 'Electrónica y gases',

@@ -187,7 +187,7 @@ export const PANEL = {
   titulo: 'Simulación FT-ICR',
   controles: [
     { id: 'muestra', label: 'Ion / ventana', value: 'spA1', opciones: Object.entries(MUESTRAS).map(([k, m]) => [k, m.nombre]) },
-    { id: 'T', label: 'Duración del transitorio', value: '4', opciones: [['0.5', '0,5 s (1M)'], ['2', '2 s (4M)'], ['4', '4 s (8M)'], ['12', '12 s (16M)']] },
+    { id: 'T', label: 'Duración del transitorio', value: '4', opciones: [['0.5', '0,5 s'], ['2', '2 s'], ['4', '4 s'], ['12', '12 s (≈ 16M en 2ω)']] },
     { id: 'det', label: 'Detección', value: '2', opciones: [['1', '1ω (dipolar)'], ['2', '2ω (ParaCell 2xR)']] },
     { id: 'proc', label: 'Procesado', value: 'abs', opciones: [['abs', 'Modo absorción'], ['mag', 'Modo magnitud']] },
     { id: 'velocidad', label: 'Velocidad', value: '1', opciones: [['0.5', 'Lenta'], ['1', 'Normal'], ['2', 'Rápida']] },

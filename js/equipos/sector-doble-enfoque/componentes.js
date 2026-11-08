@@ -11,7 +11,7 @@ export const INFO = {
   /* ============ MUESTRA ============ */
   gc: {
     nombre: 'Cromatógrafo de gases', en: 'Gas chromatograph', cat: 'Introducción de muestra',
-    funcion: 'Separa los componentes de la muestra en una columna capilar antes de su entrada en la fuente. En el análisis de dioxinas se emplean columnas de 60 m capaces de separar los 17 congéneres 2,3,7,8-sustituidos.',
+    funcion: 'Separa los componentes de la muestra en una columna capilar antes de su entrada en la fuente. En el análisis de dioxinas se emplean columnas de 60 m (fase 5 % fenilo) que separan la 2,3,7,8-TCDD de los demás isómeros; la 2,3,7,8-TCDF se confirma en una segunda columna más polar.',
     detalles: ['Va adosado a un lateral de la consola; existe una configuración con dos cromatógrafos, uno a cada lado.', 'Representación simplificada.'],
     specs: [['Columna típica', '60 m, fase 5 % fenilo'], ['Gas portador', 'Helio']],
     une: ['linea_transferencia'],
@@ -43,7 +43,7 @@ export const INFO = {
       'El volumen de ionización y el filamento se sustituyen sin romper el vacío mediante un sistema de esclusa (interlock).',
       'Admite ionización química (metano, isobutano o amoníaco) y técnicas de campo (FD/FI).',
     ],
-    specs: [['Energía electrónica', '70 eV (ajustable)'], ['Tensión de aceleración', '5 kV'], ['Modos', 'EI, CI, FD/FI']],
+    specs: [['Energía electrónica', '70 eV (ajustable; 28–40 eV en EPA 1613)'], ['Tensión de aceleración', '5 kV'], ['Modos', 'EI, CI, FD/FI']],
     tune: ['Electron Energy', 'Emission', 'Source Temperature', 'Acceleration Voltage'],
     une: ['linea_transferencia', 'entrada_referencia', 'lentes_enfoque'],
   },
@@ -78,7 +78,7 @@ export const INFO = {
       'El imán enfoca en dirección pero dispersa en energía; el sector eléctrico tiene una dispersión en energía igual y opuesta. Con la geometría adecuada ambas se compensan en la rendija de salida (doble enfoque).',
       'La geometría Nier–Johnson clásica (1953) usa un sector eléctrico de 90° y un imán de 60°; la geometría Mattauch–Herzog (1934) enfoca a lo largo de un plano y se usaba con placa fotográfica.',
     ],
-    specs: [['Geometría', 'Nier–Johnson inversa (BE)'], ['Resolución', '> 60 000 (10 % valle)'], ['Exactitud', '< 2 ppm (barrido de tensión)']],
+    specs: [['Geometría', 'Nier–Johnson inversa (BE)'], ['Resolución', '> 60 000 (10 % valle); > 30 000 estática garantizada en la instalación'], ['Exactitud', '< 2 ppm (barrido de tensión); < 5 ppm (barrido magnético)']],
     une: ['iman', 'esa', 'tubo_vuelo'],
   },
   iman: {
@@ -96,9 +96,9 @@ export const INFO = {
   },
   rendija_intermedia: {
     nombre: 'Rendija intermedia', en: 'Intermediate (β) slit', cat: 'Analizador magnético',
-    funcion: 'Situada en la región libre de campo entre el imán y el sector eléctrico. Limita la dispersión en energía del haz.',
+    funcion: 'Situada en la región libre de campo entre el imán y el sector eléctrico. Recorta los bordes del haz y reduce los iones dispersados que llegarían al sector eléctrico (función aproximada en este modelo).',
     detalles: ['En equipos con barridos enlazados, en esta región se sitúa la cámara de colisión para el estudio de iones metaestables o tras CID.'],
-    specs: [['Material', 'Tántalo']],
+    specs: [],
     une: ['iman', 'esa'],
   },
   tubo_vuelo: {
@@ -149,7 +149,7 @@ export const INFO = {
   },
   carcasa_detector: {
     nombre: 'Cámara del detector', en: 'Detector housing', cat: 'Detector',
-    funcion: 'Aloja el dínodo de conversión y el multiplicador y dispone de bombeo propio.',
+    funcion: 'Aloja el dínodo de conversión y el multiplicador, montados en una brida propia, dentro de la cámara de vacío del analizador.',
     detalles: [], specs: [],
     une: ['dinodo_conversion', 'multiplicador', 'bombas_turbo'],
   },
@@ -157,8 +157,8 @@ export const INFO = {
   /* ============ VACÍO ============ */
   bombas_turbo: {
     nombre: 'Bombas turbomoleculares (×3)', en: 'Turbomolecular pumps', cat: 'Sistema de vacío',
-    funcion: 'Tres bombas sin aceite en bombeo diferencial: una para la fuente, una para el analizador y una para la zona del detector.',
-    detalles: ['Una válvula de aislamiento separa la fuente, lo que permite cambiar el volumen de ionización sin ventear el analizador.'],
+    funcion: 'Tres bombas sin aceite acopladas directamente en un sistema de bombeo diferencial que mantiene el alto vacío de la fuente y del analizador (el reparto exacto entre zonas es aproximado en este modelo).',
+    detalles: ['Una esclusa de vacío (vacuum interlock) de accionamiento neumático permite cambiar el volumen de ionización y el filamento sin ventear el equipo.'],
     specs: [['Número', '3'], ['Presión en el analizador', '≈ 10⁻⁵–10⁻⁶ Pa (aprox.)']],
     une: ['tubo_vuelo', 'bombas_rotatorias'],
   },
@@ -193,8 +193,8 @@ export const INFO = {
   },
   enfriador: {
     nombre: 'Enfriador de agua', en: 'Chiller', cat: 'Electrónica y servicios',
-    funcion: 'Refrigera el imán y la electrónica de potencia mediante un circuito de agua.',
-    detalles: [], specs: [['Caudal', '≈ 13 L/min'], ['Temperatura', '20–25 °C'], ['Consumo', '≈ 1,6 kW']],
+    funcion: 'Enfriador recirculante opcional que suministra el agua de refrigeración de diversas partes del instrumento y de las sondas de introducción directa cuando el laboratorio no dispone de agua de refrigeración.',
+    detalles: ['La fuente de alimentación del imán, en el armario de electrónica, se refrigera por un flujo de aire optimizado.'], specs: [['Caudal', '≈ 13 L/min'], ['Temperatura', '20–25 °C'], ['Consumo', '≈ 1,6 kW']],
     une: ['fuente_iman', 'consola'],
   },
 

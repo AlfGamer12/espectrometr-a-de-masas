@@ -14,7 +14,7 @@ export const INFO = {
     funcion: 'Genera iones por electrospray a presión atmosférica o por desorción láser (MALDI) desde una diana en vacío intermedio. Se cambia de una a otra desde el programa, sin modificar el hardware.',
     detalles: [
       'Admite fuentes opcionales APPI, APCI y GC-APCI.',
-      'El modo MALDI permite la imagen molecular de cortes de tejido con resoluciones superiores a 1 000 000.',
+      'El modo MALDI permite la imagen molecular de cortes de tejido con resoluciones superiores a 800 000 a m/z 400 (detección 2xR).',
     ],
     specs: [['Modos', 'ESI, MALDI, ESI/MALDI simultáneo'], ['Láser MALDI', 'smartbeam-II']],
     une: ['capilar', 'laser_maldi', 'carcasa_fuente'],
@@ -67,7 +67,7 @@ export const INFO = {
   cuadrupolo: {
     nombre: 'Cuadrupolo analítico (CASI)', en: 'Analytical quadrupole · CASI', cat: 'Cuadrupolo y celda de colisión',
     funcion: 'Aísla un ion precursor para MS/MS o enriquece una ventana de m/z (acumulación continua de iones seleccionados).',
-    detalles: [], specs: [['Aislamiento', 'Hasta m/z ≈ 6000']],
+    detalles: [], specs: [['Aislamiento', 'Hasta m/z ≈ 6000 (aprox.)']],
     une: ['multipolo', 'celda_colision'],
   },
   celda_colision: {
@@ -98,7 +98,7 @@ export const INFO = {
       'Excitación por barrido de frecuencia (chirp) o SWIFT para aislar iones.',
       'Detección 2ω (2xR): las placas de excitación también detectan y la señal aparece al doble de la frecuencia, lo que duplica la resolución para el mismo tiempo.',
       'La detección no es destructiva: el mismo paquete de iones se mide durante todo el transitorio.',
-      'Admite fragmentación dentro de la celda: ECD, EID y SORI-CID.',
+      'Admite fragmentación dentro de la celda: ECD, EDD y SORI-CID.',
     ],
     specs: [['Detección', '2ω (2xR)'], ['Dimensiones', '≈ 56 × 150 mm (aprox., según patente)'], ['Presión', '≈ 2,5 × 10⁻¹⁰ mbar']],
     tune: ['Front/Back Trap Plate', 'Sweep Excitation Power', 'Side Kick', 'Data Size'],
@@ -127,7 +127,7 @@ export const INFO = {
     nombre: 'Imán superconductor de 7 T', en: '7 T conduction-cooled magnet', cat: 'Imán superconductor',
     funcion: 'Genera el campo magnético intenso y homogéneo en el que giran los iones. En el scimaX se refrigera por conducción: no necesita llenados de helio ni de nitrógeno líquido, ni línea de quench.',
     detalles: [
-      'Los equipos FT-ICR clásicos (solariX de 7, 12 o 15 T) utilizan imanes en baño de helio líquido.',
+      'Los equipos FT-ICR clásicos (solariX de 7; 9,4; 12 o 15 T) utilizan imanes en baño de helio líquido.',
       'El bore, el campo de dispersión y el peso del imán del scimaX no están publicados.',
     ],
     specs: [['Campo', '7 T'], ['Refrigeración', 'Por conducción (sin criógenos líquidos)'], ['Línea de quench', 'No necesaria']],

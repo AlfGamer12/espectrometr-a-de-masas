@@ -37,7 +37,7 @@ export const RECORRIDO = [
   },
   {
     titulo: 'Tubo de vuelo y espejo de iones',
-    texto: 'Los iones suben por el tubo de vuelo, se reflejan en el espejo de dos etapas y vuelven al detector. El tubo, de una aleación de muy baja dilatación, limita la deriva térmica a menos de 1 ppm por cada 3 °C.',
+    texto: 'Los iones suben por el tubo de vuelo, se reflejan en el espejo de dos etapas y vuelven al detector. El tubo, de una aleación de muy baja dilatación aislada por vacío, mantiene la exactitud en torno a 1 ppm aunque la temperatura varíe unos 3 °C.',
     modo: 'analizador', e2: 0.2, xray: true, foco: ['tubo_vuelo', 'espejo_iones', 'detector', 'pulsador'], dir: [1, 0.3, 0.7], pad: 1.0,
     resaltar: ['tubo_vuelo', 'espejo_iones'],
   },

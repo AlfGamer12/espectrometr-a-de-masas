@@ -24,12 +24,12 @@ export const PELICULA = [
   {
     cap: 'Fuente de iones', titulo: 'Electrospray y desolvatación', dur: 19, modo: 'analizador', e2: 0, xray: false, foco: ['sonda_esi', 'bloque_calefactor', 'linea_desolvatacion'],
     dir: [0.45, 0.35, 1], pad: 1.4, trans: 3.0, orbita: 3.5, acercar: 0.07, resaltar: ['sonda_esi', 'linea_desolvatacion'],
-    texto: 'Una alta tensión en el capilar de la sonda forma un aerosol de gotas cargadas. El nitrógeno evapora el disolvente y libera los iones. La pulverización es ortogonal: solo los iones entran en el capilar calefactado que lleva al vacío.',
+    texto: 'Una alta tensión en el capilar de la sonda forma un aerosol de gotas cargadas. Los gases calientes evaporan el disolvente y liberan los iones. La pulverización es ortogonal: solo los iones entran en el capilar calefactado que lleva al vacío.',
   },
   {
     cap: 'Óptica iónica', titulo: 'Bombeo diferencial y guías de iones', dur: 15, modo: 'analizador', e2: 0.5, xray: false, foco: ['uf_qarray', 'skimmer', 'uf_lens', 'tabiques'],
     dir: [0.4, 0.45, 1], pad: 1.2, orbita: -3, acercar: 0.06, resaltar: ['uf_qarray', 'skimmer', 'uf_lens'],
-    texto: 'La presión baja por etapas. En la primera cámara, a unos cien pascales, la guía UF Qarray enfoca los iones y deja escapar el gas. Tras el skimmer, el octapolo UF Lens lleva el haz al alto vacío.',
+    texto: 'La presión baja por etapas. En la primera cámara, a unos cien pascales, la guía UF Qarray enfoca los iones y deja escapar el gas. Tras el skimmer, la guía multipolar UF Lens lleva el haz al alto vacío.',
   },
   {
     cap: 'Analizador', titulo: 'Q1: el ion precursor', dur: 16, modo: 'analizador', e2: 0.5, xray: false, foco: ['q1_prebarras', 'q1'],
@@ -39,7 +39,7 @@ export const PELICULA = [
   {
     cap: 'Celda de colisión', titulo: 'Fragmentación con argón', dur: 16, modo: 'analizador', e2: 0.5, xray: false, foco: ['celda_carcasa', 'celda_multipolo'],
     dir: [0.3, 0.5, 1], pad: 1.35, orbita: -3, acercar: 0.05, resaltar: ['celda_carcasa', 'celda_multipolo'],
-    texto: 'En la celda de colisión, el precursor choca con átomos de argón y se fragmenta. Su geometría estrechada la vacía en menos de un milisegundo, y así el equipo alterna transiciones sin interferencias.',
+    texto: 'En la celda de colisión, el precursor choca con átomos de argón y se fragmenta. Su geometría estrechada la vacía con gran rapidez, y así el equipo alterna transiciones sin interferencias.',
   },
   {
     cap: 'Detector', titulo: 'Q3 y dínodo de conversión', dur: 17, modo: 'analizador', e2: 0.5, xray: true, foco: ['q3', 'dinodo_conversion', 'multiplicador'],
@@ -61,7 +61,7 @@ export const PELICULA = [
     cap: 'Servicios', titulo: 'Vacío y gases', dur: 15, modo: 'equipo', e1: 1, xray: true, sim: false,
     foco: ['bomba_turbo', 'bomba_rotatoria', 'camara_vacio', 'linea_gases'], dir: [0.55, 0.5, 0.9], pad: 1.1, trans: 3.2, orbita: -2.5,
     resaltar: ['bomba_turbo', 'bomba_rotatoria', 'linea_vacio_previo', 'linea_gases'],
-    texto: 'Una única bomba turbomolecular de tres entradas bombea la segunda cámara y el alto vacío; la rotatoria evacúa la primera y recoge el escape. El nitrógeno alimenta la fuente y el argón, la celda.',
+    texto: 'Una única bomba turbomolecular de tres entradas bombea la segunda cámara y el alto vacío; la rotatoria evacúa la primera y recoge el escape. El nitrógeno y el aire alimentan la fuente, y el argón, la celda.',
   },
   {
     dur: 10, modo: 'equipo', e1: 0, xray: false, foco: EXT, dir: [0.55, 0.42, 0.9], pad: 1.1, trans: 3.0, orbita: -2, resaltar: [],

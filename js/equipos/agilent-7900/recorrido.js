@@ -41,7 +41,7 @@ export const RECORRIDO = [
   },
   {
     titulo: 'Cuadrupolo y detector',
-    texto: 'El cuadrupolo hiperbólico salta de una masa a otra en microsegundos y transmite un solo isótopo cada vez. El detector ortogonal, de dínodos discretos, cuenta los iones en modo de pulsos o analógico: más de once órdenes de magnitud de rango dinámico.',
+    texto: 'El cuadrupolo hiperbólico salta de una masa a otra en microsegundos y transmite un solo isótopo cada vez. El detector ortogonal, de dínodos discretos, cuenta los iones en modo de pulsos o analógico: once órdenes de magnitud de rango dinámico.',
     modo: 'analizador', e2: 0.15, xray: true, foco: ['cuadrupolo', 'detector'], dir: [0.4, 0.4, 1], pad: 1.3, resaltar: ['cuadrupolo', 'detector'],
   },
   {

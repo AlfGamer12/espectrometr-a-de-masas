@@ -39,7 +39,7 @@ export default {
     </table>
     <h4>Precisión y fuentes</h4>
     <p>Elaborado a partir del manual de usuario del microflex (Bruker Daltonik, 2008), la página y el folleto del microflex LRF, el manual de flexControl y
-      las guías de preparación de muestras y de mantenimiento de Bruker. Los componentes, su función y los parámetros de operación (IS1, IS2, PIE, láser,
-      vacío) corresponden al equipo real. La orientación del tubo de vuelo, sus dimensiones y la disposición interna son aproximadas. Las masas de los
+      las guías de preparación de muestras y de mantenimiento de Bruker. Los componentes, su función y los parámetros de láser y vacío corresponden a la documentación del equipo;
+      los valores de IS1, IS2, lente y retardo PIE son típicos y aproximados. La orientación del tubo de vuelo, sus dimensiones y la disposición interna son aproximadas. Las masas de los
       patrones de péptidos son monoisotópicas; las de proteínas, medias.</p>`,
 };

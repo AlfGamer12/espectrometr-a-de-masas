@@ -345,7 +345,7 @@ export const PANEL = {
     { id: 'velocidad', label: 'Velocidad', value: '1', opciones: [['0.5', 'Lenta'], ['1', 'Normal'], ['2.5', 'Rápida']] },
   ],
   lecturas: [['mz', 'm/z'], ['vrf', 'V<sub>RF</sub> 0-p*'], ['udc', 'U<sub>DC</sub>*'], ['det', 'Cuentas']],
-  nota: '* Valores ilustrativos para r₀ ≈ 4 mm y f ≈ 1 MHz, con U/V = 0,168. Escala de tiempo ralentizada unas 10⁶ veces.',
+  nota: '* Valores ilustrativos para r₀ ≈ 4 mm y f ≈ 1 MHz, con U/V = 0,168. Escala de tiempo muy ralentizada (varios órdenes de magnitud).',
   leyenda: [['#f08c00', 'ion estable'], ['#e03150', 'ion inestable'], ['#2fa9d9', 'electrones']],
   graficas: ['Espectro de masas', 'Diagrama de estabilidad de Mathieu'],
 };

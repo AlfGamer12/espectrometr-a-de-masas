@@ -47,7 +47,7 @@ export const PELICULA = [
   {
     cap: 'Analizador', titulo: 'Cuadrupolo y detector', dur: 13, modo: 'analizador', e2: 0, xray: true, foco: ['cuadrupolo', 'detector'],
     dir: [0.45, 0.4, 1], pad: 1.3, orbita: -3, acercar: 0.05, accion: plasma(true), resaltar: ['cuadrupolo', 'detector'],
-    texto: 'El cuadrupolo salta de una masa a otra en microsegundos y deja pasar un solo isótopo cada vez. El detector cuenta cada ion con un rango de más de once órdenes de magnitud.',
+    texto: 'El cuadrupolo salta de una masa a otra en fracciones de milisegundo y deja pasar un solo isótopo cada vez. El detector cuenta cada ion con un rango dinámico de once órdenes de magnitud.',
   },
   {
     cap: 'Simulación', titulo: 'Sin gas frente a helio', dur: 22, modo: 'analizador', e2: 0, sim: true, ctl: { muestra: 'hcl', celda: 'nogas' },
@@ -63,6 +63,6 @@ export const PELICULA = [
   },
   {
     dur: 9, modo: 'equipo', e1: 0, foco: EXT, dir: [0.8, 0.36, 1], pad: 1.05, trans: 3.0, orbita: -2, resaltar: [],
-    texto: 'Del líquido al recuento de iones en menos de un segundo: así mide un ICP-MS la composición elemental de una muestra.',
+    texto: 'Del líquido al recuento de iones en apenas unos segundos: así mide un ICP-MS la composición elemental de una muestra.',
   },
 ];

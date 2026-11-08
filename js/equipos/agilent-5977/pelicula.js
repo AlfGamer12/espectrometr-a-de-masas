@@ -22,7 +22,7 @@ export const PELICULA = [
   {
     cap: 'Fuente de iones', titulo: 'Impacto electrónico', dur: 19, modo: 'analizador', e2: 0.55, xray: false, foco: FUENTE,
     dir: [0.8, 0.38, 0.5], pad: 1.15, trans: 3.0, orbita: 3.5, acercar: 0.07, resaltar: ['filamento1', 'filamento2', 'iman1', 'iman2'],
-    texto: 'Un filamento de wolframio emite electrones que se aceleran hasta setenta electronvoltios, y los imanes los concentran en un haz estrecho. El impacto ioniza las moléculas y produce una fragmentación reproducible, comparable con bibliotecas espectrales.',
+    texto: 'Un filamento de renio emite electrones que se aceleran hasta setenta electronvoltios, y los imanes los concentran en un haz estrecho. El impacto ioniza las moléculas y produce una fragmentación reproducible, comparable con bibliotecas espectrales.',
   },
   {
     cap: 'Óptica iónica', titulo: 'Extracción y enfoque', dur: 15, modo: 'analizador', e2: 0.55, xray: false, foco: ['repulsor', 'extractor', 'lente_enfoque', 'lente_entrada'],

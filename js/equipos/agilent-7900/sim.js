@@ -11,7 +11,7 @@ const ISO = [
   [58, 'Ni', 68.08], [60, 'Ni', 26.22], [63, 'Cu', 69.15], [65, 'Cu', 30.85], [64, 'Zn', 49.17], [66, 'Zn', 27.73], [68, 'Zn', 18.45],
   [75, 'As', 100], [77, 'Se', 7.63], [78, 'Se', 23.77], [80, 'Se', 49.61], [82, 'Se', 8.73],
 ];
-// isótopo de cuantificación de cada elemento (sin gas se mediría igual; se elige el más abundante)
+// isótopo de cuantificación de cada elemento (se elige un isótopo abundante sin solapamiento isobárico: ⁶⁰Ni evita ⁵⁸Fe, ⁶⁶Zn evita ⁶⁴Ni, ⁷⁸Se es el habitual en modo He)
 const CUANT = [[51, 'V'], [52, 'Cr'], [55, 'Mn'], [56, 'Fe'], [59, 'Co'], [60, 'Ni'], [63, 'Cu'], [66, 'Zn'], [75, 'As'], [78, 'Se']];
 const CUANT_M = new Set(CUANT.map((c) => c[0]));
 

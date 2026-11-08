@@ -13,7 +13,7 @@ export const RECORRIDO = [
   },
   {
     titulo: 'Ionización por electrospray',
-    texto: 'Una alta tensión aplicada al capilar de la sonda forma un aerosol de gotas cargadas. El gas nebulizador y el gas de calentamiento evaporan el disolvente; las gotas se fisionan hasta liberar iones como [M+H]⁺. La pulverización es ortogonal a la entrada, de modo que las gotas grandes no penetran en el vacío.',
+    texto: 'Una alta tensión aplicada al capilar de la sonda forma un aerosol de gotas cargadas. El gas nebulizador (N₂) y el gas de calentamiento (aire seco) evaporan el disolvente; las gotas se fisionan hasta liberar iones como [M+H]⁺. La pulverización es ortogonal a la entrada, de modo que las gotas grandes no penetran en el vacío.',
     modo: 'analizador', e2: 0, xray: false, foco: ['sonda_esi', 'bloque_calefactor', 'linea_desolvatacion'], dir: [0.45, 0.35, 1], pad: 1.25,
     resaltar: ['sonda_esi'],
   },
@@ -25,7 +25,7 @@ export const RECORRIDO = [
   },
   {
     titulo: 'Bombeo diferencial y guías de iones',
-    texto: 'La presión desciende en etapas: unos 10² Pa en la primera cámara, donde la guía UF-Qarray enfoca los iones y deja escapar el gas; un skimmer da paso a la segunda cámara, donde el octapolo UF-Lens transporta el haz hasta el alto vacío de los cuadrupolos.',
+    texto: 'La presión desciende en etapas: unos 10² Pa en la primera cámara, donde la guía UF-Qarray enfoca los iones y deja escapar el gas; un skimmer da paso a la segunda cámara, donde la guía multipolar UF-Lens transporta el haz hasta el alto vacío de los cuadrupolos.',
     modo: 'analizador', e2: 0.5, xray: false, foco: ['uf_qarray', 'skimmer', 'uf_lens', 'tabiques'], dir: [0.4, 0.45, 1],
     resaltar: ['uf_qarray', 'skimmer', 'uf_lens', 'tabiques'],
   },
@@ -37,7 +37,7 @@ export const RECORRIDO = [
   },
   {
     titulo: 'Celda de colisión: fragmentación por CID',
-    texto: 'En la celda UFsweeper III el precursor colisiona con átomos de argón y se fragmenta. La energía de colisión determina qué fragmentos se forman. La geometría estrechada de la celda la vacía en menos de un milisegundo, lo que permite alternar transiciones sin interferencias.',
+    texto: 'En la celda UFsweeper III el precursor colisiona con átomos de argón y se fragmenta. La energía de colisión determina qué fragmentos se forman. La geometría estrechada de la celda la vacía con gran rapidez (pausas de solo 1 ms entre transiciones), lo que permite alternar transiciones sin interferencias.',
     modo: 'analizador', e2: 0.5, xray: false, foco: ['celda_carcasa', 'celda_multipolo'], dir: [0.3, 0.5, 1],
     resaltar: ['celda_carcasa', 'celda_multipolo'],
   },
@@ -54,7 +54,7 @@ export const RECORRIDO = [
   },
   {
     titulo: 'Vacío, gases y electrónica',
-    texto: 'Una única bomba turbomolecular de tres entradas (40, 260 y 210 L/s) bombea la segunda cámara y el alto vacío, mientras la bomba rotatoria evacúa la primera cámara y recoge el escape de la turbo. El nitrógeno alimenta la fuente y el argón la celda de colisión.',
+    texto: 'Una única bomba turbomolecular de tres entradas (40, 260 y 210 L/s) bombea la segunda cámara y el alto vacío, mientras la bomba rotatoria evacúa la primera cámara y recoge el escape de la turbo. El nitrógeno y el aire seco alimentan la fuente, y el argón, la celda de colisión.',
     modo: 'equipo', e1: 1, xray: false, sim: false, foco: ['bomba_turbo', 'bomba_rotatoria', 'camara_vacio', 'linea_gases'],
     resaltar: ['bomba_turbo', 'bomba_rotatoria', 'linea_vacio_previo', 'linea_gases', 'generadores_rf'],
   },

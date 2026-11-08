@@ -2,7 +2,7 @@
 export const RECORRIDO = [
   {
     titulo: 'Un analizador tradicional: el sector magnético',
-    texto: 'Los primeros espectrómetros de masas (Thomson, Aston, Dempster) separaban los iones con campos magnéticos. Su evolución, el sector de doble enfoque, sigue siendo hoy el método de referencia para dioxinas y otros contaminantes persistentes por su alta resolución y sensibilidad.',
+    texto: 'Los primeros espectrómetros de masas (Thomson, Aston, Dempster) separaban los iones con campos magnéticos, a menudo combinados con campos eléctricos. Su evolución, el sector de doble enfoque, sigue siendo hoy el método de referencia para dioxinas y otros contaminantes persistentes por su alta resolución y sensibilidad.',
     modo: 'equipo', e1: 0, xray: false, foco: ['gc', 'panel_frontal', 'tapa_analizador', 'chasis'], resaltar: [],
   },
   {
@@ -47,12 +47,12 @@ export const RECORRIDO = [
   },
   {
     titulo: 'Detección de iones seleccionados (MID)',
-    texto: 'En el análisis de dioxinas el equipo salta entre unas pocas masas exactas (por ejemplo, 319,8965 y 321,8936 para la 2,3,7,8-TCDD y sus análogos marcados con ¹³C) y mide en cada ciclo un ion del PFK como masa de bloqueo. Así alcanza sensibilidades de femtogramos.',
+    texto: 'En el análisis de dioxinas el equipo salta entre unas pocas masas exactas (por ejemplo, 319,8965 y 321,8936 para la 2,3,7,8-TCDD, y 331,9368 y 333,9339 para su análogo marcado con ¹³C₁₂) y mide en cada ciclo un ion del PFK como masa de bloqueo. Así alcanza sensibilidades de femtogramos.',
     modo: 'analizador', e2: 0, xray: true, sim: true, foco: ['fuente_ei', 'iman', 'esa', 'multiplicador'], dir: [0.3, 1, 0.5], resaltar: [],
   },
   {
     titulo: 'Vacío y servicios',
-    texto: 'Tres bombas turbomoleculares, respaldadas por bombas rotatorias, mantienen el vacío de la fuente, el analizador y el detector. El imán y la electrónica de potencia se refrigeran con agua mediante un enfriador externo.',
+    texto: 'Tres bombas turbomoleculares, respaldadas por bombas rotatorias, mantienen el vacío de la fuente, el analizador y el detector. Diversas partes del instrumento se refrigeran con agua, de la red del laboratorio o de un enfriador recirculante opcional.',
     modo: 'equipo', e1: 1, xray: false, sim: false, foco: ['bombas_turbo', 'bombas_rotatorias', 'fuente_iman', 'enfriador'],
     resaltar: ['bombas_turbo', 'bombas_rotatorias', 'lineas_vacio', 'fuente_iman', 'enfriador'],
   },

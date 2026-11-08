@@ -57,7 +57,7 @@ export const INFO = {
     funcion: 'Separa los iones por su movilidad, es decir, por su tamaño y forma (sección eficaz de colisión). El gas empuja a los iones hacia la salida y un gradiente de campo eléctrico los frena: cada ion queda atrapado donde ambas fuerzas se igualan. Al bajar el campo, eluyen primero los de menor movilidad (1/K₀ alto).',
     detalles: [
       'Dos secciones en serie: mientras la primera acumula iones, la segunda los analiza. Así el ciclo de trabajo es cercano al 100 %.',
-      'Electrodos de circuito impreso apilados, con un diámetro interior de 8 mm y una longitud total de unos 96 mm. La radiofrecuencia confina los iones en el eje.',
+      'Electrodos de circuito impreso apilados, con un diámetro interior de 8 mm y una longitud total de unos 96–100 mm. La radiofrecuencia confina los iones en el eje.',
       'Movilidad: K = v_g/E. La movilidad reducida K₀ se expresa como 1/K₀ (V·s/cm²) y se convierte en sección eficaz de colisión (CCS) mediante la ecuación de Mason–Schamp.',
       'Resolución de movilidad típica K/ΔK ≈ 60, que aumenta con rampas más lentas o rangos más estrechos.',
       'El gas del túnel es aire del laboratorio, a unos 2–3 mbar y con una velocidad de 120–150 m/s.',
@@ -76,7 +76,7 @@ export const INFO = {
     une: ['tims', 'guia_transferencia'],
   },
   guia_transferencia: {
-    nombre: 'Guía de iones de transferencia', en: 'Stacked ring ion guide', cat: 'Óptica iónica',
+    nombre: 'Guía de iones de transferencia', en: 'Ion transfer multipole', cat: 'Óptica iónica',
     funcion: 'Transporta los iones hasta el cuadrupolo conservando la separación por movilidad.',
     detalles: [], specs: [['RF', '≈ 400–500 Vpp']],
     tune: ['Multipole RF'],
@@ -91,7 +91,7 @@ export const INFO = {
       'PASEF (Parallel Accumulation–Serial Fragmentation): en una sola rampa de 100 ms se fragmentan sucesivamente unos diez precursores, lo que multiplica por diez la velocidad de secuenciación (más de 100 espectros MS/MS por segundo).',
       'En diaPASEF, las ventanas de aislamiento se escalonan siguiendo la diagonal de la nube de péptidos en el plano m/z–1/K₀.',
     ],
-    specs: [['Ventana de aislamiento', '2 Th (< m/z 700) · 3 Th (> m/z 700)'], ['Cambio de masa', '< 1 ms'], ['Límite de selección', 'm/z 3000']],
+    specs: [['Ventana de aislamiento', '2 Th (< m/z 700) · 3 Th (> m/z 700)'], ['Cambio de masa', '< 1 ms'], ['Límite de selección', '≈ m/z 3000 (aprox.)']],
     tune: ['Isolation Width', 'Ion Energy'],
     une: ['guia_transferencia', 'celda_colision'],
   },
@@ -99,7 +99,7 @@ export const INFO = {
     nombre: 'Celda de colisión', en: 'Collision cell', cat: 'Cuadrupolo y celda de colisión',
     funcion: 'Fragmenta los precursores por colisión con gas (CID). La energía de colisión se ajusta en función de la movilidad del ion.',
     detalles: ['Rampa típica de energía de colisión: de unos 20 eV a 1/K₀ = 0,6 hasta unos 59 eV a 1/K₀ = 1,6.'],
-    specs: [['Energía de colisión', '≈ 20–60 eV'], ['RF', '3000–4000 Vpp']],
+    specs: [['Energía de colisión', '≈ 20–60 eV'], ['RF', '≈ 3000–4000 Vpp (aprox., según método)']],
     tune: ['Collision Energy', 'Collision RF'],
     une: ['cuadrupolo', 'optica_transferencia'],
   },
@@ -141,7 +141,7 @@ export const INFO = {
   analizador: {
     nombre: 'Conjunto analizador TIMS-QTOF', en: 'TIMS-QTOF analyzer', cat: 'Tiempo de vuelo (TOF)',
     funcion: 'Separa cada ion en cuatro dimensiones: tiempo de retención, movilidad (1/K₀), m/z e intensidad.',
-    detalles: [], specs: [['Resolución TOF', '> 35 000 (Pro) · 60 000 (Pro 2)'], ['Exactitud', '< 2 ppm (calibración externa)'], ['Rango m/z', '20–40 000']],
+    detalles: [], specs: [['Resolución TOF', '> 35 000 (Pro) · 60 000 FSR a m/z 1200 (Pro 2)'], ['Exactitud', '< 2 ppm RMS (cal. externa) · < 0,8 ppm (cal. interna), Pro 2'], ['Rango m/z', '20–40 000']],
     une: ['tims', 'cuadrupolo', 'tubo_tof'],
   },
 
@@ -171,7 +171,7 @@ export const INFO = {
   electronica: {
     nombre: 'Electrónica de RF y alta tensión', en: 'RF & HV electronics', cat: 'Electrónica y gases',
     funcion: 'Genera las radiofrecuencias de embudos, TIMS, guías, cuadrupolo y celda, y las tensiones de la fuente y del TOF. Un control en tiempo real sincroniza el cuadrupolo con la elución del TIMS.',
-    detalles: [], specs: [['TIMS RF', '≈ 350 Vpp a ≈ 800 kHz']],
+    detalles: [], specs: [['TIMS RF', '≈ 350 Vpp (frecuencia ≈ 1 MHz, aprox.)']],
     une: ['tims', 'cuadrupolo', 'pusher'],
   },
   digitalizador: {

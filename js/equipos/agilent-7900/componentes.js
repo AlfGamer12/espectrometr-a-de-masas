@@ -33,7 +33,7 @@ export const INFO = {
     nombre: 'Cámara de pulverización de Scott', en: 'Scott double-pass spray chamber', cat: 'Introducción de muestra',
     funcion: 'Deja pasar solo las gotas más finas. El aerosol recorre el tubo interior, invierte el sentido por el exterior y sale hacia la antorcha; las gotas grandes chocan con las paredes y se van por el drenaje.',
     detalles: ['Solo llega al plasma una pequeña fracción de la muestra aspirada; el resto se pierde por el drenaje.', 'Es de cuarzo.'],
-    specs: [['Tipo', 'Doble paso'], ['Temperatura', '2 °C']],
+    specs: [['Tipo', 'Doble paso'], ['Temperatura', '2 °C (ajustable de −5 a +20 °C)']],
     une: ['nebulizador', 'peltier', 'antorcha'],
   },
   peltier: {
@@ -45,7 +45,7 @@ export const INFO = {
     nombre: 'Antorcha de cuarzo', en: 'Quartz torch', cat: 'Plasma (fuente de iones)',
     funcion: 'Tres tubos concéntricos: por el exterior circula el gas de plasma, por el intermedio el gas auxiliar y por el inyector central entra el aerosol, que atraviesa el centro del plasma.',
     detalles: ['De una pieza. Un motor paso a paso la posiciona para ajustar la profundidad de muestreo.', 'El conector de cuarzo une la salida de la cámara con el inyector.'],
-    specs: [['Inyector', '2,5 mm'], ['Gas de plasma', '≈ 15 L/min'], ['Gas auxiliar', '≈ 0,9 L/min'], ['Profundidad de muestreo', '≈ 10 mm']],
+    specs: [['Inyector', '2,5 mm'], ['Gas de plasma', '≈ 15 L/min'], ['Gas auxiliar', '≈ 0,9 L/min'], ['Profundidad de muestreo', '≈ 8–10 mm (aprox.; ajustable 3–28 mm)']],
     tune: ['Plasma Gas', 'Auxiliary Gas', 'Sampling Depth'], une: ['camara_nebulizacion', 'bobina', 'cono_muestreo'],
   },
   escudo_antorcha: {
@@ -66,29 +66,29 @@ export const INFO = {
     funcion: 'Gas ionizado a 6000–10 000 K. En el canal central el aerosol se seca, se vaporiza, se atomiza y se ioniza: casi todos los elementos forman iones M⁺.',
     detalles: ['El argón tiene un potencial de ionización alto (15,76 eV), por eso ioniza con eficiencia la mayoría de los elementos.',
       'También forma iones poliatómicos del propio plasma y de la matriz (ArO⁺, Ar₂⁺, ArCl⁺, ClO⁺…), que se solapan con analitos de la misma masa nominal.'],
-    specs: [['Temperatura', '6000–10 000 K'], ['CeO⁺/Ce⁺', '< 1,5 %'], ['Ce²⁺/Ce⁺', '< 3 %']], une: ['antorcha', 'cono_muestreo'],
+    specs: [['Temperatura', '6000–10 000 K'], ['CeO⁺/Ce⁺', '< 1,5 % (especificación de fábrica)'], ['Ce²⁺/Ce⁺', '< 3 % (especificación de fábrica)']], une: ['antorcha', 'cono_muestreo'],
   },
   cono_muestreo: {
     nombre: 'Cono de muestreo', en: 'Sampler cone', cat: 'Interfaz y óptica iónica',
     funcion: 'Extrae el centro del plasma por un orificio de alrededor de 1 mm hacia la región de interfaz, evacuada por la bomba rotatoria.',
-    detalles: ['De níquel; también los hay con punta de platino para matrices agresivas.', 'Es la pieza que más se ensucia: se limpia y se sustituye periódicamente.'],
-    specs: [['Material', 'Ni (Pt opcional)'], ['Orificio', '≈ 1,0 mm (aprox.)']], une: ['interfaz', 'plasma'],
+    detalles: ['Punta de níquel sobre base de cobre; también los hay con punta de platino para matrices agresivas.', 'Es la pieza que más se ensucia: se limpia y se sustituye periódicamente.'],
+    specs: [['Material', 'Punta de Ni, base de Cu (punta de Pt opcional)'], ['Orificio', '1,0 mm']], une: ['interfaz', 'plasma'],
   },
   interfaz: {
     nombre: 'Placa de interfaz', en: 'Water-cooled interface', cat: 'Interfaz y óptica iónica',
     funcion: 'Soporta el cono de muestreo y disipa el calor del plasma mediante circulación de agua del enfriador.',
     detalles: ['La región entre los dos conos está a unos cientos de pascales y se bombea con la rotatoria.'],
-    specs: [['Presión', '≈ 200–300 Pa (aprox.)'], ['Refrigeración', 'Agua, ≥ 5 L/min']], une: ['cono_muestreo', 'cono_separador', 'enfriador', 'bomba_rotatoria'],
+    specs: [['Presión', '≈ 10² Pa (aprox.)'], ['Refrigeración', 'Agua, ≥ 5 L/min']], une: ['cono_muestreo', 'cono_separador', 'enfriador', 'bomba_rotatoria'],
   },
   cono_separador: {
     nombre: 'Cono de separación (skimmer)', en: 'Skimmer cone', cat: 'Interfaz y óptica iónica',
     funcion: 'Segundo cono, más agudo y de orificio menor, que toma la parte central del chorro supersónico y la deja pasar a la cámara de lentes.',
-    detalles: [], specs: [['Material', 'Ni'], ['Orificio', '≈ 0,4–0,5 mm (aprox.)']], une: ['interfaz', 'lentes_extraccion'],
+    detalles: [], specs: [['Material', 'Ni (punta de Pt opcional)'], ['Orificio', '0,45 mm']], une: ['interfaz', 'lentes_extraccion'],
   },
   lentes_extraccion: {
     nombre: 'Lentes de extracción', en: 'Extraction lenses', cat: 'Interfaz y óptica iónica',
     funcion: 'Extraen los iones positivos del chorro que sale del cono de separación y los aceleran hacia la lente Omega.',
-    detalles: ['Forman parte del conjunto de lentes x-lens del 7900.'], specs: [], tune: ['Extract 1', 'Extract 2'], une: ['cono_separador', 'lente_omega'],
+    detalles: ['Lente de extracción doble y cónica; forman parte de la configuración estándar x-lens del 7900 (la s-lens es la opción de alta sensibilidad para semiconductores).'], specs: [], tune: ['Extract 1', 'Extract 2'], une: ['cono_separador', 'lente_omega'],
   },
   lente_omega: {
     nombre: 'Lente Omega', en: 'Off-axis Omega lens', cat: 'Interfaz y óptica iónica',
@@ -102,26 +102,26 @@ export const INFO = {
     detalles: ['Discriminación por energía cinética (KED): una barrera de potencial a la salida deja pasar los iones atómicos y rechaza los poliatómicos, ya frenados.',
       'Unas mismas condiciones sirven para casi todas las interferencias poliatómicas. Para Se, Fe o Ca puede usarse H₂ como gas de reacción.',
       'No elimina interferencias isobáricas ni iones doblemente cargados (por ejemplo, REE²⁺ sobre As o Se).'],
-    specs: [['Gas', 'He (H₂ opcional)'], ['Caudal de He', '≈ 4–5 mL/min'], ['Cambio de modo', '< 5 s']], tune: ['He Flow', 'Octopole Bias', 'KED'],
+    specs: [['Gas', 'He (H₂ opcional)'], ['Caudal de He', '≈ 4–5 mL/min (típico, aprox.)'], ['Cambio de gas', '< 3 s']], tune: ['He Flow', 'OctP Bias', 'Energy Discrimination'],
     une: ['lente_omega', 'lente_kd', 'control_gases'],
   },
   lente_kd: {
     nombre: 'Lente de polarización (barrera KED)', en: 'Plate bias lens', cat: 'Celda de colisión/reacción',
-    funcion: 'Establece el potencial a la salida de la celda. Es algo más positivo que el sesgo del octopolo, de modo que solo pasan los iones que conservan suficiente energía.',
+    funcion: 'Lente a la salida de la celda. La barrera KED se fija haciendo el sesgo del cuadrupolo unos voltios más positivo que el del octopolo, de modo que solo pasan los iones que conservan suficiente energía.',
     detalles: [], specs: [], une: ['celda_ors', 'cuadrupolo'],
   },
   cuadrupolo: {
     nombre: 'Cuadrupolo hiperbólico', en: 'Hyperbolic quadrupole', cat: 'Analizador y detector',
     funcion: 'Filtro de masas: con una combinación de tensión continua y RF solo transmite una relación m/z. Salta de una masa a otra en microsegundos para medir cada isótopo.',
     detalles: ['Las barras de perfil hiperbólico dan un campo más ideal y mejor sensibilidad de abundancia.'],
-    specs: [['Frecuencia', '3 MHz'], ['Rango', '2–260 u'], ['Resolución', '0,3–1,0 u (ajustable)'], ['Sensibilidad de abundancia', '≤ 5 × 10⁻⁷ (masa baja)']],
+    specs: [['Frecuencia', '3 MHz'], ['Rango', '2–260 u'], ['Resolución', '0,3–1,0 u (ajustable)'], ['Sensibilidad de abundancia (Cs)', '≤ 5 × 10⁻⁷ lado de masa baja; ≤ 1 × 10⁻⁷ lado de masa alta']],
     une: ['lente_kd', 'detector'],
   },
   detector: {
     nombre: 'Detector ortogonal', en: 'Orthogonal detector system', cat: 'Analizador y detector',
     funcion: 'Multiplicador de electrones de dínodos discretos situado fuera del eje: cada ion que llega libera electrones que se multiplican en cascada.',
     detalles: ['Combina un modo de recuento de pulsos (señales bajas) con un modo analógico (señales altas).', 'Admite adquisición rápida de 0,1 ms por punto para el análisis de nanopartículas individuales.'],
-    specs: [['Rango dinámico', '> 11 órdenes (0,1 cps – 10 Gcps)'], ['Tiempo de integración mínimo', '0,1 ms']],
+    specs: [['Rango dinámico', '11 órdenes (0,1 cps – 10 Gcps)'], ['Tiempo de integración mínimo', '0,1 ms']],
     une: ['cuadrupolo', 'electronica'],
   },
   analizador: {
@@ -132,8 +132,8 @@ export const INFO = {
   },
   camara_vacio: {
     nombre: 'Cámara de vacío', en: 'Vacuum manifold', cat: 'Sistema de vacío',
-    funcion: 'Tres etapas de presión: interfaz (≈ 10² Pa, bomba rotatoria), cámara intermedia de lentes (≈ 10⁻² Pa) y analizador (≈ 10⁻⁴ Pa).',
-    detalles: ['Tres manómetros controlan las etapas (interfaz, intermedia y analizador). La tapa superior da acceso a la óptica y a la celda.'],
+    funcion: 'Tres etapas de presión: interfaz (≈ 10² Pa, bomba rotatoria), cámara intermedia de lentes (≈ 10⁻² Pa, aprox.) y analizador (≈ 10⁻⁴ Pa).',
+    detalles: ['Medidores de presión vigilan la interfaz y el analizador. La tapa superior da acceso a la óptica y a la celda.'],
     specs: [['Analizador', '≈ 10⁻⁴ Pa (aprox.)']], une: ['bomba_turbo', 'bomba_rotatoria', 'interfaz'],
   },
   bomba_turbo: {
@@ -144,13 +144,13 @@ export const INFO = {
   bomba_rotatoria: {
     nombre: 'Bomba rotatoria', en: 'Rotary vane pump', cat: 'Sistema de vacío',
     funcion: 'Bomba de paletas en baño de aceite, externa. Evacúa la región de interfaz y respalda la turbo.',
-    detalles: ['Se coloca en el suelo o bajo la mesa, con una manguera de 1,5 m.'], specs: [['Modelo típico', 'MS40+']], une: ['bomba_turbo', 'interfaz'],
+    detalles: ['Se coloca en el suelo o bajo la mesa, con una manguera de 1,5 m.'], specs: [['Modelo típico', 'MS40+ (o MS40-S en equipos recientes)']], une: ['bomba_turbo', 'interfaz'],
   },
   control_gases: {
     nombre: 'Control de gases', en: 'Mass flow controllers', cat: 'Gases, RF y electrónica',
     funcion: 'Controladores de caudal másico para los gases de plasma, auxiliar y nebulizador, el gas de dilución y el helio de la celda.',
     detalles: ['La dilución en aerosol (UHMI) reduce el gas del nebulizador y añade argón entre la cámara y la antorcha; así admite muestras de hasta ≈ 25 % de sólidos disueltos.'],
-    specs: [['Gases', 'Ar; He (≥ 99,999 %) para la celda']], une: ['antorcha', 'nebulizador', 'celda_ors'],
+    specs: [['Gases', 'Ar (≥ 99,99 %); He (≥ 99,999 %) para la celda'], ['Controladores de Ar', '4: plasma, auxiliar, portador, dilución']], une: ['antorcha', 'nebulizador', 'celda_ors'],
   },
   generador_rf: {
     nombre: 'Generador de RF', en: 'Solid-state RF generator', cat: 'Gases, RF y electrónica',
@@ -160,7 +160,7 @@ export const INFO = {
   electronica: {
     nombre: 'Electrónica', en: 'Control electronics', cat: 'Gases, RF y electrónica',
     funcion: 'Fuente de RF y continua del cuadrupolo, alta tensión del detector, control de la turbo y comunicación con el software MassHunter.',
-    detalles: [], specs: [['Carga térmica del equipo', '≈ 2,9 kW']], une: ['cuadrupolo', 'detector', 'bomba_turbo'],
+    detalles: [], specs: [['Alimentación', 'Monofásica 200–240 V, 50/60 Hz, 30 A']], une: ['cuadrupolo', 'detector', 'bomba_turbo'],
   },
   enfriador: {
     nombre: 'Enfriador de recirculación', en: 'Recirculating chiller', cat: 'Gases, RF y electrónica',
@@ -185,7 +185,7 @@ export const INFO = {
   carcasa: {
     nombre: 'Carcasa', en: 'Covers', cat: 'Estructura y carcasa',
     funcion: 'Mueble de sobremesa. Los paneles se desmontan para el mantenimiento.',
-    detalles: [], specs: [['Dimensiones', '730 × 600 × 595 mm'], ['Peso', '≈ 100 kg']], une: ['panel_frontal', 'chasis'],
+    detalles: [], specs: [['Dimensiones (an × fo × al)', '730 × 600 × 595 mm'], ['Peso', '100 kg']], une: ['panel_frontal', 'chasis'],
   },
   chasis: {
     nombre: 'Bastidor', en: 'Frame', cat: 'Estructura y carcasa',

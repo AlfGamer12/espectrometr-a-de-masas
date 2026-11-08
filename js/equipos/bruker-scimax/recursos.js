@@ -6,7 +6,7 @@ export const RECURSOS = [
       { titulo: 'scimaX · página del producto', url: 'https://www.bruker.com/en/products-and-solutions/mass-spectrometry/mrms/scimax.html',
         tipo: 'Página', idioma: 'EN', fuente: 'Bruker', desc: 'Especificaciones oficiales: > 20 M de resolución, 600 ppb, imán de 7 T sin criógenos.' },
       { titulo: 'solariX · página del producto', url: 'https://www.bruker.com/en/products-and-solutions/mass-spectrometry/mrms/solarix.html',
-        tipo: 'Página', idioma: 'EN', fuente: 'Bruker', desc: 'FT-ICR con imanes de 7, 12 y 15 T, para comparar.' },
+        tipo: 'Página', idioma: 'EN', fuente: 'Bruker', desc: 'FT-ICR con imanes de 7; 9,4; 12 y 15 T, para comparar.' },
       { titulo: 'Lanzamiento del scimaX (ASMS 2018)', url: 'https://www.bruker.com/en/news-and-events/news/2018/bruker-introduces-scimax-mrms-for-novel-phenomics-workflow-and-further-enhances-the-tims-tofpro-for-pasef-proteomics-at-asms.html',
         tipo: 'Página', idioma: 'EN', fuente: 'Bruker', desc: 'Imán Maxwell, resolución y flujo de 200 muestras al día.' },
       { titulo: 'scimaX Ion Path (folleto)', url: 'https://cdn.labwrench.com/eMan/manualNo/10496/bruker_optics_scimax_mrms_brochure.pdf',

@@ -56,7 +56,7 @@ export const PELICULA = [
     cap: 'Servicios', titulo: 'Vacío y refrigeración', dur: 14, modo: 'equipo', e1: 1, sim: false, xray: true,
     foco: ['bombas_turbo', 'bombas_rotatorias', 'fuente_iman', 'enfriador'], dir: [0.6, 0.55, 1], pad: 1.1, trans: 3.2, orbita: -3,
     resaltar: ['bombas_turbo', 'bombas_rotatorias', 'lineas_vacio', 'fuente_iman', 'enfriador'],
-    texto: 'Tres bombas turbomoleculares y sus bombas rotatorias mantienen el vacío de la fuente, el analizador y el detector. Un enfriador externo refrigera con agua el imán y la electrónica.',
+    texto: 'Tres bombas turbomoleculares y sus bombas rotatorias mantienen el vacío de la fuente, el analizador y el detector. El agua de la red o de un enfriador opcional refrigera varias partes del instrumento.',
   },
   {
     dur: 11, modo: 'equipo', e1: 0, foco: EXT, dir: [0.6, 0.45, 1], pad: 1.05, trans: 3.0, orbita: -2, resaltar: [],

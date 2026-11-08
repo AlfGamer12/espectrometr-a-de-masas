@@ -8,7 +8,7 @@ export const MEZCLA = [
   { nombre: 'Cafeína', mz: 195.08765, ab: 80, frag: [[138.06619, 100], [110.07127, 25]] },
   { nombre: 'Carbamazepina', mz: 237.10224, ab: 65, frag: [[194.09643, 100], [192.08078, 15]] },
   { nombre: 'Verapamilo', mz: 455.29043, ab: 70, frag: [[165.09101, 100], [303.20671, 45]] },
-  { nombre: 'Reserpina', mz: 609.28066, ab: 55, frag: [[195.06519, 100], [397.21218, 60], [448.19693, 20]] },
+  { nombre: 'Reserpina', mz: 609.28066, ab: 55, frag: [[195.06519, 100], [397.21218, 60], [448.19659, 20]] },
 ];
 export const REF_POS = [121.050873, 922.009798];   // masas de referencia típicas (purina y HP-0921)
 

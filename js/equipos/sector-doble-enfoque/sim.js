@@ -9,7 +9,7 @@ import { PointPool, chartColors, setupCanvas, axes, COL } from '../../simcore.js
 export const MUESTRAS = {
   gases: {
     nombre: 'Gases residuales (doblete a m/z 28)', rango: [26.5, 33.5], zoom: [27.97, 28.05],
-    picos: [[27.9949, 35, 'CO⁺'], [28.0061, 100, 'N₂⁺'], [28.0313, 18, 'C₂H₄⁺'], [31.9898, 28, 'O₂⁺'], [29.0027, 3, '¹⁵N¹⁴N⁺'], [32.0262, 4, 'CH₃OH⁺']],
+    picos: [[27.9949, 35, 'CO⁺'], [28.0061, 100, 'N₂⁺'], [28.0313, 18, 'C₂H₄⁺'], [31.9898, 28, 'O₂⁺'], [29.0032, 3, '¹⁵N¹⁴N⁺'], [32.0262, 4, 'CH₃OH⁺']],
   },
   dioxina: {
     nombre: '2,3,7,8-TCDD con patrón ¹³C₁₂ y PFK', rango: [317.5, 335.5], zoom: [318.9, 320.0],
