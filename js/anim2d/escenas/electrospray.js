@@ -14,7 +14,7 @@
 //   gasCalor  rótulo del gas que calienta la pluma (solo 'esi'; por defecto «Gas de calentamiento (aire)»)
 //   caudal    texto del caudal en 'nano' ('cientos de nL/min');  deflexion  true si tras el capilar hay una placa de deflexión de 90°
 import { tramo, suave, easeOut, lerp, azar, clamp } from '../dibujo.js';
-import { frac, bezier, flujo, rotuloGuia, calor } from './_util-fuentes.js';
+import { frac, bezier, flujo, rotuloGuia, calor } from './util-fuentes.js';
 
 const VARIANTES = {
   esi: {

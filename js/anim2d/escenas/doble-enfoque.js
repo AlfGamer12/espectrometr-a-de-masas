@@ -6,7 +6,7 @@
 // Después, el ejemplo de m/z 28 (CO, N₂, C₂H₄): anchura de rendijas ↔ resolución y transmisión.
 // Parámetros: p.U (kV, 5, solo para el texto) · p.R (resoluciones [ancha, estrecha], [1000, 10000]).
 import { tramo, suave, lerp } from '../dibujo.js';
-import { num, panelSenal, leyendaTrazos } from './_util-analizadores.js';
+import { num, panelSenal, leyendaTrazos } from './util-analizadores.js';
 
 const D2R = Math.PI / 180;
 // geometría (cm, didáctica salvo el imán: r = 35 cm y 65°, como el modelo del Thermo DFS)

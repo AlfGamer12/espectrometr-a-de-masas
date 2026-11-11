@@ -11,7 +11,7 @@
 //   p.nombre    rótulo de la celda (por defecto 'Celda de colisión')
 //   p.origen    rótulo del filtro anterior (por defecto 'Q1')   ·   p.destino  rótulo del analizador siguiente (por defecto 'Q3')
 import { tramo, suave, easeOut, lerp, clamp, azar } from '../dibujo.js';
-import { gasRect } from './_util-guiado.js';
+import { gasRect } from './util-guiado.js';
 
 const GASES = {
   'argón': { sim: 'Ar', m: 40, atomo: true, txt: 'átomos de argón' },

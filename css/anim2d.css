@@ -19,6 +19,8 @@
 .a2d-tl b:hover { border-color: var(--accent); }
 .a2d-cap { margin: 0 !important; padding: 2px 10px 10px; min-height: 4.8em; font-size: 12.5px !important; line-height: 1.55 !important; color: var(--text-2); }
 
+.a2d-cap.a2d-error { min-height: 0; padding: 14px 12px !important; color: var(--muted); }
+
 /* botón del recorrido */
 #tour .a2d-ver { margin: 10px 0 2px; }
 #tour .a2d-ver svg { width: 13px; height: 13px; fill: currentColor; stroke: none; }

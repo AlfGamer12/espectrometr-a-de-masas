@@ -7,7 +7,7 @@
 // Otros parámetros: p.destino (rótulo de lo que sigue: 'Celda ORS⁴' / 'Embudo de entrada'), p.siguiente (texto final: 'el túnel TIMS').
 // Todo es función periódica de t.
 import { tramo, suave, lerp, clamp, azar } from '../dibujo.js';
-import { gasRect } from './_util-guiado.js';
+import { gasRect } from './util-guiado.js';
 
 export default function crear(p = {}) {
   const tipo = p.tipo === 'deflector90' ? 'deflector90' : 'omega';

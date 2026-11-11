@@ -11,7 +11,7 @@
 //   destino   'tof' (placas de extracción hacia un tubo de vuelo) | 'optica' (extracción hacia la óptica iónica, p. ej. FT-ICR)
 //   is1       potencial de la diana para el rótulo y el texto ('20 kV'); retardo  true si la extracción es retardada (solo 'tof')
 import { tramo, suave, easeOut, easeIn, lerp, azar } from '../dibujo.js';
-import { rotuloGuia, calor } from './_util-fuentes.js';
+import { rotuloGuia, calor } from './util-fuentes.js';
 
 export default function crear(p = {}) {
   const laser = p.laser || 'Láser N₂ · 337 nm';

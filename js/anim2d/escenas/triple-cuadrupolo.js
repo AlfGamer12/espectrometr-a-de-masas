@@ -10,7 +10,7 @@
 //   p.dwell, p.pausa  tiempo de permanencia mínimo y pausa entre transiciones, en ms (por defecto 0,8 y 1, LCMS-8060NX)
 //   p.equipo       nombre del equipo para el texto (por defecto 'LCMS-8060NX')
 import { tramo, suave, easeOut, lerp, clamp, azar } from '../dibujo.js';
-import { gasRect } from './_util-guiado.js';
+import { gasRect } from './util-guiado.js';
 
 const fmt = (x) => String(x).replace('.', ',');
 

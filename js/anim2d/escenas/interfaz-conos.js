@@ -8,7 +8,7 @@
 // Parámetros (p): orificioMuestreo ('1,0 mm') · orificioSkimmer ('0,45 mm') · pInterfaz ('unos cientos de Pa')
 //                 pLentes ('≈ 10⁻² Pa') · pAnalizador ('≈ 10⁻⁴ Pa') · siguiente (destino del haz, p. ej. 'la lente Omega')
 import { tramo, lerp, azar, clamp } from '../dibujo.js';
-import { frac, flujo, rotuloGuia } from './_util-fuentes.js';
+import { frac, flujo, rotuloGuia } from './util-fuentes.js';
 
 function rgba(hex, a) {
   const n = parseInt(hex.slice(1), 16);

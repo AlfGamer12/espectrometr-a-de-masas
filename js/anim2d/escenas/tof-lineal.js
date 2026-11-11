@@ -6,7 +6,7 @@
 // Parámetros: p.U (kV, 20) · p.L (m, 1) · p.masas ([1000, 2500, 5000, 10000]) · p.fuente ('maldi' | otra cosa: fuente genérica)
 //             p.detector (rótulo del detector, 'Detector lineal').
 import { tramo, suave, easeOut, lerp } from '../dibujo.js';
-import { FIS, num, panelSenal, destello } from './_util-analizadores.js';
+import { FIS, num, panelSenal, destello } from './util-analizadores.js';
 
 export default function crear(p = {}) {
   const U = p.U || 20;                       // kV

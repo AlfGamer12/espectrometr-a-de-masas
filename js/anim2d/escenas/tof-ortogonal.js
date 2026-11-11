@@ -9,7 +9,7 @@
 //   p.origen (rótulo del haz de entrada) · p.pulsador (rótulo) · p.reflector (rótulo) · p.detector (rótulo)
 //   p.invertir (true: el tubo hacia abajo, como en el Shimadzu LCMS-9050).
 import { tramo, suave, lerp, azar } from '../dibujo.js';
-import { num, panelSenal, destello } from './_util-analizadores.js';
+import { num, panelSenal, destello } from './util-analizadores.js';
 
 export default function crear(p = {}) {
   const fk = p.frecuencia || null;

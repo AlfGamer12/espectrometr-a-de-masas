@@ -8,7 +8,7 @@
 //   p.nombre (texto: 'iRefTOF', 'espejo de dos etapas'…) · p.rejillas (true: dibuja rejillas en la entrada y entre etapas)
 //   p.lineal (true: hay un detector lineal real detrás del reflector, como en el microflex) · p.detector (rótulo del detector).
 import { tramo, suave, lerp } from '../dibujo.js';
-import { gauss, panelSenal, destello, leyendaTrazos } from './_util-analizadores.js';
+import { gauss, panelSenal, destello, leyendaTrazos } from './util-analizadores.js';
 
 const TAN = 0.10, CS = Math.cos(Math.atan(TAN)), SN = Math.sin(Math.atan(TAN));
 // Campos (deceleración en px/u², con v0 = 1 px/u) resueltos numéricamente para esta geometría: L = 596/cos θ.

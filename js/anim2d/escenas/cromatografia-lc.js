@@ -1,11 +1,11 @@
 // Cromatografía de líquidos (HPLC/UHPLC o nano-LC) en fase reversa: bombas con gradiente, inyección, reparto de los analitos entre la
 // fase móvil y las partículas C18 de la columna, elución en bandas hacia la fuente de iones y cromatograma.
-// Las trayectorias se precalculan (reparto estocástico, _util-servicios.js); el gradiente se modela reduciendo k con el tiempo.
+// Las trayectorias se precalculan (reparto estocástico, util-servicios.js); el gradiente se modela reduciendo k con el tiempo.
 // Todo es función de t (sin estado). Parámetros:
 //   p.nano (bool: nano-LC, p. ej. Bruker nanoElute), p.sistema (nombre del cromatógrafo), p.caudal, p.presion, p.columna (textos),
 //   p.destino (nombre de la fuente), p.final (texto opcional añadido a la última fase).
 import { tramo, suave, lerp, azar, clamp } from '../dibujo.js';
-import { simularReparto } from './_util-servicios.js';
+import { simularReparto } from './util-servicios.js';
 
 const TX0 = 40, TX1 = 600, TY0 = 132, TY1 = 214;
 const FILAS = [148, 173, 198], RP = 10.5, PX = 26; // partículas de la vista ampliada

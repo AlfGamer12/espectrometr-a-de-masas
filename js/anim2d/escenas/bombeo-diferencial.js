@@ -7,7 +7,7 @@
 //   p.guias (bool, por defecto true): las primeras etapas tienen guías de RF. p.colisiones (texto opcional que sustituye a la fase 4).
 //   p.bombas (texto opcional de la fase 5). Sin p.etapas se usa un esquema LC-MS orientativo.
 import { tramo, suave, lerp, azar, clamp } from '../dibujo.js';
-import { lambdaN2, fmtLong } from './_util-servicios.js';
+import { lambdaN2, fmtLong } from './util-servicios.js';
 
 const Y0 = 46, Y1 = 206, AXY = 128;
 

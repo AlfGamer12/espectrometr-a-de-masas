@@ -6,7 +6,7 @@
 // Parámetros (p): rodillos (nº de rodillos de la bomba, p. ej. 10) · nebulizador (nombre, p. ej. 'MicroMist')
 //                 temp (temperatura de la cámara, '2 °C') · camara (rótulo de la cámara)
 import { tramo, lerp, azar } from '../dibujo.js';
-import { frac, puntoEn, flujo } from './_util-fuentes.js';
+import { frac, puntoEn, flujo } from './util-fuentes.js';
 
 export default function crear(p = {}) {
   const dur = 16;

@@ -10,7 +10,12 @@ const vistos = new Set();
 /** Carga la escena `ref.anim` con los parámetros `ref.p` y la monta en `host`. Devuelve un controlador con destroy(). */
 export async function montarAnimacion(host, ref, { grande = false, alAmpliar } = {}) {
   let mod;
-  try { mod = await import(`./escenas/${ref.anim}.js`); } catch (e) { console.warn('Animación no disponible:', ref.anim, e); host.remove(); return null; }
+  try { mod = await import(`./escenas/${ref.anim}.js`); } catch (e) {
+    console.warn('Animación no disponible:', ref.anim, e);
+    host.classList.add('a2d');
+    host.innerHTML = '<p class="a2d-cap a2d-error">No se pudo cargar la animación. Comprueba la conexión y recarga la página (Ctrl + F5).</p>';
+    return null;
+  }
   const esc = mod.default(ref.p || {});
   const aspecto = esc.aspecto || 16 / 9;
   const W = 640, H = Math.round(640 / aspecto);
@@ -150,7 +155,9 @@ export async function abrirGrande(ref, estado = {}) {
   const cerrar = (e) => { if (e.target === capa) cerrarGrande(); };
   capa.addEventListener('click', cerrar);
   const ctl = await montarAnimacion(caja, ref, { grande: true, alAmpliar: () => cerrarGrande() });
-  if (!ctl) { capa.remove(); return; }
+  // si falla, el aviso queda visible y un clic fuera (o Esc) lo cierra
+  grandeAct = { capa, ctl: ctl || { destroy() {} } };
+  if (!ctl) return;
   if (estado.t) ctl.ir(estado.t);
   if (estado.vel) ctl.vel = estado.vel;
   grandeAct = { capa, ctl };

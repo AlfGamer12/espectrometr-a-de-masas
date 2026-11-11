@@ -5,7 +5,7 @@
 // Parámetros (p): frecuencia ('27 MHz') · temperatura ('6000–10 000 K') · gasPlasma (caudal para el texto, p. ej. '≈ 15 L/min')
 //                 shieldtorch (true: muestra y explica la placa ShieldTorch de platino conectada a tierra) · cono (rótulo del cono)
 import { tramo, suave, lerp, azar } from '../dibujo.js';
-import { frac, flujo, rotuloGuia } from './_util-fuentes.js';
+import { frac, flujo, rotuloGuia } from './util-fuentes.js';
 
 /** Color hexadecimal (#rrggbb) con opacidad, para degradados que se desvanecen sin oscurecerse. */
 function rgba(hex, a) {

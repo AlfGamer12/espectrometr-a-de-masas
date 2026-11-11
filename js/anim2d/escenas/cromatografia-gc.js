@@ -1,12 +1,12 @@
 // Cromatografía de gases en columna capilar: inyección, reparto de cada compuesto entre el helio y la película de fase estacionaria,
 // separación en bandas y llegada a la fuente de iones mientras se dibuja el cromatograma.
-// Las trayectorias se precalculan (reparto estocástico entre fases, _util-servicios.js) y la escena se dibuja como función pura de t.
+// Las trayectorias se precalculan (reparto estocástico entre fases, util-servicios.js) y la escena se dibuja como función pura de t.
 // El programa de temperatura se modela reduciendo k con el tiempo. Parámetros:
 //   p.columna (texto de la columna), p.espesor (texto del espesor de película, p. ej. '0,25 µm'), p.gas ('helio'), p.caudal (texto),
 //   p.inyector (texto de la temperatura del inyector), p.interfaz (nombre), p.destino (nombre),
 //   p.final (texto de la última fase; si falta se construye con p.columna y p.caudal).
 import { tramo, suave, lerp, azar, clamp } from '../dibujo.js';
-import { simularReparto } from './_util-servicios.js';
+import { simularReparto } from './util-servicios.js';
 
 const TX0 = 40, TX1 = 600, TY0 = 132, TY1 = 214; // tubo ampliado
 const FILM = 8;

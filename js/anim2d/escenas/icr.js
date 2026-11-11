@@ -6,7 +6,7 @@
 // Todo es función de t; al final del ciclo los iones se expulsan y entra un nuevo paquete.
 // Parámetros: p.B (T, 7) · p.masas ([400, 500, 800]) · p.celda (nombre, 'Celda ICR') · p.T (s de transitorio para el ejemplo de R, 1).
 import { tramo, suave, lerp, azar } from '../dibujo.js';
-import { num, panelSenal, gauss } from './_util-analizadores.js';
+import { num, panelSenal, gauss } from './util-analizadores.js';
 
 export default function crear(p = {}) {
   const B = p.B || 7;

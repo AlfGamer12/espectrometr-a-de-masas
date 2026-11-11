@@ -10,7 +10,7 @@
 //   p.dual (bool: recuento de pulsos + modo analógico), p.rango (texto del rango dinámico), p.modo ('pulsos' | 'corriente'),
 //   p.final (texto opcional de la última fase).
 import { tramo, suave, easeOut, lerp, azar, clamp } from '../dibujo.js';
-import { bez, recorrido } from './_util-servicios.js';
+import { bez, recorrido } from './util-servicios.js';
 
 const AX = 136;            // eje del analizador
 const D = [238, 300];      // punto de impacto en el dínodo de conversión / primer dínodo

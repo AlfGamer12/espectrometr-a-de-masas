@@ -7,7 +7,7 @@
 //   p.origen   de dónde llegan los iones (por defecto 'la lente Omega')
 //   p.escudo   true (por defecto) → menciona la distribución estrecha de energía del ShieldTorch
 import { tramo, suave, easeOut, lerp, clamp } from '../dibujo.js';
-import { gasRect } from './_util-guiado.js';
+import { gasRect } from './util-guiado.js';
 
 export default function crear(p = {}) {
   const celda = p.celda || 'Celda ORS⁴';

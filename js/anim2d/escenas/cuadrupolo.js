@@ -1,6 +1,6 @@
 // Filtro de masas cuadrupolar. Vista frontal (sección de las cuatro barras, con el campo oscilante) y vista lateral en los dos planos
 // (plano de las barras + y plano de las barras −). Las trayectorias NO son dibujos a mano: se integran las ecuaciones de Mathieu
-// (_util-guiado.js) para la m/z seleccionada y para una más ligera y otra más pesada sobre la misma recta U/V; luego el diagrama de
+// (util-guiado.js) para la m/z seleccionada y para una más ligera y otra más pesada sobre la misma recta U/V; luego el diagrama de
 // estabilidad (a–q) con la recta de barrido, el barrido (scan) y el modo SIM (o salto de picos en ICP-MS).
 // Parámetros:
 //   p.barras    'cuarzo-oro' (monolito de cuarzo con superficies hiperbólicas de oro, Agilent 5977) | 'molibdeno' (barras hiperbólicas de
@@ -13,7 +13,7 @@
 //   p.uso       'filtro' (por defecto: barrido + SIM) | 'aislamiento' (Q-TOF, TIMS-QTOF, FT-ICR: modo solo RF + aislamiento del precursor)
 //   p.ventana   texto de la ventana de aislamiento (solo con p.uso 'aislamiento'), p. ej. '≈ 1,3 m/z'
 import { tramo, suave, lerp, clamp } from '../dibujo.js';
-import { mathieu, enXi, aMax, fronteraA0, fronteraB1, barraHiperbolica, oro, esOscuro } from './_util-guiado.js';
+import { mathieu, enXi, aMax, fronteraA0, fronteraB1, barraHiperbolica, oro, esOscuro } from './util-guiado.js';
 
 const K = 0.31;      // pendiente de la recta de barrido a/q = 2U/V (U/V = 0,155): ventana estable q ≈ 0,647–0,718
 const Q0 = 0.683;    // q de la m/z seleccionada (centro de la ventana)

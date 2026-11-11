@@ -6,7 +6,7 @@
 // Todo es función de t; las velocidades se eligen para que el bucle cierre sin saltos.
 // Parámetros: p.U (kV, 5; tensión de aceleración, V en los textos) · p.r (m, 0.35) · p.angulo (grados, 65) · p.iones ([[m, 'nombre', intensidad], …]).
 import { tramo, suave, lerp } from '../dibujo.js';
-import { FIS, num, panelSenal, destello } from './_util-analizadores.js';
+import { FIS, num, panelSenal, destello } from './util-analizadores.js';
 
 export default function crear(p = {}) {
   const U = p.U || 5;                  // kV
