@@ -13,15 +13,24 @@ import { parts, finalizeParts, applyExplode,worldCenter, boxFor, setHighlight, s
   partFromObject, isPickable, ownMeshes } from './parts.js';
 import { EQUIPOS, MARCAS, TIPOS, equipo as metaDe } from './equipos/catalogo.js';
 import { injectIcons, icon } from './icons.js';
+import { montarAnimacion, abrirGrande, cerrarGrande } from './anim2d/motor.js';
 
 injectIcons();
 const $ = (id) => document.getElementById(id);
+// Disposición adaptable (las mismas consultas que en css/styles.css, sección «Tabletas y móviles»)
+const MQ = {
+  cajon: matchMedia('(max-width: 860px), (max-height: 500px) and (max-width: 1000px)'), // estructura del modelo como cajón
+  movil: matchMedia('(max-width: 760px) and (min-height: 501px)'),                       // móvil vertical: hojas inferiores
+  tactil: matchMedia('(hover: none) and (pointer: coarse)'),
+};
 
 /* ===================== EQUIPO ===================== */
 const qid = new URLSearchParams(location.search).get('eq');
 const META = metaDe(qid) || EQUIPOS[0];
 const CFG = (await import(`./equipos/${META.id}/index.js`)).default;
 const { INFO, CATEGORIAS, RECORRIDO } = CFG;
+// Animaciones 2D «Cómo funciona» por componente (opcional: js/equipos/<id>/animaciones.js)
+const ANIM = await import(`./equipos/${META.id}/animaciones.js`).then((m) => m.ANIMACIONES || {}).catch(() => ({}));
 const MODE_NAME = CFG.modos;
 document.title = `${META.marca} ${META.modelo} · Visor técnico 3D`;
 $('brandName').textContent = META.marca;
@@ -209,6 +218,7 @@ function applyTheme(t) {
   grid.material.color.setHex(light ? 0x56606c : 0x9aa6b4);
   grid.material.opacity = light ? 0.22 : 0.13;
   sim.setTheme(light);
+  $('metaTheme')?.setAttribute('content', light ? '#ffffff' : '#1d2127');
 }
 $('btnTheme').addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'));
 applyTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
@@ -228,6 +238,7 @@ const FOCO = CFG.FOCO;
 /** Márgenes ocupados por la interfaz (px): el modelo se encuadra y se centra en el hueco libre. */
 function uiInsets() {
   const W = window.innerWidth, wide = W > 860;
+  if (MQ.cajon.matches) return insetsCompactos(W, window.innerHeight);
   // modo película: pantalla libre salvo la franja de subtítulos (y el panel de simulación, si está abierto)
   if (S.cine) return { left: 0, right: 0, top: 24, bottom: S.simOn ? 290 + 120 : 120 };
   const tourOn = S.tour >= 0, side = tourOn && S.simOn;          // con simulación, el recorrido se acopla a la derecha
@@ -236,6 +247,30 @@ function uiInsets() {
   else if (wide && side) right = $('tour').offsetWidth + 20;
   const top = 52 + (tourOn && !side ? $('tour').offsetHeight + 18 : 0);
   return { left: wide ? $('sidebar').offsetWidth + 20 : 0, right, top, bottom: 26 + 56 + (S.simOn ? 290 : 0) };
+}
+/** Tabletas y móviles: márgenes medidos sobre los paneles visibles (hojas inferiores, paneles laterales, barras).
+ *  offsetTop/offsetLeft ignoran las transformaciones, así que las hojas cuentan con su posición final aunque estén entrando. */
+function insetsCompactos(W, H) {
+  const vis = (el) => el && el.offsetWidth > 0 && el.offsetHeight > 0;
+  const sp = $('simpanel');
+  if (S.cine) {
+    const sim = S.simOn && vis(sp) ? sp : null;
+    if (sim && sim.offsetWidth < W * 0.5) return { left: 0, right: W - sim.offsetLeft, top: 16, bottom: 80 };
+    return { left: 0, right: 0, top: 24, bottom: (sim ? H - sim.offsetTop : 0) + (MQ.movil.matches ? 170 : 120) };
+  }
+  let top = $('topbar').offsetHeight, bottom = 0, left = 0, right = 0;
+  const mt = $('modeTabs');
+  if (MQ.movil.matches && vis(mt)) top = Math.max(top, mt.offsetTop + mt.offsetHeight);
+  for (const el of [$('viewbar'), document.querySelector('.nav-main'), $('statusbar')]) if (vis(el)) bottom = Math.max(bottom, H - el.offsetTop);
+  // la estructura del modelo es un selector pasajero: no se tiene en cuenta
+  for (const el of [$('info'), sp, $('tour')]) {
+    if (!vis(el)) continue;
+    const x = el.offsetLeft, y = el.offsetTop, w = el.offsetWidth, h = el.offsetHeight;
+    if (w < W * 0.5) { if (x + w / 2 < W / 2) left = Math.max(left, x + w); else right = Math.max(right, W - x); }
+    else if (y + h / 2 > H / 2) bottom = Math.max(bottom, H - y);
+    else top = Math.max(top, y + h);
+  }
+  return { left: left ? left + 8 : 0, right: right ? right + 8 : 0, top: top + 6, bottom: bottom + 6 };
 }
 let fly = null, cineTick = null;
 function flyTo(pos, target, dur = 1.2) {
@@ -281,6 +316,7 @@ const slider = $('explode');
 function syncSlider() {
   const v = S.mode === 'equipo' ? S.t1 : S.t2;
   slider.value = Math.round(v * 100);
+  slider.style.setProperty('--v', Math.round(v * 100) + '%');   // relleno de la pista (estilo táctil)
   $('explodeVal').textContent = Math.round(v * 100) + ' %';
   slider.disabled = S.simOn && S.mode === 'analizador';
 }
@@ -325,7 +361,7 @@ function select(info, { focus = false } = {}) {
   refreshHighlight();
   document.querySelectorAll('.item').forEach((el) => el.classList.toggle('sel', el.dataset.info === S.sel));
   $('stSel').innerHTML = S.sel ? `Selección: <b>${INFO[S.sel].nombre}</b> · Pos. ${posLabel(S.sel)}` : 'Sin selección';
-  if (!S.sel) { $('info').classList.add('hidden'); document.body.classList.remove('info-open'); return; }
+  if (!S.sel) { cerrarAnimInfo(); $('info').classList.add('hidden'); document.body.classList.remove('info-open', 'info-full'); return; }
   showInfo(S.sel);
   if (focus) {
     const m = infoMode(S.sel);
@@ -337,8 +373,12 @@ function select(info, { focus = false } = {}) {
 
 function shortName(info) { return INFO[info].nombre.split(' (')[0].split(' / ')[0]; }
 
+let animInfo = null, animTok = 0;
+function cerrarAnimInfo() { animTok++; animInfo?.destroy(); animInfo = null; }
 function showInfo(info) {
+  cerrarAnimInfo();
   const d = INFO[info];
+  const an = ANIM[info];
   const c = CAT_COLOR[d.cat] || '#8a94a0';
   const links = (d.une || []).filter((u) => INFO[u] && byInfo.has(u))
     .map((u) => `<button data-go="${u}"><span>${shortName(u)}</span>${icon('chev')}</button>`).join('');
@@ -348,6 +388,7 @@ function showInfo(info) {
     <h3>${d.nombre}</h3>
     <div class="en">${d.en}</div>
     <h4>Función</h4><p>${d.funcion}</p>
+    ${an ? `<h4>Cómo funciona</h4><div id="infoAnim"></div>` : ''}
     ${d.detalles?.length ? `<h4>Descripción técnica</h4><ul>${d.detalles.map((x) => `<li>${x}</li>`).join('')}</ul>` : ''}
     ${d.specs?.length ? `<h4>Datos técnicos</h4><table class="specs">${d.specs.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('')}</table>` : ''}
     ${d.tune?.length ? `<h4>${CFG.tuneTitulo || 'Parámetros del informe de tune'}</h4><div class="tune">${d.tune.map((t) => `<code>${t}</code>`).join('')}</div>` : ''}
@@ -362,6 +403,11 @@ function showInfo(info) {
   $('infoBody').querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => select(b.dataset.go, { focus: true })));
   $('infoFocus').addEventListener('click', () => select(info, { focus: true }));
   $('infoMode')?.addEventListener('click', () => select(info, { focus: true }));
+  if (an) {
+    const tok = animTok;
+    montarAnimacion($('infoAnim'), an, { alAmpliar: (est) => { animInfo?.setPlay(false); abrirGrande(an, est); } })
+      .then((c) => { if (tok === animTok) animInfo = c; else c?.destroy(); });
+  }
 }
 $('infoClose').addEventListener('click', () => select(null));
 
@@ -389,7 +435,7 @@ function buildList() {
     const c = b.dataset.cat; closedCats.has(c) ? closedCats.delete(c) : closedCats.add(c); buildList();
   }));
   $('partList').querySelectorAll('.item').forEach((b) => {
-    b.addEventListener('click', () => select(b.dataset.info, { focus: true }));
+    b.addEventListener('click', () => { if (MQ.cajon.matches) setParts(false); select(b.dataset.info, { focus: true }); });
     b.addEventListener('mouseenter', () => { S.hover = b.dataset.info; refreshHighlight(); });
     b.addEventListener('mouseleave', () => { S.hover = null; refreshHighlight(); });
   });
@@ -480,22 +526,43 @@ function pick() {
   for (const h of hits) if (isPickable(h.object, S.xray)) return partFromObject(h.object);
   return null;
 }
+// Táctil: sin resaltado «hover» al arrastrar; un toque selecciona, doble toque enfoca; los gestos de dos dedos no seleccionan.
+const toques = new Set();
+let multitoque = false, ultimoToque = null, ultimoTipo = 'mouse';
 renderer.domElement.addEventListener('pointermove', (e) => {
+  if (e.pointerType === 'touch') return;
   mouse.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
   mouseDirty = true;
   tooltip.style.left = e.clientX + 'px'; tooltip.style.top = e.clientY + 'px';
 });
 renderer.domElement.addEventListener('pointerleave', () => { S.hover = null; tooltip.classList.add('hidden'); refreshHighlight(); });
-renderer.domElement.addEventListener('pointerdown', (e) => { downAt = [e.clientX, e.clientY]; fly = null; closeMenu(); });
+renderer.domElement.addEventListener('pointerdown', (e) => {
+  toques.add(e.pointerId); if (toques.size > 1) multitoque = true; ultimoTipo = e.pointerType;
+  downAt = [e.clientX, e.clientY]; fly = null; closeMenu();
+  if (MQ.cajon.matches) setParts(false);
+  ocultarAyuda();
+});
+const finToque = (e) => { toques.delete(e.pointerId); const m = multitoque; if (!toques.size) multitoque = false; return m; };
+renderer.domElement.addEventListener('pointercancel', (e) => { finToque(e); downAt = null; });
 renderer.domElement.addEventListener('pointerup', (e) => {
+  const multi = finToque(e);
   if (!downAt || e.button !== 0) return;
   const moved = Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]);
   downAt = null;
-  if (moved > 5) return;
+  const touch = e.pointerType === 'touch';
+  if (multi || moved > (touch ? 10 : 5)) return;
+  mouse.set((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
   const p = pick();
+  if (touch) {
+    const now = performance.now(), u = ultimoToque;
+    if (p && u && now - u.t < 380 && Math.hypot(e.clientX - u.x, e.clientY - u.y) < 32 && u.info === p.info) {
+      ultimoToque = null; select(p.info, { focus: true }); return;
+    }
+    ultimoToque = { t: now, x: e.clientX, y: e.clientY, info: p ? p.info : null };
+  }
   select(p ? p.info : null);
 });
-renderer.domElement.addEventListener('dblclick', () => { const p = pick(); if (p) select(p.info, { focus: true }); });
+renderer.domElement.addEventListener('dblclick', () => { if (ultimoTipo === 'touch') return; const p = pick(); if (p) select(p.info, { focus: true }); });
 
 function updateHover() {
   if (!mouseDirty) return;
@@ -519,6 +586,11 @@ function applyStep() {
   $('tourBar').style.width = ((S.tour + 1) / n) * 100 + '%';
   $('tourTitle').textContent = st.titulo;
   $('tourText').textContent = st.texto;
+  // animación del paso: la indicada en el guion o la del primer componente resaltado (las piezas se traducen a su componente)
+  const anId = st.anim || (st.resaltar || []).map((id) => (parts.has(id) ? parts.get(id).info : id)).find((id) => ANIM[id]);
+  const an = anId && ANIM[anId];
+  $('tourAnim').classList.toggle('hidden', !an);
+  if (an) { $('tourAnim').querySelector('span').textContent = `Animación: ${an.titulo || 'cómo funciona'}`; $('tourAnim').onclick = () => abrirGrande(an); }
   $('tourDots').innerHTML = RECORRIDO.map((s, i) => `<i class="${i === S.tour ? 'on' : i < S.tour ? 'done' : ''}" data-i="${i}" title="${s.titulo}"></i>`).join('');
   $('tourDots').querySelectorAll('i').forEach((d) => d.addEventListener('click', () => { S.tour = +d.dataset.i; applyStep(); }));
   $('tourPrev').disabled = S.tour === 0;
@@ -624,12 +696,81 @@ $('about').addEventListener('click', (e) => { if (e.target.id === 'about') $('ab
 window.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
   if (e.key === 'Escape') {
+    if (cerrarGrande()) return;
     $('about').classList.add('hidden'); $('recursos').classList.add('hidden'); closeMenu();
+    if (document.body.classList.contains('parts-open')) { setParts(false); return; }
     if (S.tour >= 0) endTour(); else select(null);
   }
   if (S.tour >= 0 && e.key === 'ArrowRight') $('tourNext').click();
   if (S.tour >= 0 && e.key === 'ArrowLeft') $('tourPrev').click();
 });
+
+/* ===================== TABLETAS Y MÓVILES ===================== */
+// «Componentes»: la estructura del modelo como cajón (tabletas) u hoja inferior (móvil vertical)
+function setParts(on) {
+  const b = document.body;
+  if (on === b.classList.contains('parts-open')) return;
+  b.classList.toggle('parts-open', on);
+  $('btnParts').classList.toggle('on', on);
+  $('btnParts').setAttribute('aria-expanded', on);
+  if (on) $('partList').querySelector('.item.sel')?.scrollIntoView({ block: 'nearest' });
+}
+$('btnParts').addEventListener('click', () => setParts(!document.body.classList.contains('parts-open')));
+$('partsClose').addEventListener('click', () => setParts(false));
+document.querySelectorAll('.nav-main .tbtn:not(#btnParts)').forEach((b) => b.addEventListener('click', () => setParts(false)));
+// barra de vista compacta: «más» despliega las vistas restantes y los conmutadores
+$('tgMore').addEventListener('click', () => {
+  const on = document.body.classList.toggle('vb-more');
+  $('tgMore').classList.toggle('on', on); $('tgMore').setAttribute('aria-expanded', on);
+});
+/** Hojas inferiores del móvil: arrastrar el asa hacia abajo cierra (o reduce), hacia arriba amplía. */
+function arrastreHoja(hoja, { cerrar, ampliar, reducir, ampliada = () => false }) {
+  const cab = hoja.querySelector('.panel-head');
+  let y0 = null, dy = 0;
+  cab.addEventListener('pointerdown', (e) => {
+    if (!MQ.movil.matches || e.button !== 0 || e.target.closest('button, input, select, a')) return;
+    y0 = e.clientY; dy = 0; cab.setPointerCapture(e.pointerId); hoja.style.transition = 'none';
+  });
+  cab.addEventListener('pointermove', (e) => {
+    if (y0 === null) return;
+    dy = e.clientY - y0;
+    hoja.style.transform = dy > 0 ? `translateY(${dy}px)` : '';
+  });
+  const fin = () => {
+    if (y0 === null) return;
+    y0 = null; hoja.style.transform = ''; hoja.style.transition = '';
+    if (dy > 70) { if (ampliada() && reducir) reducir(); else cerrar(); }
+    else if (dy < -40 && ampliar) ampliar();
+  };
+  cab.addEventListener('pointerup', fin); cab.addEventListener('pointercancel', fin);
+}
+arrastreHoja($('sidebar'), { cerrar: () => setParts(false) });
+arrastreHoja($('info'), { cerrar: () => select(null), ampliar: () => document.body.classList.add('info-full'),
+  reducir: () => document.body.classList.remove('info-full'), ampliada: () => document.body.classList.contains('info-full') });
+// Ayuda de gestos táctiles (barra de estado, ventana de información y aviso inicial)
+let ayuda = null;
+function ocultarAyuda() { if (ayuda) { ayuda.classList.remove('show'); setTimeout(() => ayuda?.remove(), 400); ayuda = null; } }
+if (MQ.tactil.matches) {
+  const txt = 'Un dedo: orbitar · Dos dedos: zoom y desplazar · Doble toque: enfocar pieza';
+  document.querySelector('#statusbar .hint').textContent = txt;
+  $('navHelp').innerHTML = `
+    <tr><td>Orbitar</td><td>Arrastrar con un dedo</td></tr>
+    <tr><td>Zoom / desplazar</td><td>Pellizcar / arrastrar con dos dedos</td></tr>
+    <tr><td>Seleccionar</td><td>Tocar la pieza, su etiqueta o su nombre en «Componentes»</td></tr>
+    <tr><td>Enfocar</td><td>Doble toque sobre la pieza</td></tr>
+    <tr><td>Fichas</td><td>Arrastrar el asa hacia arriba para ampliar, hacia abajo para cerrar</td></tr>`;
+  ayuda = document.createElement('div');
+  ayuda.className = 'toast'; ayuda.textContent = txt;
+  document.body.appendChild(ayuda);
+  setTimeout(() => ayuda?.classList.add('show'), 900);
+  setTimeout(ocultarAyuda, 7000);
+  for (const ev of ['pointerdown', 'click', 'keydown']) document.addEventListener(ev, ocultarAyuda, { capture: true, once: true });
+}
+// película: un toque muestra la barra de control (pelicula.js la muestra con mousemove)
+window.addEventListener('touchstart', () => { if (S.cine) window.dispatchEvent(new MouseEvent('mousemove')); }, { passive: true });
+// iOS: sin zoom de página por pellizco (el lienzo 3D gestiona sus propios gestos)
+document.addEventListener('gesturestart', (e) => e.preventDefault());
+
 window.addEventListener('resize', () => {
   if (!window.innerWidth || !window.innerHeight) return;
   camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix();

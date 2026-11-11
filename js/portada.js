@@ -13,9 +13,21 @@ $('btnTheme').addEventListener('click', () => {
 });
 
 function seg(el, values, key) {
+  const x = el.scrollLeft;
   el.innerHTML = ['Todas', ...values].map((v) => `<button data-v="${v}" class="${F[key] === v ? 'active' : ''}">${v === 'Todas' ? 'Todas' : v}</button>`).join('');
+  el.scrollLeft = x;
   el.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { F[key] = b.dataset.v; seg(el, values, key); render(); }));
+  el.querySelector('.active')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  fundido(el);
 }
+/** Móvil: los grupos de filtros que no caben se desplazan en horizontal; un fundido en el borde indica que hay más. */
+function fundido(el) {
+  const max = el.scrollWidth - el.clientWidth;
+  el.classList.toggle('fade-l', max > 2 && el.scrollLeft > 2);
+  el.classList.toggle('fade-r', max > 2 && el.scrollLeft < max - 2);
+}
+for (const id of ['fGroup', 'fMarca', 'fTipo']) $(id).addEventListener('scroll', () => fundido($(id)), { passive: true });
+window.addEventListener('resize', () => ['fGroup', 'fMarca', 'fTipo'].forEach((id) => fundido($(id))));
 seg($('fMarca'), Object.keys(MARCAS), 'marca');
 seg($('fTipo'), Object.keys(TIPOS), 'tipo');
 $('fGroup').querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
@@ -23,6 +35,7 @@ $('fGroup').querySelectorAll('button').forEach((b) => b.addEventListener('click'
   $('fGroup').querySelectorAll('button').forEach((x) => x.classList.toggle('active', x === b));
   render();
 }));
+fundido($('fGroup'));
 
 function card(e, i) {
   const t = TIPOS[e.tipo];

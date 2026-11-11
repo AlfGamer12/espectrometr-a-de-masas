@@ -380,3 +380,269 @@ body.cine-on.sim-open #cine .cine-bar { bottom: 262px; }
 [data-theme="light"] #cine .cine-chap .num { border-color: rgba(20, 26, 34, 0.5); }
 [data-theme="light"] #cine .cine-chap b { text-shadow: 0 1px 10px rgba(255, 255, 255, 0.9); }
 [data-theme="light"] #cine .cine-vig { background: linear-gradient(to top, rgba(8, 12, 18, 0.18), rgba(8, 12, 18, 0) 22%); }
+
+/* =========================================================================
+   TABLETAS Y MÓVILES (el escritorio ≥ 1180 px no cambia)
+   · Modo cajón (≤ 860 px, o móvil apaisado): la estructura del modelo se abre con «Componentes».
+   · Móvil vertical (≤ 760 px de ancho): barra inferior de acciones y hojas inferiores
+     (estructura, propiedades, simulación, recorrido) con asa para arrastrar.
+   · Móvil apaisado (≤ 500 px de alto): paneles laterales y barra superior compacta.
+   Las mismas consultas están en main.js (MQ) para el encuadre de la cámara.
+   ========================================================================= */
+#btnParts, #partsClose, #tgMore { display: none; }
+.nav-main, .nav-tools { display: contents; }
+html:has(body.visor), body.visor { overscroll-behavior: none; }
+body.visor { touch-action: pan-x pan-y; }            /* sin zoom de página; el lienzo 3D (touch-action: none) sí pellizca */
+#explode { touch-action: none; }
+.toast { position: fixed; left: 50%; bottom: calc(var(--status) + 74px); z-index: 22; width: max-content; max-width: calc(100vw - 32px); padding: 9px 16px;
+  border-radius: 20px; background: rgba(16, 20, 26, 0.88); color: #eef1f4; font-size: 12.5px; line-height: 1.45; text-align: center;
+  pointer-events: none; opacity: 0; transform: translate(-50%, 8px); transition: opacity .35s ease, transform .35s ease; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 1179px) {
+  body.visor .brand h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  body.visor .eq-switch { max-width: calc(100% + 12px); min-width: 0; }   /* compensa el margen negativo */
+}
+
+/* ---------- modo cajón: tabletas en vertical y todos los móviles ---------- */
+@media (max-width: 860px), (max-height: 500px) and (max-width: 1000px) {
+  body.visor #topbar { grid-template-columns: minmax(0, 1fr) auto auto; column-gap: 10px; }
+  body.visor .tbtn { width: 40px; height: 40px; }
+  #btnCat { display: none; }                         /* el logotipo «MS» y el menú del equipo llevan al catálogo */
+  #btnParts { display: inline-flex; }
+  #partsClose { display: grid; }
+  #partCount { margin-left: auto; }
+  #sidebar { z-index: 19; visibility: hidden; transform: translateX(calc(-100% - 3 * var(--gap)));
+    transition: transform .26s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .26s; box-shadow: 0 12px 48px rgba(0, 0, 0, 0.28); }
+  body.parts-open #sidebar { visibility: visible; transform: none; transition: transform .26s cubic-bezier(.2, .8, .2, 1); }
+  #simpanel { left: var(--gap); }
+  body.info-open #tour { right: calc(var(--info-w) + 2 * var(--gap)); }
+  /* equipo en dos líneas: marca pequeña encima del modelo */
+  body.visor .eq-switch { min-height: 40px; padding: 2px 6px; margin: 0; max-width: 100%; }
+  body.visor .eq-switch h1 { display: grid; grid-template-columns: minmax(0, max-content); min-width: 0; line-height: 1.2; }
+  #brandName { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .7px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+  #modelName { font-size: 14.5px; overflow: hidden; text-overflow: ellipsis; }
+  /* barra de vista compacta: inicio · explosionado · transparencia · «más» (abre una segunda fila con el resto) */
+  #viewbar { flex-wrap: wrap; justify-content: space-between; gap: 2px; padding: 3px; border-radius: 12px; touch-action: manipulation; }
+  #viewbar .grp:not(.explode) { display: contents; }
+  #viewbar .grp + .grp { border-left: 0; }
+  .vbtn { width: 40px; height: 40px; border-radius: 8px; }
+  #viewbar [data-view="home"] { order: 1; }
+  #viewbar .explode { order: 2; flex: 1 1 auto; min-width: 0; gap: 6px !important; padding: 0 6px !important; }
+  #viewbar #tgXray { order: 3; }
+  #viewbar #tgMore { display: grid; order: 4; }
+  #viewbar .vb-x { display: none; order: 10; }
+  #viewbar::after { content: ''; order: 9; flex-basis: 100%; height: 0; display: none; }
+  body.vb-more #viewbar .vb-x { display: grid; }
+  body.vb-more #viewbar::after { display: block; }
+  #explode { flex: 1 1 auto; width: auto; min-width: 70px; height: 40px; margin: 0; background: transparent; cursor: pointer;
+    -webkit-appearance: none; appearance: none; --v: 0%; }
+  #explode::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: linear-gradient(to right, var(--accent) var(--v), var(--line-2) var(--v)); }
+  #explode::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; margin-top: -10px; border-radius: 50%; background: var(--panel-solid);
+    border: 2px solid var(--accent); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); }
+  #explode::-moz-range-track { height: 4px; border-radius: 2px; background: var(--line-2); }
+  #explode::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--accent); }
+  #explode::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--panel-solid); border: 2px solid var(--accent); }
+  #explode:disabled { opacity: .45; }
+  #explodeVal { width: 34px; font-size: 12px; }
+}
+
+/* ---------- tableta en vertical (761–860 px) ---------- */
+@media (min-width: 761px) and (max-width: 860px) and (min-height: 501px) {
+  #viewbar { width: min(420px, calc(100vw - 2 * var(--gap))); }
+  body.info-open #viewbar { left: calc((100% - var(--info-w) - 2 * var(--gap)) / 2); }
+  /* simulación a todo el ancho; la ficha y el recorrido quedan encima */
+  body.info-open #simpanel, body.tour-open.sim-open #simpanel { right: var(--gap); }
+  #simpanel, body.tour-open.sim-open #simpanel { grid-template-columns: 210px 1fr 1fr; }
+  #simpanel .narrow { display: flex; }
+  body.sim-open #info { max-height: calc(100% - var(--top) - var(--status) - 280px - 4 * var(--gap)); }
+  body.tour-open.sim-open #tour { left: var(--gap); right: var(--gap); width: auto; }
+  body.tour-open.sim-open.info-open #tour { right: calc(var(--info-w) + 2 * var(--gap)); }
+  body.tour-open.sim-open #tour p { max-height: 7.5em; overflow-y: auto; }
+  body.tour-open.sim-open .tour-nav { flex-direction: row; align-items: center; }
+}
+/* ---------- común a móvil vertical y apaisado ---------- */
+@media (max-width: 760px), (max-height: 500px) and (max-width: 1000px) {
+  :root { --gap: 8px; --sl: max(8px, env(safe-area-inset-left, 0px)); --sr: max(8px, env(safe-area-inset-right, 0px)); }
+  .ibtn { width: 40px; height: 40px; border-radius: 8px; }
+  .ibtn svg { width: 18px; height: 18px; }
+  .btn { height: 40px; padding: 0 14px; font-size: 13px; }
+  .btn.small { height: 36px; padding: 0 12px; font-size: 12.5px; }
+  input[type=search] { height: 42px; font-size: 15px; }
+  .item { min-height: 42px; font-size: 14px; padding-left: 28px; }
+  .item::before { left: 14px; }
+  .cat { min-height: 38px; font-size: 11.5px; }
+  #partList, #infoBody, #tour p, .modal-body, .menu { overscroll-behavior: contain; }
+  .links button { min-height: 42px; font-size: 13.5px; }
+  .info-actions { flex-wrap: wrap; }
+  .tag { font-size: 10.5px; padding: 3px 6px; }
+
+  /* selector de equipo */
+  .menu { position: fixed; top: calc(var(--top) + 4px); left: var(--sl); width: min(340px, calc(100vw - 16px)); max-height: calc(100vh - var(--top) - 16px);
+    max-height: calc(100dvh - var(--top) - 16px); overflow-y: auto; }
+  .menu-item, .menu-foot { min-height: 44px; font-size: 14px; }
+
+  /* simulación: columna única desplazable (cabecera fija, controles, gráfica, lecturas, segunda gráfica, notas) */
+  #simpanel { display: flex; flex-direction: column; gap: 10px; padding: 0 12px 14px; overflow-y: auto; overscroll-behavior: contain; }
+  #simpanel .sim-controls { display: contents; }
+  #simpanel .panel-head { position: sticky; top: 0; z-index: 2; order: 0; flex: none; margin: 0 -12px; padding: 6px 6px 6px 14px; background: var(--panel-solid);
+    border-bottom: 1px solid var(--line); }
+  #simCtrls { order: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px 10px; }
+  #simpanel .sim-controls label { flex-direction: column; align-items: stretch; gap: 4px; font-size: 11.5px; }
+  #simpanel .sim-controls label.hidden { display: none !important; }
+  #simpanel .sim-controls select { width: 100%; max-width: none; height: 40px; font-size: 13.5px; padding: 0 8px; }
+  #simpanel .sim-chart { order: 1; flex: none; height: 200px; }
+  #simpanel .readouts { order: 3; flex: none; margin-top: 0; }
+  #simpanel .readouts b { font-size: 14px; }
+  #simpanel .narrow { display: flex; order: 4; height: 190px; }
+  #simNote { order: 5; } #simLegend { order: 6; }
+  #simpanel .fine { font-size: 11.5px; }
+  body.sim-open #viewbar, body.tour-open #viewbar { display: none; }
+
+  /* recorrido */
+  #tour { display: flex; flex-direction: column; transform: none; min-width: 0; }
+  #tour p { min-height: 0; overflow-y: auto; font-size: 13.5px; }
+  body #tour .a2d-ver { align-self: flex-start; height: 36px; margin: 0 0 12px; }
+  #tourDots { display: none; }
+  .tour-nav, body.tour-open.sim-open .tour-nav { flex-direction: row; align-items: center; }
+  .tour-btns, body.tour-open.sim-open .tour-btns { flex: 1; justify-content: stretch; }
+  .tour-btns .btn { flex: 1; justify-content: center; height: 42px; }
+
+  /* película */
+  #cine .cbtn { width: 40px; height: 40px; }
+  #cine .cbtn.big { width: 44px; height: 40px; }
+  #cine .cine-prog { height: 24px; }
+  #cine .cine-card { left: max(20px, env(safe-area-inset-left, 0px)); }
+
+  /* recursos */
+  .res { grid-template-columns: 34px minmax(0, 1fr) 16px; row-gap: 6px; }
+  .res-ic { grid-row: 1 / span 2; align-self: start; }
+  .res-meta { grid-column: 2; grid-row: 2; flex-wrap: wrap; }
+  .res-ext { grid-column: 3; grid-row: 1; }
+}
+
+/* ---------- móvil vertical ---------- */
+@media (max-width: 760px) and (min-height: 501px) {
+  :root { --top: calc(50px + env(safe-area-inset-top, 0px)); --dock: calc(58px + env(safe-area-inset-bottom, 0px)); --sheet: 46vh; --sheet: 46dvh; }
+
+  /* barra superior: logotipo, equipo (marca y modelo en dos líneas), tema e información */
+  #topbar { padding: env(safe-area-inset-top, 0px) var(--sr) 0 var(--sl); }
+  body.visor #topbar { grid-template-columns: minmax(0, 1fr) auto; column-gap: 6px; }
+  body.visor .brand { gap: 8px; }
+  body.visor .mark { width: 34px; height: 34px; flex: none; }
+  .nav-tools .sep { display: none; }
+
+  /* pestañas de modo: píldora flotante bajo la barra */
+  #modeTabs { position: fixed; top: calc(var(--top) + 8px); left: 50%; transform: translateX(-50%); padding: 3px; border-radius: 11px;
+    background: var(--panel); box-shadow: var(--shadow); backdrop-filter: blur(12px); }
+  #modeTabs button { height: 40px; padding: 0 16px; border-radius: 8px; font-size: 13px; white-space: nowrap; }
+  body.tour-open #modeTabs, body.info-full.info-open #modeTabs { display: none; }
+
+  /* barra inferior de acciones */
+  .nav-main { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; height: var(--dock); align-items: flex-start; gap: 2px;
+    padding: 4px var(--sr) env(safe-area-inset-bottom, 0px) var(--sl); background: var(--panel-solid); border-top: 1px solid var(--line); }
+  body.visor .nav-main .tbtn { position: relative; flex: 1 1 0; min-width: 0; width: auto; height: 50px; padding: 4px 0; flex-direction: column; justify-content: center;
+    gap: 3px; border-radius: 10px; font-size: 10.5px; letter-spacing: -.1px; color: var(--muted); }
+  body.visor .nav-main .tbtn span { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  body.visor .nav-main .tbtn svg { width: 22px; height: 22px; }
+  body.visor .nav-main .tbtn.on { background: transparent; border-color: transparent; color: var(--accent); }
+  body.visor .nav-main .tbtn.on::before { content: ''; position: absolute; top: -5px; left: 50%; width: 26px; height: 3px; margin-left: -13px; border-radius: 0 0 3px 3px; background: var(--accent); }
+  #statusbar { display: none; }
+
+  /* hojas inferiores: asa, esquinas redondeadas, sobre la barra inferior */
+  #sidebar, #info, #simpanel { left: 0; right: 0; width: auto; top: auto; bottom: var(--dock); border-radius: 16px 16px 0 0; border-width: 1px 0 0;
+    background: var(--panel-solid); box-shadow: 0 -6px 28px rgba(0, 0, 0, 0.16); }
+  body.info-open #viewbar { display: none; }
+  #sidebar .panel-head, #info .panel-head { position: relative; padding: 18px 6px 8px 16px; touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; }
+  #sidebar .panel-head::before, #info .panel-head::before, #simpanel .panel-head::before { content: ''; position: absolute; left: 50%; top: 6px; width: 38px;
+    height: 4px; margin-left: -19px; border-radius: 2px; background: var(--line-2); }
+  #simpanel .panel-head { padding-top: 14px; }
+  #sidebar .panel-head .ibtn, #info .panel-head .ibtn, #simpanel .panel-head .ibtn { margin: -6px 0; }
+  #sidebar { height: 72vh; height: min(72dvh, calc(100dvh - var(--top) - var(--dock) - 16px)); transform: translateY(calc(100% + var(--dock) + 10px)); }
+  body.parts-open #sidebar { transform: none; }
+  #info { height: var(--sheet); max-height: none; z-index: 18; animation: sheetup .24s cubic-bezier(.2, .8, .2, 1); transition: height .25s ease; }
+  body.info-full #info { height: calc(100vh - var(--top) - var(--dock) - 12px); height: calc(100dvh - var(--top) - var(--dock) - 12px); }
+  #infoBody { flex: 1; min-height: 0; padding: 12px 16px 22px; }
+  #infoBody h3 { font-size: 18px; }
+  #infoBody p { font-size: 14px; }
+  #infoBody li { font-size: 13.5px; }
+  .specs { font-size: 13px; }
+  #simpanel { height: 48vh; height: 48dvh; z-index: 17; }
+  body.info-open #simpanel, body.tour-open.sim-open #simpanel { right: 0; }
+
+  /* barra de vista sobre la barra inferior, a todo el ancho */
+  #viewbar { left: var(--gap); right: var(--gap); bottom: calc(var(--dock) + var(--gap)); transform: none; }
+
+  /* recorrido: tarjeta inferior; con la simulación abierta pasa arriba */
+  #tour, body.tour-open.sim-open #tour, body.info-open #tour { top: auto; left: var(--gap); right: var(--gap); bottom: calc(var(--dock) + var(--gap)); width: auto;
+    max-height: 44vh; max-height: 44dvh; padding: 10px 14px 12px; z-index: 16; }
+  body.tour-open.sim-open #tour { top: calc(var(--top) + var(--gap)); bottom: auto; max-height: 30vh; max-height: 30dvh; padding-top: 8px; }
+  body.tour-open.sim-open #tour h3 { font-size: 15px; margin-bottom: 4px; }
+  body.tour-open.sim-open .tour-progress { margin: 5px 0 8px; }
+  body.tour-open.sim-open #tour p { max-height: none; }
+  body.tour-open.sim-open #simpanel { height: 37vh; height: 37dvh; }
+  #tour h3 { font-size: 16px; }
+
+  /* ventanas modales como hojas inferiores */
+  .modal { align-items: end; justify-items: stretch; }
+  .modal-box, .modal-box.wide { width: 100%; max-height: calc(100vh - var(--top)); max-height: calc(100dvh - var(--top)); border-radius: 16px 16px 0 0; border-width: 1px 0 0;
+    animation: sheetup .24s cubic-bezier(.2, .8, .2, 1); }
+  .modal .panel-head { padding: 8px 6px 8px 16px; }
+  .modal-body { padding: 12px 16px calc(20px + env(safe-area-inset-bottom, 0px)); }
+  .modal-body .specs td:first-child { width: 40%; }
+
+  .toast { bottom: calc(var(--dock) + 66px); }
+
+  /* película: barra en dos filas (progreso arriba) y subtítulos por encima */
+  #cine .cine-bar { width: calc(100% - 16px); flex-wrap: wrap; justify-content: space-between; gap: 0; padding: 2px 4px 4px;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px)); }
+  #cine .cine-prog { order: -1; flex: 1 0 100%; padding: 0 4px; }
+  #cine .cine-sub { bottom: calc(112px + env(safe-area-inset-bottom, 0px)); width: calc(100% - 24px); }
+  #cine .cine-sub span { font-size: 15px; }
+  #cine .cine-chap { left: 18px; bottom: calc(190px + env(safe-area-inset-bottom, 0px)); }
+  #cine .cine-card { top: calc(11vh + env(safe-area-inset-top, 0px)); max-width: calc(100% - 40px); }
+  body.cine-on.sim-open #simpanel { left: 0; right: 0; bottom: 0; height: 34vh; height: 34dvh; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body.cine-on #simpanel .panel-head, body.cine-on #simCtrls, body.cine-on #simNote, body.cine-on #simLegend { display: none; }
+  body.cine-on #simpanel .sim-chart { margin-top: 10px; }
+  body.cine-on #simpanel .sim-chart ~ .sim-chart { margin-top: 0; }
+  body.cine-on.sim-open #cine .cine-bar { bottom: calc(34dvh + 8px); }
+  body.cine-on.sim-open #cine .cine-sub { bottom: calc(34dvh + 108px); }
+  body.cine-on.sim-open #cine .cine-chap { bottom: calc(34dvh + 176px); }
+}
+@media (max-width: 374px) and (min-height: 501px) {
+  body.visor .nav-main .tbtn { font-size: 10px; letter-spacing: -.2px; }
+}
+@keyframes sheetup { from { transform: translateY(30%); opacity: 0; } }
+
+/* ---------- móvil apaisado ---------- */
+@media (max-height: 500px) and (max-width: 1000px) {
+  :root { --top: calc(46px + env(safe-area-inset-top, 0px)); }
+  #topbar { padding: env(safe-area-inset-top, 0px) var(--sr) 0 var(--sl); }
+  body.visor .seg button { height: 36px; padding: 0 12px; }
+  body.visor .tbtn { width: 38px; height: 38px; }
+  #statusbar { display: none; }
+  #sidebar { top: calc(var(--top) + var(--gap)); bottom: var(--gap); left: var(--sl); width: min(300px, 46vw); }
+  #info { top: calc(var(--top) + var(--gap)); bottom: var(--gap); right: var(--sr); width: min(360px, 46vw); max-height: none; z-index: 18; }
+  #simpanel, body.info-open #simpanel, body.tour-open.sim-open #simpanel { top: calc(var(--top) + var(--gap)); bottom: var(--gap); left: auto; right: var(--sr);
+    width: min(400px, 46vw); height: auto; z-index: 17; }
+  #tour, body.tour-open.sim-open #tour { top: calc(var(--top) + var(--gap)); bottom: var(--gap); left: var(--sl); right: auto; width: min(340px, 42vw); max-height: none;
+    padding: 10px 14px 12px; }
+  #tour p, body.tour-open.sim-open #tour p { flex: 1 1 auto; max-height: none; }
+  #viewbar { left: 50%; transform: translateX(-50%); width: min(420px, calc(100vw - 16px)); bottom: calc(var(--gap) + env(safe-area-inset-bottom, 0px)); }
+  body.info-open #viewbar { left: var(--sl); transform: none; width: min(420px, calc(100vw - min(360px, 46vw) - 32px)); }
+  .modal-box, .modal-box.wide { max-height: calc(100vh - 16px); max-height: calc(100dvh - 16px); }
+  .toast { bottom: 68px; }
+  #cine .cine-chap { bottom: 108px; }
+  #cine .cine-card { top: 9vh; }
+  body.cine-on.sim-open #simpanel { top: var(--gap); bottom: var(--gap); left: auto; right: var(--sr); width: min(400px, 46vw); }
+  body.cine-on.sim-open #cine .cine-bar, body.cine-on.sim-open #cine .cine-sub { left: calc((100% - min(400px, 46vw) - 16px) / 2); width: calc(100% - min(400px, 46vw) - 40px); }
+  body.cine-on.sim-open #cine .cine-bar { bottom: 8px; }
+  body.cine-on.sim-open #cine .cine-sub { bottom: 62px; }
+  body.cine-on.sim-open #cine .cine-chap { bottom: 108px; }
+  body.cine-on.sim-open #cine .time { display: none; }
+}
+
+/* campos táctiles a 16 px (iOS no amplía la página al enfocarlos) */
+@media (hover: none) and (pointer: coarse) {
+  input[type=search], #simpanel .sim-controls select { font-size: 16px; }
+}

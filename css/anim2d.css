@@ -1,0 +1,60 @@
+/* Animaciones 2D «Cómo funciona» (js/anim2d). Se muestran en la ficha del componente y, ampliadas, en una ventana superpuesta. */
+.a2d { border: 1px solid var(--line); border-radius: var(--r); background: var(--sub); overflow: hidden; }
+.a2d-head { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 10px; border-bottom: 1px solid var(--line); }
+.a2d-tit { flex: 1; min-width: 0; font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.a2d-btns { display: flex; gap: 2px; flex-shrink: 0; }
+.a2d-b { width: 28px; height: 26px; display: grid; place-items: center; border: 0; border-radius: 5px; background: transparent; color: var(--text-2);
+  font: 600 11.5px var(--font); cursor: pointer; }
+.a2d-b:hover { background: var(--hover); color: var(--text); }
+.a2d-b svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.a2d-b[data-a="play"] svg { fill: currentColor; stroke-width: 1.4; }
+.a2d-lienzo { position: relative; width: 100%; }
+.a2d-lienzo canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.a2d-tl { position: relative; height: 14px; margin: 0 10px; cursor: pointer; }
+.a2d-tl::before { content: ''; position: absolute; left: 0; right: 0; top: 6px; height: 2px; border-radius: 1px; background: var(--line); }
+.a2d-prog { position: absolute; left: 0; top: 6px; height: 2px; border-radius: 1px; background: var(--accent); pointer-events: none; }
+.a2d-tl b { position: absolute; top: 3px; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: var(--panel-solid);
+  border: 1.5px solid var(--line-2); cursor: pointer; }
+.a2d-tl b.on { background: var(--accent); border-color: var(--accent); }
+.a2d-tl b:hover { border-color: var(--accent); }
+.a2d-cap { margin: 0 !important; padding: 2px 10px 10px; min-height: 4.8em; font-size: 12.5px !important; line-height: 1.55 !important; color: var(--text-2); }
+
+/* botón del recorrido */
+#tour .a2d-ver { margin: 10px 0 2px; }
+#tour .a2d-ver svg { width: 13px; height: 13px; fill: currentColor; stroke: none; }
+.a2d-ver.hidden { display: none; }
+
+/* ventana ampliada */
+.a2d-capa { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; background: rgba(10, 14, 20, 0.55);
+  backdrop-filter: blur(3px); }
+.a2d-caja { width: min(1040px, 100%, calc((100vh - 170px) * 16 / 9)); min-width: min(320px, 100%); }
+.a2d-caja .a2d { background: var(--panel-solid); box-shadow: var(--shadow); }
+.a2d-caja .a2d-tit { font-size: 14px; }
+.a2d-caja .a2d-cap { font-size: 14px !important; min-height: 3.6em; padding: 4px 14px 14px; }
+
+@media (max-width: 700px) {
+  .a2d-capa { padding: 8px; align-items: center; }
+  .a2d-caja { width: 100%; }
+  .a2d-caja .a2d-cap { font-size: 13px !important; }
+  .a2d-b { width: 34px; height: 32px; }
+}
+/* móvil vertical: la ventana ampliada respeta las zonas seguras */
+@media (max-width: 760px) {
+  .a2d-capa { padding: max(8px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px)) max(8px, env(safe-area-inset-bottom, 0px))
+    max(8px, env(safe-area-inset-left, 0px)); }
+  .a2d-caja { width: 100%; }
+}
+/* móvil apaisado: la ventana ampliada cabe en altura */
+@media (max-height: 500px) and (max-width: 1000px) {
+  .a2d-capa { padding: 6px max(8px, env(safe-area-inset-right, 0px)) 6px max(8px, env(safe-area-inset-left, 0px)); }
+  .a2d-caja { width: min(1040px, 100%, calc((100vh - 120px) * 16 / 9)); width: min(1040px, 100%, calc((100dvh - 120px) * 16 / 9)); }
+  .a2d-caja .a2d-cap { min-height: 2.9em; padding: 2px 12px 8px; font-size: 12.5px !important; }
+  .a2d-caja .a2d-head { padding: 3px 4px 3px 10px; }
+}
+/* pantallas táctiles: botones y línea de tiempo con más superficie */
+@media (hover: none) and (pointer: coarse) {
+  .a2d-b { width: 40px; height: 36px; }
+  .a2d-tl { height: 24px; }
+  .a2d-tl::before, .a2d-prog { top: 11px; }
+  .a2d-tl b { top: 7px; width: 12px; height: 12px; margin-left: -6px; }
+}

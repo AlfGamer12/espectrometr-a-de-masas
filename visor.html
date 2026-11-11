@@ -2,7 +2,8 @@
 <html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+  <meta name="theme-color" content="#ffffff" id="metaTheme" />
   <title>Visor técnico 3D · Espectrometría de masas</title>
   <script>
     // Aplica el tema guardado antes de pintar, para evitar un parpadeo.
@@ -13,11 +14,12 @@
     })();
   </script>
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/anim2d.css" />
   <script type="importmap">
     { "imports": { "three": "./lib/three.module.js", "three/addons/": "./lib/addons/" } }
   </script>
 </head>
-<body>
+<body class="visor">
   <div id="loading"><div class="load-bar"><i></i></div><p>Cargando modelo</p></div>
 
   <header id="topbar">
@@ -37,14 +39,20 @@
       <button data-mode="analizador" role="tab"></button>
     </div>
     <nav>
-      <button id="btnFilm" class="tbtn"><svg><use href="#i-film" /></svg><span>Película</span></button>
-      <button id="btnTour" class="tbtn"><svg><use href="#i-tour" /></svg><span>Recorrido</span></button>
-      <button id="btnSim" class="tbtn"><svg><use href="#i-sim" /></svg><span>Simulación</span></button>
-      <button id="btnRes" class="tbtn"><svg><use href="#i-book" /></svg><span>Recursos</span></button>
-      <span class="sep"></span>
-      <a id="btnCat" class="tbtn icon" href="index.html" title="Catálogo de equipos"><svg><use href="#i-grid" /></svg></a>
-      <button id="btnTheme" class="tbtn icon" title="Cambiar tema claro / oscuro"><svg class="sun"><use href="#i-sun" /></svg><svg class="moon"><use href="#i-moon" /></svg></button>
-      <button id="btnAbout" class="tbtn icon" title="Información del modelo"><svg><use href="#i-info" /></svg></button>
+      <!-- .nav-main y .nav-tools no generan caja en escritorio (display: contents); en el móvil .nav-main es la barra inferior -->
+      <div class="nav-main">
+        <button id="btnParts" class="tbtn" aria-label="Componentes del modelo"><svg viewBox="0 0 24 24"><path d="M9.5 6.5H20M9.5 12H20M9.5 17.5H20" /><path d="M4.5 6.5h1.5M4.5 12h1.5M4.5 17.5h1.5" /></svg><span>Componentes</span></button>
+        <button id="btnFilm" class="tbtn" aria-label="Película"><svg><use href="#i-film" /></svg><span>Película</span></button>
+        <button id="btnTour" class="tbtn" aria-label="Recorrido guiado"><svg><use href="#i-tour" /></svg><span>Recorrido</span></button>
+        <button id="btnSim" class="tbtn" aria-label="Simulación"><svg><use href="#i-sim" /></svg><span>Simulación</span></button>
+        <button id="btnRes" class="tbtn" aria-label="Recursos de consulta"><svg><use href="#i-book" /></svg><span>Recursos</span></button>
+      </div>
+      <div class="nav-tools">
+        <span class="sep"></span>
+        <a id="btnCat" class="tbtn icon" href="index.html" title="Catálogo de equipos"><svg><use href="#i-grid" /></svg></a>
+        <button id="btnTheme" class="tbtn icon" title="Cambiar tema claro / oscuro"><svg class="sun"><use href="#i-sun" /></svg><svg class="moon"><use href="#i-moon" /></svg></button>
+        <button id="btnAbout" class="tbtn icon" title="Información del modelo"><svg><use href="#i-info" /></svg></button>
+      </div>
     </nav>
   </header>
 
@@ -52,6 +60,7 @@
     <div class="panel-head">
       <h2>Estructura del modelo</h2>
       <span id="partCount" class="muted"></span>
+      <button class="ibtn" id="partsClose" title="Cerrar"><svg><use href="#i-close" /></svg></button>
     </div>
     <div class="search">
       <svg><use href="#i-search" /></svg>
@@ -71,10 +80,10 @@
   <div id="viewbar">
     <div class="grp">
       <button class="vbtn" data-view="home" title="Vista inicial"><svg><use href="#i-home" /></svg></button>
-      <button class="vbtn" data-view="front" title="Vista frontal"><svg><use href="#i-front" /></svg></button>
-      <button class="vbtn" data-view="right" title="Vista lateral derecha"><svg><use href="#i-side" /></svg></button>
-      <button class="vbtn" data-view="top" title="Vista superior"><svg><use href="#i-top" /></svg></button>
-      <button class="vbtn" data-view="iso" title="Vista isométrica"><svg><use href="#i-iso" /></svg></button>
+      <button class="vbtn vb-x" data-view="front" title="Vista frontal"><svg><use href="#i-front" /></svg></button>
+      <button class="vbtn vb-x" data-view="right" title="Vista lateral derecha"><svg><use href="#i-side" /></svg></button>
+      <button class="vbtn vb-x" data-view="top" title="Vista superior"><svg><use href="#i-top" /></svg></button>
+      <button class="vbtn vb-x" data-view="iso" title="Vista isométrica"><svg><use href="#i-iso" /></svg></button>
     </div>
     <div class="grp explode" title="Vista explosionada">
       <svg class="lead"><use href="#i-explode" /></svg>
@@ -83,9 +92,10 @@
     </div>
     <div class="grp">
       <button class="vbtn" id="tgXray" title="Transparencia de carcasas"><svg><use href="#i-xray" /></svg></button>
-      <button class="vbtn on" id="tgLabels" title="Etiquetas"><svg><use href="#i-tag" /></svg></button>
-      <button class="vbtn on" id="tgAO" title="Sombreado de contacto (oclusión ambiental)"><svg><use href="#i-ao" /></svg></button>
-      <button class="vbtn" id="tgRotate" title="Rotación automática"><svg><use href="#i-rotate" /></svg></button>
+      <button class="vbtn on vb-x" id="tgLabels" title="Etiquetas"><svg><use href="#i-tag" /></svg></button>
+      <button class="vbtn on vb-x" id="tgAO" title="Sombreado de contacto (oclusión ambiental)"><svg><use href="#i-ao" /></svg></button>
+      <button class="vbtn vb-x" id="tgRotate" title="Rotación automática"><svg><use href="#i-rotate" /></svg></button>
+      <button class="vbtn" id="tgMore" title="Más vistas y opciones" aria-expanded="false"><svg viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.2" /><circle cx="12" cy="12" r="1.2" /><circle cx="18.5" cy="12" r="1.2" /></svg></button>
     </div>
   </div>
 
@@ -100,6 +110,7 @@
     <div class="tour-progress"><i id="tourBar"></i></div>
     <h3 id="tourTitle"></h3>
     <p id="tourText"></p>
+    <button class="btn small a2d-ver hidden" id="tourAnim"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z" /></svg><span></span></button>
     <div class="tour-nav">
       <div id="tourDots"></div>
       <div class="tour-btns">
@@ -143,7 +154,7 @@
       <div class="modal-body">
         <div id="aboutBody"></div>
         <h4>Navegación</h4>
-        <table class="specs">
+        <table class="specs" id="navHelp">
           <tr><td>Orbitar / desplazar / zoom</td><td>Botón izquierdo / botón derecho / rueda</td></tr>
           <tr><td>Seleccionar</td><td>Clic sobre la pieza, su etiqueta o su nombre en la estructura</td></tr>
           <tr><td>Enfocar</td><td>Doble clic sobre la pieza</td></tr>

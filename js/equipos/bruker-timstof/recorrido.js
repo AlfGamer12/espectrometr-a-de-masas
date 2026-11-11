@@ -27,7 +27,7 @@ export const RECORRIDO = [
     titulo: 'Cuadrupolo sincronizado: PASEF',
     texto: 'Como cada precursor eluye del TIMS durante uno o dos milisegundos, el cuadrupolo puede saltar de uno a otro siguiendo la rampa. En una sola rampa se fragmentan unos diez precursores, lo que multiplica la velocidad de secuenciación por diez.',
     modo: 'analizador', e2: 0.4, xray: true, foco: ['cuadrupolo', 'celda_colision', 'guia_transferencia'], dir: [0.4, 0.5, 1], pad: 1.2,
-    resaltar: ['cuadrupolo', 'celda_colision', 'celda_multipolo'],
+    resaltar: ['cuadrupolo', 'celda_colision', 'celda_multipolo'], anim: 'tims',
   },
   {
     titulo: 'Acelerador ortogonal',
