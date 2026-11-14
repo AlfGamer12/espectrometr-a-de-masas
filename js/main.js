@@ -36,6 +36,8 @@ document.title = `${META.marca} ${META.modelo} · Visor técnico 3D`;
 $('brandName').textContent = META.marca;
 $('modelName').textContent = META.modelo;
 $('typeLine').textContent = `${TIPOS[META.tipo].nombre} · Visor técnico 3D`;
+// sigla del logotipo según la técnica (MS para los espectrómetros de masas)
+{ const sigla = { 'UV-Vis': 'UV', FTIR: 'IR', RMN: 'RMN', GC: 'GC', HPLC: 'LC' }[META.tipo]; if (sigla) document.querySelector('#topbar .mark').textContent = sigla; }
 document.querySelectorAll('#modeTabs button').forEach((b) => (b.textContent = MODE_NAME[b.dataset.mode]));
 $('aboutBody').innerHTML = CFG.about;
 

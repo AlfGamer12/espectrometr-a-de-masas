@@ -146,3 +146,8 @@ body.portada .wrap { padding-top: calc(var(--top) + 36px); }
   body.portada .brand { gap: 9px; }
   body.portada .brand h1 { white-space: normal; font-size: 13.5px; line-height: 1.15; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 }
+/* Comparativa por área (espectrometría de masas, espectroscopía, cromatografía) */
+.cmp-area { margin: 26px 0 10px; font-size: 13px; font-weight: 600; letter-spacing: .2px; color: var(--text); }
+.cmp-area:first-child { margin-top: 4px; }
+#cmpTables .table-wrap + .cmp-area { margin-top: 30px; }
+#topbar .mark { letter-spacing: -.3px; }
